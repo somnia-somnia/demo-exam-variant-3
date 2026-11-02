@@ -102,14 +102,13 @@ try:
     assert js("Math.abs(document.querySelector('.slide img').clientWidth / document.querySelector('.slide img').clientHeight - 1.6) < .02"), 'Slider image is distorted'
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
-    assert js("document.querySelector('.slide-count').textContent") == '1 / 4'
-    time.sleep(3.15)
-    assert js("document.querySelector('.slide-count').textContent") == '2 / 4'
-    js("document.querySelector('[data-step=\"-1\"]').click()")
-    assert js("document.querySelector('.slide-count').textContent") == '1 / 4'
-    js("document.querySelector('.pause').click()")
-    time.sleep(3.1)
-    assert js("document.querySelector('.slide-count').textContent") == '1 / 4'
+    assert js("document.querySelectorAll('.slide').length") == 4
+    assert js("document.querySelectorAll('.slider button, .slider-controls, .slide-count').length") == 0
+    active_slide = "[...document.querySelectorAll('.slide')].findIndex(slide => !slide.hidden)"
+    assert js(active_slide) == 0
+    for expected in [1, 2, 3, 0]:
+        time.sleep(3.05)
+        assert js(active_slide) == expected, 'Automatic slideshow did not advance or wrap'
     go('/register'); screenshot('register-mobile')
     js("document.querySelector('[name=phone]').focus()")
     cmd('Input.insertText', text='89991234567')
@@ -151,7 +150,7 @@ try:
     report = dict(result='PASS', mobile='390x844', desktop='1440x1000', external_requests=external,
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
-                          'owner review availability', 'slider 3000ms', 'previous button', 'pause',
+                          'owner review availability', 'slider 3000ms: all four slides and wrap', 'no slider controls',
                           'mobile phone/date input masks', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))

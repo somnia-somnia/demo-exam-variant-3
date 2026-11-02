@@ -61,11 +61,6 @@ input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
 .slide[hidden]{display:none}
 .slide img{width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;filter:brightness(.8)}
 .slide figcaption{position:absolute;bottom:24px;left:24px;right:24px;color:white;font-weight:700;font-size:18px;text-shadow:0 1px 4px #000}
-.slider-controls{display:flex;align-items:center;gap:14px;padding:10px 16px;color:white}
-.slider-controls button{width:44px;height:44px;border-radius:50%;background:#ffffff19;color:white;font-size:24px}
-.slider-controls button:hover{background:var(--accent)}
-.slider-controls .pause{margin-left:auto;font-size:18px}
-.slide-count{font-size:14px}
 .steps{display:flex;gap:14px;justify-content:space-between;margin:20px 0;font-size:12px;font-style:italic;color:var(--muted)}
 .page-heading{display:flex;justify-content:space-between;gap:24px;align-items:center;margin-bottom:28px}
 .page-heading p:last-child{margin-bottom:0}

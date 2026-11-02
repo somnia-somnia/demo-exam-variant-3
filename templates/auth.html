@@ -8,11 +8,10 @@
 <section class="intro">
   <p class="eyebrow">Свобода выбирать свой путь</p><h1>Ключ к вашим<br>новым планам<span class="accent">.</span></h1>
   <p>Автомобиль для города, путешествий и важных встреч. Оставьте заявку — мы позаботимся об остальном.</p>
-  <div class="slider" aria-roledescription="карусель" aria-label="Аренда автомобилей" tabindex="0">
+  <div class="slider" aria-roledescription="карусель" aria-label="Аренда автомобилей">
     {% for caption in ['Ваш автомобиль ждёт', 'Дорога к новым впечатлениям', 'Свобода большого путешествия', 'Ключ к вашим планам'] %}
     <figure class="slide" {% if not loop.first %}hidden{% endif %}><img src="{{ url_for('static', filename='img/slide' ~ loop.index ~ '.jpg') }}" alt="{{ caption }}" width="960" height="600"><figcaption>{{ caption }}</figcaption></figure>
     {% endfor %}
-    <div class="slider-controls"><button type="button" data-step="-1" aria-label="Предыдущее изображение">←</button><span class="slide-count" aria-live="off">1 / 4</span><button type="button" data-step="1" aria-label="Следующее изображение">→</button><button type="button" class="pause" aria-label="Приостановить автосмену" aria-pressed="false">Ⅱ</button></div>
   </div>
   <div class="steps"><span>01 · Выберите авто</span><span>02 · Отправьте заявку</span><span>03 · В путь</span></div>
 </section>
