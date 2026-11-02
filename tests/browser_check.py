@@ -103,12 +103,25 @@ try:
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
     assert js("document.querySelectorAll('.slide').length") == 4
-    assert js("document.querySelectorAll('.slider button, .slider-controls, .slide-count').length") == 0
+    assert js("document.querySelectorAll('.slider [data-step]').length") == 2
+    assert js("document.querySelectorAll('.slider .pause').length") == 0
     active_slide = "[...document.querySelectorAll('.slide')].findIndex(slide => !slide.hidden)"
     assert js(active_slide) == 0
     for expected in [1, 2, 3, 0]:
         time.sleep(3.05)
         assert js(active_slide) == expected, 'Automatic slideshow did not advance or wrap'
+        assert js("document.querySelector('.slide-count').textContent") == f'{expected + 1} / 4'
+    js("document.querySelector('[data-step=\"-1\"]').click()")
+    assert js(active_slide) == 3
+    js("document.querySelector('[data-step=\"1\"]').click()")
+    assert js(active_slide) == 0
+    time.sleep(1.8)
+    js("document.querySelector('[data-step=\"1\"]').click()")
+    time.sleep(1.3)
+    assert js(active_slide) == 1, 'Manual control did not restart the three-second interval'
+    time.sleep(1.85)
+    assert js(active_slide) == 2
+    assert js("[...document.querySelectorAll('.slider [data-step]')].every(button=>{const b=button.getBoundingClientRect(),s=button.closest('.slider').getBoundingClientRect();return b.width>=44 && b.height>=44 && b.left>=s.left && b.right<=s.right && b.top>=s.top && b.bottom<=s.bottom})"), 'Slider arrows must fit inside the photo and have 44px targets'
     go('/register'); screenshot('register-mobile')
     js("document.querySelector('[name=phone]').focus()")
     cmd('Input.insertText', text='89991234567')
@@ -150,7 +163,7 @@ try:
     report = dict(result='PASS', mobile='390x844', desktop='1440x1000', external_requests=external,
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
-                          'owner review availability', 'slider 3000ms: all four slides and wrap', 'no slider controls',
+                          'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
                           'mobile phone/date input masks', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))

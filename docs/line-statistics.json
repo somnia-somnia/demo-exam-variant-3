@@ -21,15 +21,15 @@
     },
     {
       "file": "static/style.css",
-      "lines": 137,
-      "nonempty": 128,
-      "characters": 7412
+      "lines": 142,
+      "nonempty": 133,
+      "characters": 7937
     },
     {
       "file": "static/script.js",
-      "lines": 26,
-      "nonempty": 25,
-      "characters": 1196
+      "lines": 31,
+      "nonempty": 30,
+      "characters": 1492
     },
     {
       "file": "templates/admin.html",
@@ -39,9 +39,9 @@
     },
     {
       "file": "templates/auth.html",
-      "lines": 35,
-      "nonempty": 35,
-      "characters": 2793
+      "lines": 38,
+      "nonempty": 38,
+      "characters": 3068
     },
     {
       "file": "templates/base.html",
@@ -62,7 +62,7 @@
       "characters": 1732
     }
   ],
-  "total_lines": 533,
-  "nonempty_lines": 477,
-  "characters": 29546
+  "total_lines": 546,
+  "nonempty_lines": 490,
+  "characters": 30642
 }

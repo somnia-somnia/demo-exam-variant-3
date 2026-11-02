@@ -12,6 +12,9 @@
     {% for caption in ['Ваш автомобиль ждёт', 'Дорога к новым впечатлениям', 'Свобода большого путешествия', 'Ключ к вашим планам'] %}
     <figure class="slide" {% if not loop.first %}hidden{% endif %}><img src="{{ url_for('static', filename='img/slide' ~ loop.index ~ '.jpg') }}" alt="{{ caption }}" width="960" height="600"><figcaption>{{ caption }}</figcaption></figure>
     {% endfor %}
+    <button class="slider-arrow" type="button" data-step="-1" aria-label="Предыдущее изображение">‹</button>
+    <button class="slider-arrow" type="button" data-step="1" aria-label="Следующее изображение">›</button>
+    <span class="slide-count" aria-live="off">1 / 4</span>
   </div>
   <div class="steps"><span>01 · Выберите авто</span><span>02 · Отправьте заявку</span><span>03 · В путь</span></div>
 </section>

@@ -1,16 +1,21 @@
 document.querySelectorAll('.slider').forEach(slider => {
   const slides = [...slider.querySelectorAll('.slide')];
+  const counter = slider.querySelector('.slide-count');
   let current = 0, timer;
   const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  const showNext = () => {
+  const show = (step = 1) => {
     slides[current].hidden = true;
-    current = (current + 1) % slides.length;
+    current = (current + step + slides.length) % slides.length;
     slides[current].hidden = false;
+    counter.textContent = `${current + 1} / ${slides.length}`;
   };
   const schedule = () => {
     clearInterval(timer);
-    if (!motion.matches && !document.hidden) timer = setInterval(showNext, 3000);
+    if (!motion.matches && !document.hidden) timer = setInterval(show, 3000);
   };
+  slider.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => {
+    show(Number(button.dataset.step)); schedule();
+  }));
   document.addEventListener('visibilitychange', schedule);
   motion.addEventListener('change', schedule);
   schedule();
