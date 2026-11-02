@@ -1,0 +1,68 @@
+{
+  "scope": "Only manually reproducible site code; excludes tests, docs, assets, module4 generators",
+  "files": [
+    {
+      "file": "app.py",
+      "lines": 222,
+      "nonempty": 183,
+      "characters": 9234
+    },
+    {
+      "file": "db.py",
+      "lines": 24,
+      "nonempty": 17,
+      "characters": 674
+    },
+    {
+      "file": "schema.sql",
+      "lines": 25,
+      "nonempty": 25,
+      "characters": 1095
+    },
+    {
+      "file": "static/style.css",
+      "lines": 142,
+      "nonempty": 133,
+      "characters": 7757
+    },
+    {
+      "file": "static/script.js",
+      "lines": 40,
+      "nonempty": 39,
+      "characters": 1982
+    },
+    {
+      "file": "templates/admin.html",
+      "lines": 12,
+      "nonempty": 12,
+      "characters": 2075
+    },
+    {
+      "file": "templates/auth.html",
+      "lines": 36,
+      "nonempty": 36,
+      "characters": 3168
+    },
+    {
+      "file": "templates/base.html",
+      "lines": 27,
+      "nonempty": 27,
+      "characters": 1721
+    },
+    {
+      "file": "templates/bookings.html",
+      "lines": 14,
+      "nonempty": 14,
+      "characters": 1614
+    },
+    {
+      "file": "templates/new.html",
+      "lines": 11,
+      "nonempty": 11,
+      "characters": 1732
+    }
+  ],
+  "total_lines": 553,
+  "nonempty_lines": 497,
+  "characters": 31052
+}

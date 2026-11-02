@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="500" viewBox="0 0 1120 500">
+<rect width="1120" height="500" fill="#f8f9fa"/><g font-family="Arial,sans-serif" fill="#212b36">
+<text x="40" y="45" font-size="25" font-weight="bold">Ключ.на.старт · ER-диаграмма</text>
+<text x="40" y="76" font-size="15">PK — первичный ключ · FK — внешний ключ · UK — уникальное значение</text>
+<g fill="white" stroke="#212b36" stroke-width="1.5"><rect x="40" y="115" width="280" height="295" rx="12"/><rect x="420" y="115" width="280" height="295" rx="12"/><rect x="800" y="115" width="280" height="230" rx="12"/></g>
+<g fill="#d9480f" font-size="21" font-weight="bold"><text x="60" y="152">users</text><text x="440" y="152">bookings</text><text x="820" y="152">reviews</text></g>
+<g font-size="16"><text x="60" y="189">id INTEGER · PK</text><text x="60" y="220">login TEXT · UK, NOCASE</text><text x="60" y="251">password_hash TEXT</text><text x="60" y="282">full_name TEXT</text><text x="60" y="313">phone TEXT</text><text x="60" y="344">email TEXT</text><text x="60" y="375">is_admin INTEGER</text>
+<text x="440" y="189">id INTEGER · PK</text><text x="440" y="220">user_id INTEGER · FK</text><text x="440" y="251">car TEXT</text><text x="440" y="282">start_date TEXT · ISO date</text><text x="440" y="313">payment TEXT</text><text x="440" y="344">status TEXT</text><text x="440" y="375">created_at TEXT</text>
+<text x="820" y="189">id INTEGER · PK</text><text x="820" y="220">booking_id INTEGER · FK, UK</text><text x="820" y="251">text TEXT</text><text x="820" y="282">created_at TEXT</text></g>
+<g stroke="#212b36" fill="none" stroke-width="2"><path d="M320 220H420M320 210V230M410 210L420 220L410 230M700 220H800M700 210V230M790 210V230"/></g>
+<g font-size="14"><text x="330" y="200">1 → 0..N</text><text x="710" y="200">1 → 0..1</text><text x="40" y="452">Все поля NOT NULL. Один пользователь создаёт много заявок; одна заявка получает не более одного отзыва.</text><text x="40" y="478">Владельца отзыва определяет заявка. PRAGMA foreign_keys = ON на каждом соединении приложения.</text></g></g></svg>

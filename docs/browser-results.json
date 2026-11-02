@@ -1,0 +1,34 @@
+{
+  "result": "PASS",
+  "mobile": "390x844",
+  "desktop": "1440x1000",
+  "external_requests": [],
+  "screenshots": [
+    "admin-mobile.png",
+    "bookings-desktop.png",
+    "bookings-empty-mobile.png",
+    "bookings-mobile.png",
+    "login-desktop.png",
+    "login-mobile.png",
+    "new-mobile.png",
+    "register-mobile.png",
+    "review-mobile.png",
+    "review-saved-mobile.png"
+  ],
+  "checks": [
+    "registration",
+    "login",
+    "booking",
+    "admin status",
+    "filter",
+    "review",
+    "owner review availability",
+    "slider 3000ms",
+    "previous button",
+    "pause",
+    "mobile phone/date input masks",
+    "all pages: no horizontal overflow",
+    "fonts/images local",
+    "no JS exceptions"
+  ]
+}

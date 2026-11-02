@@ -1,0 +1,30 @@
+{
+  "integrity": "ok",
+  "foreign_key_check": [],
+  "foreign_keys": {
+    "bookings": [
+      [
+        0,
+        0,
+        "users",
+        "user_id",
+        "id",
+        "NO ACTION",
+        "NO ACTION",
+        "NONE"
+      ]
+    ],
+    "reviews": [
+      [
+        0,
+        0,
+        "bookings",
+        "booking_id",
+        "id",
+        "NO ACTION",
+        "NO ACTION",
+        "NONE"
+      ]
+    ]
+  }
+}
