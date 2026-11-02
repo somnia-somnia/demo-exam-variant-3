@@ -3,9 +3,9 @@
   "files": [
     {
       "file": "app.py",
-      "lines": 222,
-      "nonempty": 183,
-      "characters": 9234
+      "lines": 223,
+      "nonempty": 184,
+      "characters": 9328
     },
     {
       "file": "db.py",
@@ -21,9 +21,9 @@
     },
     {
       "file": "static/style.css",
-      "lines": 142,
-      "nonempty": 133,
-      "characters": 7937
+      "lines": 115,
+      "nonempty": 115,
+      "characters": 7476
     },
     {
       "file": "static/script.js",
@@ -32,37 +32,43 @@
       "characters": 1492
     },
     {
+      "file": "templates/_booking.html",
+      "lines": 14,
+      "nonempty": 14,
+      "characters": 2073
+    },
+    {
       "file": "templates/admin.html",
-      "lines": 12,
-      "nonempty": 12,
-      "characters": 2075
+      "lines": 9,
+      "nonempty": 9,
+      "characters": 898
     },
     {
       "file": "templates/auth.html",
-      "lines": 38,
+      "lines": 39,
       "nonempty": 38,
-      "characters": 3068
+      "characters": 2875
     },
     {
       "file": "templates/base.html",
       "lines": 27,
       "nonempty": 27,
-      "characters": 1721
+      "characters": 1651
     },
     {
       "file": "templates/bookings.html",
-      "lines": 14,
-      "nonempty": 14,
-      "characters": 1614
+      "lines": 8,
+      "nonempty": 8,
+      "characters": 696
     },
     {
       "file": "templates/new.html",
-      "lines": 11,
-      "nonempty": 11,
-      "characters": 1732
+      "lines": 13,
+      "nonempty": 13,
+      "characters": 2087
     }
   ],
-  "total_lines": 546,
-  "nonempty_lines": 490,
-  "characters": 30642
+  "total_lines": 528,
+  "nonempty_lines": 480,
+  "characters": 30345
 }

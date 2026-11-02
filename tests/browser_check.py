@@ -99,6 +99,7 @@ try:
     cmd('Page.enable'); cmd('Runtime.enable'); cmd('Network.enable')
     cmd('Emulation.setDeviceMetricsOverride', width=390, height=844, deviceScaleFactor=1, mobile=True)
     go('/login'); screenshot('login-mobile')
+    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
     assert js("Math.abs(document.querySelector('.slide img').clientWidth / document.querySelector('.slide img').clientHeight - 1.6) < .02"), 'Slider image is distorted'
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
@@ -123,6 +124,7 @@ try:
     assert js(active_slide) == 2
     assert js("[...document.querySelectorAll('.slider [data-step]')].every(button=>{const b=button.getBoundingClientRect(),s=button.closest('.slider').getBoundingClientRect();return b.width>=44 && b.height>=44 && b.left>=s.left && b.right<=s.right && b.top>=s.top && b.bottom<=s.bottom})"), 'Slider arrows must fit inside the photo and have 44px targets'
     go('/register'); screenshot('register-mobile')
+    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
     js("document.querySelector('[name=phone]').focus()")
     cmd('Input.insertText', text='89991234567')
     assert js("document.querySelector('[name=phone]').value") == '8(999)123-45-67', 'Mobile phone separators missing'
@@ -152,8 +154,16 @@ try:
     submit(dict(text='Удобно и быстро. Спасибо!'), '/bookings', 'main .review')
     assert js("document.querySelector('.review').textContent.includes('Удобно и быстро')")
     screenshot('review-saved-mobile')
+    go('/bookings/new')
+    submit(dict(car='LADA Vesta', start_date='03.12.2026', payment='Наличными'), '/bookings')
+    assert js("document.querySelector('.car-photo').getAttribute('src').endsWith('vesta.jpg')")
+    assert js("document.querySelector('.booking h2').getBoundingClientRect().left > document.querySelector('.car-photo').getBoundingClientRect().left"), 'Mobile photo and model must share the summary row'
+    screenshot('bookings-two-mobile')
     cmd('Emulation.setDeviceMetricsOverride', width=1440, height=1000, deviceScaleFactor=1, mobile=False)
     screenshot('bookings-desktop')
+    submit({}, '/login', 'header form')
+    submit(dict(login='Admin', password='StartNET'), '/admin')
+    screenshot('admin-desktop')
     submit({}, '/login', 'header form')
     screenshot('login-desktop')
     assert not [e for e in events if e.get('method') == 'Runtime.exceptionThrown']
@@ -164,7 +174,7 @@ try:
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
-                          'mobile phone/date input masks', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
+                          'mobile phone/date input masks', 'mobile forms above fold', 'model-specific photo and compact mobile summary', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
 finally:

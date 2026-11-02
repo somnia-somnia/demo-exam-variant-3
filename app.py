@@ -21,6 +21,7 @@ except FileExistsError:
 app.config.update(SECRET_KEY=key_path.read_text(), DATABASE=os.environ.get('RENTAL_DB', str(Path(app.instance_path) / 'rental.db')),
                   MAX_CONTENT_LENGTH=32768, SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax')
 CARS = ('LADA Vesta', 'Hyundai Creta', 'Toyota Camry')
+CAR_IMAGES = dict(zip(CARS, ('vesta.jpg', 'slide1.jpg', 'fleet.jpg')))
 PAYMENTS = ('Наличными', 'Переводом по номеру телефона')
 STATUSES = ('Новая', 'Идет аренда', 'Аренда завершена')
 
@@ -68,7 +69,7 @@ def login_required(admin=False):
 
 @app.context_processor
 def common():
-    return dict(cars=CARS, payments=PAYMENTS, statuses=STATUSES)
+    return dict(cars=CARS, car_images=CAR_IMAGES, payments=PAYMENTS, statuses=STATUSES)
 
 
 @app.template_filter('date_ru')

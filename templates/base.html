@@ -13,15 +13,15 @@
   <nav aria-label="Основная навигация">
   {% if g.user %}
     <a class="nav-link" href="{{ url_for('admin' if g.user.is_admin else 'bookings') }}">{{ 'Все заявки' if g.user.is_admin else 'Мои заявки' }}</a>
-    {% if not g.user.is_admin %}<a class="nav-link" href="{{ url_for('new_booking') }}">Новая заявка</a>{% endif %}
+    {% if not g.user.is_admin %}<a class="nav-link" href="{{ url_for('new_booking') }}">Оформить аренду</a>{% endif %}
     <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="text-button">Выйти</button></form>
   {% else %}<a class="nav-link" href="{{ url_for('login') }}">Вход</a><a class="nav-link" href="{{ url_for('register') }}">Регистрация</a>{% endif %}
   </nav>
 </header>
 <main>
   {% for notice in get_flashed_messages() %}<div class="notice" role="status">{{ notice }}</div>{% endfor %}
-  {% block content %}<section class="panel narrow"><p class="eyebrow">Ключ.на.старт</p><h1>{{ title }}</h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">На главную</a></section>{% endblock %}
+  {% block content %}<section class="form-page"><h1>{{ title }}</h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">На главную</a></section>{% endblock %}
 </main>
-<footer class="footer"><span>Ключ.на.старт</span><span>Ваш маршрут начинается здесь.</span></footer>
+<footer class="footer">Ключ.на.старт · Аренда автомобилей</footer>
 </body>
 </html>

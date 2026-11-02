@@ -4,10 +4,12 @@
   "desktop": "1440x1000",
   "external_requests": [],
   "screenshots": [
+    "admin-desktop.png",
     "admin-mobile.png",
     "bookings-desktop.png",
     "bookings-empty-mobile.png",
     "bookings-mobile.png",
+    "bookings-two-mobile.png",
     "login-desktop.png",
     "login-mobile.png",
     "new-mobile.png",
@@ -27,6 +29,8 @@
     "overlay arrows, counter, no pause",
     "manual control restarts timer",
     "mobile phone/date input masks",
+    "mobile forms above fold",
+    "model-specific photo and compact mobile summary",
     "all pages: no horizontal overflow",
     "fonts/images local",
     "no JS exceptions"
