@@ -1,0 +1,740 @@
+{
+  "date": "2026-11-02",
+  "production_commit": "f0313a7",
+  "criteria_count": 21,
+  "maximum": 75,
+  "threshold_85_percent": 63.75,
+  "web_assessment_points": 63.5,
+  "web_assessment_percent": 84.66666666666667,
+  "unit_tests": {
+    "result": "PASS",
+    "count": 15,
+    "duration_seconds": 25.943
+  },
+  "http": {
+    "result": "PASS",
+    "transport": "real HTTP, four independent cookie jars",
+    "checks": [
+      {
+        "check": "guest GET /bookings",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "guest GET /bookings/new",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "guest GET /admin",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "csrf missing",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "required login",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "required password",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "required full_name",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "required phone",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "required email",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid login",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid login",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid password",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid full_name",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid phone",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid email",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "register Alice",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "duplicate case-insensitive login",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "register Bob",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "wrong password",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "SQL injection login",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "login Driver01",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "login Driver02",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "login Admin",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "guest POST booking",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "all booking fields required",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid booking",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid booking",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid booking",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "invalid booking",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "Alice books LADA Vesta",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "Alice books Hyundai Creta",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "Alice books Toyota Camry",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "Bob books",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "owner isolation and admin all four bookings",
+        "actual": "PASS"
+      },
+      {
+        "check": "regular admin page forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "regular status forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "regular admin page forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "regular status forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "admin regular page forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "admin regular page forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "admin user review forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "guest review forbidden",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "guest admin status forbidden",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "new review forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "start rent",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "active review forbidden",
+        "expected": 403,
+        "actual": 403
+      },
+      {
+        "check": "foreign review forbidden",
+        "expected": 404,
+        "actual": 404
+      },
+      {
+        "check": "finish rent",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "foreign finished review forbidden",
+        "expected": 404,
+        "actual": 404
+      },
+      {
+        "check": "empty review rejected",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "NUL review rejected",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "owner finished review saved",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "duplicate review rejected",
+        "expected": 409,
+        "actual": 409
+      },
+      {
+        "check": "unknown filter rejected",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "unknown status rejected",
+        "expected": 400,
+        "actual": 400
+      },
+      {
+        "check": "terminal status protected",
+        "expected": 409,
+        "actual": 409
+      },
+      {
+        "check": "oversized review ID",
+        "expected": 404,
+        "actual": 404
+      },
+      {
+        "check": "oversized status ID",
+        "expected": 404,
+        "actual": 404
+      },
+      {
+        "check": "GET logout is read-only",
+        "expected": 405,
+        "actual": 405
+      },
+      {
+        "check": "logout",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "logged-out history blocked",
+        "expected": 302,
+        "actual": 302
+      },
+      {
+        "check": "database integrity, FK, hashes, stored ownership/role, one review",
+        "actual": "PASS"
+      }
+    ]
+  },
+  "browser": {
+    "result": "PASS",
+    "mobile": "390x844",
+    "desktop": "1440x1000",
+    "typography": {
+      "h1": "36px",
+      "h2": "24px",
+      "body": "16px",
+      "family": "Montserrat, sans-serif"
+    },
+    "external_requests": [],
+    "screenshots": [
+      "admin-desktop.png",
+      "admin-mobile.png",
+      "admin-renting-mobile.png",
+      "bookings-desktop.png",
+      "bookings-empty-mobile.png",
+      "bookings-mobile.png",
+      "bookings-two-mobile.png",
+      "login-desktop.png",
+      "login-errors-mobile.png",
+      "login-mobile.png",
+      "new-errors-mobile.png",
+      "new-mobile.png",
+      "register-errors-mobile.png",
+      "register-mobile.png",
+      "review-mobile.png",
+      "review-saved-mobile.png"
+    ],
+    "checks": [
+      "registration",
+      "login",
+      "booking",
+      "admin status",
+      "filter",
+      "review",
+      "owner review availability",
+      "slider 3000ms: all four slides and wrap",
+      "overlay arrows, counter, no pause",
+      "manual control restarts timer",
+      "visible errors: five registration fields, login, three booking fields",
+      "reduced-motion and manual control",
+      "mobile phone/date input masks",
+      "mobile forms above fold",
+      "model-specific photo and compact mobile summary",
+      "all pages: no horizontal overflow",
+      "fonts/images local",
+      "no JS exceptions"
+    ]
+  },
+  "target_size_measurements": {
+    "screens_measured": 16,
+    "comparison_size_px": 40,
+    "comparison_note": "Conservative exam design target. Explicit 40×40 in PDF concerns module4; rubric does not numerically define a website minimum. No assertion that all samples fail WCAG.",
+    "undersized_samples": {
+      "login-mobile": [
+        {
+          "tag": "A",
+          "text": "Вход",
+          "class": "nav-link",
+          "width": 34.7,
+          "height": 44,
+          "font": "13px",
+          "weight": "700",
+          "color": "rgb(33, 43, 54)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "A",
+          "text": "Еще не зарегистрированы? Регистрация",
+          "class": "",
+          "width": 345.31,
+          "height": 19,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "register-mobile": [
+        {
+          "tag": "A",
+          "text": "Вход",
+          "class": "nav-link",
+          "width": 34.7,
+          "height": 44,
+          "font": "13px",
+          "weight": "700",
+          "color": "rgb(33, 43, 54)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "A",
+          "text": "Уже зарегистрированы? Вход",
+          "class": "",
+          "width": 251.05,
+          "height": 19,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "register-errors-mobile": [
+        {
+          "tag": "A",
+          "text": "Вход",
+          "class": "nav-link",
+          "width": 34.7,
+          "height": 44,
+          "font": "13px",
+          "weight": "700",
+          "color": "rgb(33, 43, 54)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "A",
+          "text": "Уже зарегистрированы? Вход",
+          "class": "",
+          "width": 251.05,
+          "height": 19,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "login-errors-mobile": [
+        {
+          "tag": "A",
+          "text": "Вход",
+          "class": "nav-link",
+          "width": 34.7,
+          "height": 44,
+          "font": "13px",
+          "weight": "700",
+          "color": "rgb(33, 43, 54)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "A",
+          "text": "Еще не зарегистрированы? Регистрация",
+          "class": "",
+          "width": 345.31,
+          "height": 19,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "bookings-empty-mobile": [],
+      "new-mobile": [
+        {
+          "tag": "A",
+          "text": "Вернуться к заявкам",
+          "class": "back-link",
+          "width": 350,
+          "height": 25.59,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "new-errors-mobile": [
+        {
+          "tag": "A",
+          "text": "Вернуться к заявкам",
+          "class": "back-link",
+          "width": 350,
+          "height": 25.59,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ],
+      "bookings-mobile": [],
+      "admin-mobile": [],
+      "admin-renting-mobile": [],
+      "review-mobile": [],
+      "review-saved-mobile": [],
+      "bookings-two-mobile": [],
+      "bookings-desktop": [],
+      "admin-desktop": [],
+      "login-desktop": [
+        {
+          "tag": "A",
+          "text": "Вход",
+          "class": "nav-link",
+          "width": 37.38,
+          "height": 44,
+          "font": "14px",
+          "weight": "700",
+          "color": "rgb(33, 43, 54)",
+          "background": "rgba(0, 0, 0, 0)"
+        },
+        {
+          "tag": "A",
+          "text": "Еще не зарегистрированы? Регистрация",
+          "class": "",
+          "width": 345.31,
+          "height": 19,
+          "font": "16px",
+          "weight": "400",
+          "color": "rgb(217, 72, 15)",
+          "background": "rgba(0, 0, 0, 0)"
+        }
+      ]
+    }
+  },
+  "hover_and_active": [
+    {
+      "path": "/login",
+      "selector": ".logo",
+      "normal": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "underline",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/login",
+      "selector": ".nav-link",
+      "normal": {
+        "color": "rgb(33, 43, 54)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "underline",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(33, 43, 54)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/login",
+      "selector": ".auth-switch a",
+      "normal": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "underline",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/login",
+      "selector": ".button",
+      "normal": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(217, 72, 15)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(33, 43, 54)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "matrix(1, 0, 0, 1, 0, -1)"
+      },
+      "active": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(217, 72, 15)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/login",
+      "selector": ".slider-arrow",
+      "normal": {
+        "color": "rgb(33, 43, 54)",
+        "background": "rgba(255, 255, 255, 0.94)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(255, 255, 255)",
+        "background": "rgb(217, 72, 15)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(33, 43, 54)",
+        "background": "rgba(255, 255, 255, 0.94)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/bookings",
+      "selector": ".text-button",
+      "normal": {
+        "color": "rgb(108, 117, 125)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(108, 117, 125)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    },
+    {
+      "path": "/bookings/new",
+      "selector": ".back-link",
+      "normal": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      },
+      "hover": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "underline",
+        "outline": "none",
+        "transform": "none"
+      },
+      "active": {
+        "color": "rgb(217, 72, 15)",
+        "background": "rgba(0, 0, 0, 0)",
+        "decoration": "none",
+        "outline": "none",
+        "transform": "none"
+      }
+    }
+  ],
+  "contrast_ratios": [
+    {
+      "foreground": "#ffffff",
+      "background": "#d9480f",
+      "ratio": 4.3
+    },
+    {
+      "foreground": "#d9480f",
+      "background": "#f8f9fa",
+      "ratio": 4.079
+    },
+    {
+      "foreground": "#6c757d",
+      "background": "#f8f9fa",
+      "ratio": 4.449
+    },
+    {
+      "foreground": "#6c757d",
+      "background": "#ffffff",
+      "ratio": 4.689
+    }
+  ],
+  "judgment_note": "Points are modeled assessments, never awarded examiner marks. WCAG contrast is a readability benchmark, not an additional official exam criterion."
+}

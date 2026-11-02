@@ -34,6 +34,7 @@ python -m venv .venv
 
 Главный результат — [таблица каждого требования и фактических проверок](docs/AUDIT.md).
 [Строки каждого файла и общий объём](docs/STATISTICS.md), [ER](docs/er.svg).
+[Предварительный расчёт баллов по таблице преподавателя и план достижения 85+](docs/GRADING.md).
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
