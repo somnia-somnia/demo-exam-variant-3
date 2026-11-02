@@ -1,3 +1,4 @@
+{% macro csrf() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
 <!doctype html>
 <html lang="ru">
 <head>
@@ -14,7 +15,7 @@
   {% if g.user %}
     <a class="nav-link" href="{{ url_for('admin' if g.user.is_admin else 'bookings') }}">{{ 'Все заявки' if g.user.is_admin else 'Мои заявки' }}</a>
     {% if not g.user.is_admin %}<a class="nav-link" href="{{ url_for('new_booking') }}">Оформить аренду</a>{% endif %}
-    <form method="post" action="{{ url_for('logout') }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button class="text-button">Выйти</button></form>
+    <form method="post" action="{{ url_for('logout') }}">{{ csrf() }}<button class="text-button">Выйти</button></form>
   {% else %}<a class="nav-link" href="{{ url_for('login') }}">Вход</a><a class="nav-link" href="{{ url_for('register') }}">Регистрация</a>{% endif %}
   </nav>
 </header>

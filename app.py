@@ -3,10 +3,10 @@ import re
 import secrets
 import sqlite3
 from datetime import datetime
-from functools import wraps
 from pathlib import Path
 
 from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
+from werkzeug.exceptions import HTTPException
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import DB
 
@@ -52,19 +52,11 @@ def load_user():
     session.setdefault('csrf', secrets.token_hex(24))
     if request.method == 'POST' and not secrets.compare_digest(session['csrf'].encode(), request.form.get('csrf', '').encode()):
         abort(400, 'Форма устарела. Обновите страницу и повторите действие.')
-
-
-def login_required(admin=False):
-    def decorate(view):
-        @wraps(view)
-        def wrapped(*args, **kwargs):
-            if not g.user:
-                return redirect(url_for('login'))
-            if bool(g.user['is_admin']) != admin:
-                abort(403, 'Недостаточно прав для этой страницы.')
-            return view(*args, **kwargs)
-        return wrapped
-    return decorate
+    if request.endpoint in ('bookings', 'new_booking', 'review', 'admin', 'change_status'):
+        if not g.user:
+            return redirect(url_for('login'))
+        if bool(g.user['is_admin']) != (request.endpoint in ('admin', 'change_status')):
+            abort(403, 'Недостаточно прав для этой страницы.')
 
 
 @app.context_processor
@@ -91,7 +83,7 @@ def register():
         rules = dict(login=(r'[A-Za-z0-9]{6,40}', 'Латиница и цифры: от 6 до 40 символов.'),
                      full_name=(r'[А-Яа-яЁё ]{1,150}', 'Введите ФИО кириллицей и пробелами.'),
                      phone=(r'8\([0-9]{3}\)[0-9]{3}-[0-9]{2}-[0-9]{2}', 'Используйте формат 8(XXX)XXX-XX-XX.'),
-                     email=(r'[^\s@]+@[^\s@.]+(?:\.[^\s@.]+)+', 'Введите корректный email.'))
+                     email=(r"(?=.{1,64}@)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}", 'Введите корректный email.'))
         for key, (pattern, message) in rules.items():
             if not re.fullmatch(pattern, values[key]) or len(values[key]) > 254:
                 errors[key] = message
@@ -132,14 +124,12 @@ def logout():
 
 
 @app.get('/bookings')
-@login_required()
 def bookings():
     rows = get_db().all('SELECT b.*, r.text AS review FROM bookings b LEFT JOIN reviews r ON r.booking_id=b.id WHERE b.user_id=? ORDER BY b.id DESC', (g.user['id'],))
     return render_template('bookings.html', title='Мои заявки', rows=rows)
 
 
 @app.route('/bookings/new', methods=['GET', 'POST'])
-@login_required()
 def new_booking():
     errors, values = {}, request.form
     if request.method == 'POST':
@@ -162,8 +152,7 @@ def new_booking():
     return render_template('new.html', title='Новая заявка', errors=errors, values=values), 400 if errors else 200
 
 
-@app.post('/bookings/<int:booking_id>/review')
-@login_required()
+@app.post('/bookings/<int(max=9223372036854775807):booking_id>/review')
 def review(booking_id):
     row = get_db().one('SELECT * FROM bookings WHERE id=? AND user_id=?', (booking_id, g.user['id']))
     if not row:
@@ -171,8 +160,8 @@ def review(booking_id):
     if row['status'] != STATUSES[2]:
         abort(403, 'Отзыв доступен только после завершения аренды.')
     text = request.form.get('text', '').strip()
-    if not 1 <= len(text) <= 2000:
-        abort(400, 'Отзыв должен содержать от 1 до 2000 символов.')
+    if not 1 <= len(text) <= 2000 or '\0' in text:
+        abort(400, 'Отзыв: от 1 до 2000 символов, без нулевых символов.')
     try:
         get_db().execute('INSERT INTO reviews(booking_id,text) VALUES(?,?)', (booking_id, text))
     except sqlite3.IntegrityError:
@@ -182,17 +171,15 @@ def review(booking_id):
 
 
 @app.get('/admin')
-@login_required(admin=True)
 def admin():
     status = request.args.get('status', '')
     if status and status not in STATUSES:
         abort(400, 'Неизвестный статус фильтра.')
-    rows = get_db().all('SELECT b.*,u.full_name,u.phone,u.email,r.text AS review FROM bookings b JOIN users u ON u.id=b.user_id LEFT JOIN reviews r ON r.booking_id=b.id WHERE (?="" OR b.status=?) ORDER BY b.id DESC', (status, status))
+    rows = get_db().all("SELECT b.*,u.full_name,u.phone,u.email,r.text AS review FROM bookings b JOIN users u ON u.id=b.user_id LEFT JOIN reviews r ON r.booking_id=b.id WHERE (?='' OR b.status=?) ORDER BY b.id DESC", (status, status))
     return render_template('admin.html', title='Панель администратора', rows=rows, selected=status)
 
 
-@app.post('/admin/<int:booking_id>/status')
-@login_required(admin=True)
+@app.post('/admin/<int(max=9223372036854775807):booking_id>/status')
 def change_status(booking_id):
     status = request.form.get('status')
     if status not in STATUSES[1:]:
@@ -207,13 +194,9 @@ def change_status(booking_id):
     return redirect(url_for('admin', status=request.form.get('filter') if request.form.get('filter') in STATUSES else ''))
 
 
-@app.errorhandler(400)
-@app.errorhandler(403)
-@app.errorhandler(404)
-@app.errorhandler(409)
-@app.errorhandler(413)
+@app.errorhandler(HTTPException)
 def error_page(error):
-    return render_template('base.html', title=f'Ошибка {error.code}', message=error.description), error.code
+    return render_template('base.html', title=f'Ошибка {error.code}', message=error.description), error.code, error.get_headers()
 
 
 with app.app_context():

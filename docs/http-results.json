@@ -1,0 +1,314 @@
+{
+  "result": "PASS",
+  "transport": "real HTTP, four independent cookie jars",
+  "checks": [
+    {
+      "check": "guest GET /bookings",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "guest GET /bookings/new",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "guest GET /admin",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "csrf missing",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "required login",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "required password",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "required full_name",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "required phone",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "required email",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid login",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid login",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid password",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid full_name",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid phone",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid email",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "register Alice",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "duplicate case-insensitive login",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "register Bob",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "wrong password",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "SQL injection login",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "login Driver01",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "login Driver02",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "login Admin",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "guest POST booking",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "all booking fields required",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid booking",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid booking",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid booking",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "invalid booking",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "Alice books LADA Vesta",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "Alice books Hyundai Creta",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "Alice books Toyota Camry",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "Bob books",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "owner isolation and admin all four bookings",
+      "actual": "PASS"
+    },
+    {
+      "check": "regular admin page forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "regular status forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "regular admin page forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "regular status forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "admin regular page forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "admin regular page forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "admin user review forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "guest review forbidden",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "guest admin status forbidden",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "new review forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "start rent",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "active review forbidden",
+      "expected": 403,
+      "actual": 403
+    },
+    {
+      "check": "foreign review forbidden",
+      "expected": 404,
+      "actual": 404
+    },
+    {
+      "check": "finish rent",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "foreign finished review forbidden",
+      "expected": 404,
+      "actual": 404
+    },
+    {
+      "check": "empty review rejected",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "NUL review rejected",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "owner finished review saved",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "duplicate review rejected",
+      "expected": 409,
+      "actual": 409
+    },
+    {
+      "check": "unknown filter rejected",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "unknown status rejected",
+      "expected": 400,
+      "actual": 400
+    },
+    {
+      "check": "terminal status protected",
+      "expected": 409,
+      "actual": 409
+    },
+    {
+      "check": "oversized review ID",
+      "expected": 404,
+      "actual": 404
+    },
+    {
+      "check": "oversized status ID",
+      "expected": 404,
+      "actual": 404
+    },
+    {
+      "check": "GET logout is read-only",
+      "expected": 405,
+      "actual": 405
+    },
+    {
+      "check": "logout",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "logged-out history blocked",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "database integrity, FK, hashes, stored ownership/role, one review",
+      "actual": "PASS"
+    }
+  ]
+}

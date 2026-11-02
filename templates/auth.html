@@ -9,7 +9,7 @@
   <h1>{{ title }}</h1>
   <p class="muted">{{ 'Все поля обязательны для заполнения.' if register else 'Ваши заявки и отзывы — в личном кабинете.' }}</p>
   <form method="post" novalidate>
-    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    {{ csrf() }}
     {{ field('login', 'Логин', placeholder='От 6 букв латиницей или цифр' if register else 'Ваш логин', autocomplete='username', maxlength=40) }}
     {{ field('password', 'Пароль', 'password', 'Не менее 8 символов' if register else 'Ваш пароль', 'new-password' if register else 'current-password', 128) }}
     {% if register %}

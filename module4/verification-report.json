@@ -1,8 +1,9 @@
 {
-  "result": "PASS",
-  "validation": "Official JSON Schema draft-07, read back from actual .sketch archive",
+  "result": "PARTIAL: native hover is not implemented; editor rendering and playback are not tested",
+  "automated_checks": "PASS",
   "archive_crc": "PASS",
-  "schema_package_version": "6.5.0",
+  "official_schema": "6.5.0 / draft-07",
+  "schema_sha256": "563e7d563cdb4eae44a60f06f7bea7ae42cba415d094b918798753e43bcdd988",
   "format_version": 146,
   "artboards": [
     {
@@ -11,7 +12,45 @@
         430,
         932
       ],
-      "layers": 39
+      "visible_texts": 14,
+      "source_texts": 13,
+      "layers": 39,
+      "visible_content_bottom_px": 838,
+      "bottom_margin_px": 94,
+      "buttons_name_x_y_width_height_has_flow": [
+        [
+          "Меню / Главная",
+          16,
+          48,
+          192,
+          40,
+          true
+        ],
+        [
+          "Меню / Решения",
+          222,
+          48,
+          192,
+          40,
+          true
+        ],
+        [
+          "Заказать лицензию",
+          16,
+          648,
+          398,
+          44,
+          false
+        ],
+        [
+          "Скачать пробную версию",
+          16,
+          700,
+          398,
+          44,
+          false
+        ]
+      ]
     },
     {
       "screen": "02 · Решения",
@@ -19,41 +58,173 @@
         430,
         932
       ],
-      "layers": 87
+      "visible_texts": 33,
+      "source_texts": 33,
+      "layers": 87,
+      "visible_content_bottom_px": 914,
+      "bottom_margin_px": 18,
+      "buttons_name_x_y_width_height_has_flow": [
+        [
+          "Меню / Главная",
+          16,
+          48,
+          192,
+          40,
+          true
+        ],
+        [
+          "Меню / Решения",
+          222,
+          48,
+          192,
+          40,
+          true
+        ],
+        [
+          "Таймыр Studio / Подробнее",
+          28,
+          378,
+          168,
+          40,
+          false
+        ],
+        [
+          "Таймыр Server / Подробнее",
+          234,
+          378,
+          168,
+          40,
+          false
+        ],
+        [
+          "Таймыр Mobile / Подробнее",
+          28,
+          664,
+          168,
+          40,
+          false
+        ],
+        [
+          "Таймыр Embedded / Подробнее",
+          234,
+          664,
+          168,
+          40,
+          false
+        ],
+        [
+          "Программный стек «Группы Таймыр» / Подробнее",
+          28,
+          832,
+          168,
+          40,
+          false
+        ],
+        [
+          "Техническая поддержка / Подробнее",
+          234,
+          832,
+          168,
+          40,
+          false
+        ]
+      ]
     }
   ],
-  "native_editable_text_layers": 51,
+  "layers_excluding_artboards": 126,
   "visible_text_layers": 47,
+  "hidden_hover_text_layers": 4,
+  "exact_source_text_occurrences": 46,
+  "extra_visible_text": [
+    "Поиск по продуктам"
+  ],
+  "text_order_and_multiplicity": "PASS per screen",
+  "hidden_text_allowlist": "PASS: exactly two menu labels per screen",
   "typography_styles": [
     [
       "Roboto-Bold",
-      14
+      14,
+      18
     ],
     [
       "Roboto-Bold",
-      16
+      16,
+      20
     ],
     [
       "Roboto-Bold",
-      28
+      28,
+      34
     ],
     [
       "Roboto-Regular",
-      14
+      14,
+      18
     ]
   ],
+  "ttf_postscript_names": {
+    "Roboto-Regular": [
+      "Roboto-Regular"
+    ],
+    "Roboto-Bold": [
+      "Roboto-Bold"
+    ]
+  },
+  "utf16_ranges": "PASS",
+  "pillow_metrics_and_text_box_overlap": "PASS; this is not CoreText verification",
   "native_navigation_connections": 4,
-  "native_bitmap_layers": 3,
-  "required_source_paragraphs": 46,
-  "missing_source_paragraphs": [],
-  "source_checked": "Текст.docx / word/document.xml",
-  "minimum_text_px": 14,
-  "minimum_touch_target_px": [
-    40,
-    40
+  "buttons_without_transition": 8,
+  "button_minimum_height_px": 40,
+  "search_target_px": [
+    398,
+    44
   ],
-  "sha256": "05382e33ec8cd7914fad60395692a88a1464f9dde04f5ec23f06202949ac3f88",
-  "visual_reference_inspection": "Pillow preview inspected; all copy fits within both 430×932 viewports",
-  "native_app_open_test": "NOT RUN: Sketch GUI is unavailable in the Windows environment",
-  "native_hover": "NOT IMPLEMENTED in legacy format146; editable hover-state layers and precise manual instructions included"
+  "bitmap_layers": 3,
+  "source_media_and_crop": "PASS byte-for-byte/recomputed crop",
+  "geometry_opacity_shapes": "PASS; all frames inside artboards, opacity 1, closed four-point shapes",
+  "text_contrasts_fg_bg_ratio": [
+    [
+      "#0E7583",
+      "#F5F8F8",
+      5.054
+    ],
+    [
+      "#0E7583",
+      "#FFFFFF",
+      5.397
+    ],
+    [
+      "#17363B",
+      "#F5F8F8",
+      12.085
+    ],
+    [
+      "#17363B",
+      "#FFFFFF",
+      12.905
+    ],
+    [
+      "#536A6E",
+      "#F5F8F8",
+      5.381
+    ],
+    [
+      "#536A6E",
+      "#FFFFFF",
+      5.746
+    ],
+    [
+      "#FFFFFF",
+      "#0E7583",
+      5.397
+    ]
+  ],
+  "reference_pngs": "Pillow references, not native editor exports",
+  "native_app_open_test": "NOT TESTED: coordinated Cua/Windows inventory found no Sketch, Figma or Adobe XD editor",
+  "native_coretext_rendering": "NOT TESTED",
+  "native_prototype_playback": "NOT TESTED",
+  "native_hover": "NOT IMPLEMENTED",
+  "sha256": "7a06418074603ae67796271ffa0e20713d41dad046cf52e703264e50ee133014",
+  "source_docx_sha256": "4903429e8710b0f3777645208255f209d079eab304f0a7e7ee14c2f9e28b5211",
+  "source_pdf_sha256": "785ab30d77e788246c70374d24d4b7d151de58abac89e5a3e846b5b5244eae88"
 }

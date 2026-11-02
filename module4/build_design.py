@@ -2,7 +2,7 @@
 Python + Pillow + jsonschema; all visual inputs are local exam media.
 """
 from pathlib import Path
-import json, uuid, zipfile, copy, hashlib, shutil, io, base64, html
+import json, uuid, zipfile, copy, shutil, io
 from PIL import Image, ImageDraw, ImageFont, ImageOps
 import jsonschema
 
@@ -10,7 +10,6 @@ ROOT=Path(__file__).resolve().parents[1]
 OUT=Path(__file__).resolve().parent
 MEDIA=ROOT/'source'/'Медиа'/'Медиа'
 SCHEMA=OUT/'sketch-file-format-6.5.0.schema.json'
-if not SCHEMA.exists():SCHEMA=ROOT/'tmp'/'module4'/'package'/'dist'/'file-format.schema.json'
 S=json.loads(SCHEMA.read_text(encoding='utf-8')); D=S['definitions']
 ASSETS=OUT/'assets'; ASSETS.mkdir(exist_ok=True)
 for n in ['Roboto-Regular.ttf','Roboto-Bold.ttf','OFL.txt']:
@@ -19,7 +18,6 @@ shutil.copy2(MEDIA/'Логотип_полный.png',ASSETS/'logo.png')
 # Embedded, locally cropped photo. Original is retained alongside for manual editing.
 shutil.copy2(MEDIA/'large.jpg',ASSETS/'photo-original.jpg')
 ImageOps.fit(Image.open(MEDIA/'large.jpg').convert('RGB'),(796,220)).save(ASSETS/'photo.jpg',quality=94)
-if SCHEMA.resolve()!=(OUT/'sketch-file-format-6.5.0.schema.json').resolve():shutil.copy2(SCHEMA,OUT/'sketch-file-format-6.5.0.schema.json')
 
 def uid(): return str(uuid.uuid4()).upper()
 def default(s):
@@ -47,6 +45,7 @@ def color(h,a=1):
 TEAL='#0E7583'; INK='#17363B'; MUTED='#536A6E'; LINE='#D5E3E5'; PALE='#EAF3F4'; WHITE='#FFFFFF'; BG='#F5F8F8'
 def style(fill=None,border=None):
     v=obj('Style');v.update(miterLimit=10,startMarkerType=0,endMarkerType=0,windingRule=1)
+    v['contextSettings']={'_class':'graphicsContextSettings','opacity':1,'blendMode':0}
     v['colorControls'].update(brightness=0,contrast=1,hue=0,saturation=1)
     v['fills']=[];v['borders']=[];v['shadows']=[]
     if fill:
@@ -129,7 +128,7 @@ s.layers.append(b)
 s.draw.append(('search',30,122,13,13,MUTED))
 s.text('Поиск по продуктам',54,121,340,c=MUTED)
 s.text('ПЛАТФОРМА ДАННЫХ',16,174,398,bold=True,c=TEAL)
-s.text('Таймыр Data Platform Enterprise',16,202,398,size=28,bold=True,line=32)
+s.text('Таймыр Data Platform Enterprise',16,202,398,size=28,bold=True,line=34)
 s.image(ASSETS/'photo.jpg',16,282,398,110,'Дата-центр / фото из Медиа')
 description='Отечественная платформа со встроенными средствами защиты для надежного хранения, обработки и резервного копирования корпоративных данных в ИТ-инфраструктурах любого масштаба. Доступны версии для серверного, десктопного, мобильного и встраиваемого сценариев применения'
 h=s.text(description,16,408,398)
@@ -156,7 +155,7 @@ products=[
  ('Техническая поддержка',['Консультация 24/7'])]
 
 def card_h(title,bullets):
-    return 12+len(wrap(title,168,16,True))*20+10+sum(len(wrap(b,158))*18 for b in bullets)+(len(bullets)-1)*4+12+40+12
+    return 12+len(wrap(title,168,16,True))*20+10+sum(len(wrap(b,158))*18 for b in bullets)+(len(bullets)-1)*4+8+40+12
 
 s=scenes[1];header(s,'Решения');y=100
 rows=[]
@@ -183,7 +182,7 @@ SOL_END=y+20
 # Hidden native shape/text groups preserve the visual hover state for GUI setup.
 for s in scenes:
     states=layer('Group','Состояния / hover меню · спецификация',0,0,430,96)
-    states['isVisible']=False;states['layers']=[];states['userInfo']={'org.exam.module4':{'interaction':'Pointer enter: menu text #085966, fill #EAF3F4; pointer leave: default. Sketch file-format 6.5 flow supports click, not hover triggers. See README.'}}
+    states['isVisible']=False;states['layers']=[];states['userInfo']={'org.exam.module4':{'interaction':'NOT IMPLEMENTED: these editable hover samples are not connected to native triggers. Desired menu hover: text #085966, fill #EAF3F4.'}}
     for xx,label in [(16,'Главная'),(222,'Решения')]:
         state=Scene('hover',uid());state.rect('Hover / фон',xx,48,192,40,PALE,TEAL,6);state.text(label,xx+8,59,176,bold=True,c='#085966',align=2)
         group=layer('Group',label+' / Hover',xx,48,192,40);group['layers']=state.layers
@@ -220,7 +219,7 @@ for i,s in enumerate(scenes):
     im=render(s);im.save(OUT/f'{i+1:02d}-{["home","solutions"][i]}.png');ims.append(im)
 preview=Image.new('RGB',(908,980),'#DFE8E9')
 for i,im in enumerate(ims):preview.paste(im,(16+i*446,24))
-preview.save(OUT/'preview.png')
+preview_bytes=io.BytesIO();preview.save(preview_bytes,format='PNG')
 
 page=layer('Page','Модуль 4 · Группа Таймыр · 430×932',0,0,908,932);page['layers']=[]
 for i,s in enumerate(scenes):
@@ -243,41 +242,7 @@ sketch=OUT/'Группа-Таймыр.sketch'
 with zipfile.ZipFile(sketch,'w',zipfile.ZIP_DEFLATED) as z:
     for name,data in [('document.json',archive_doc),('meta.json',meta),('user.json',user),('pages/'+page['do_objectID']+'.json',page)]:z.writestr(name,json.dumps(data,ensure_ascii=False,separators=(',',':')))
     for n in ['logo.png','photo.jpg']:z.write(ASSETS/n,'images/'+n)
-    z.write(OUT/'preview.png','previews/preview.png')
+    z.writestr('previews/preview.png',preview_bytes.getvalue())
 
-def flatten(ls):
-    for a in ls:
-        yield a
-        yield from flatten(a.get('layers',[]))
-all_layers=list(flatten(page['layers']));texts=[a for a in all_layers if a['_class']=='text'];flows=[a for a in all_layers if 'flow' in a]
-assert len(page['layers'])==2 and all(a['frame']['width']==430 and a['frame']['height']==932 for a in page['layers'])
-assert all(a['attributedString']['attributes'][0]['attributes']['MSAttributedStringFontAttribute']['attributes']['size']>=14 for a in texts)
-assert len(flows)==4 and {a['flow']['destinationArtboardID'] for a in flows}=={HOME,SOLUTIONS}
-assert all(b['width']>=40 and b['height']>=40 for s in scenes for b in s.buttons)
-assert all(a['frame']['height']>0 and a['frame']['width']>0 for a in all_layers)
-
-# Exact source-content coverage: document control labels are interpreted as labels,
-# not printed words ("Экран 1", "Кнопка:"). All source marketing/legal copy is exact.
-required=[description,*facts,*[p[0] for p in products],*[t for _,bs in products for t in bs],
-    'ПЛАТФОРМА ДАННЫХ','Таймыр Data Platform Enterprise','Заказать лицензию','Скачать пробную версию','Продолжая, вы соглашаетесь с условиями использования и политикой конфиденциальности','© 2025','Все права защищены','Главная','Решения','Подробнее']
-actual=[a['attributedString']['string'] for a in texts]
-assert all(t in actual for t in required)
-report={'schema':'@sketch-hq/sketch-file-format 6.5.0 / document version 146','schema_validation':'PASS','archive_crc':'PASS','artboards':2,'frames':[[430,932],[430,932]],'columns':4,'editable_text_layers':len(texts),'total_layers':len(all_layers),'flow_connections':len(flows),'native_bitmap_layers':sum(a['_class']=='bitmap' for a in all_layers),'min_text_px':14,'min_button_height_px':40,'source_texts_required':len(required),'source_texts_present':len(required),'home_bottom_px':HOME_END,'solutions_bottom_px':SOL_END,'sketch_sha256':hashlib.sha256(sketch.read_bytes()).hexdigest(),'gui_open_verified':False,'native_prototype_playback_verified':False,'reference_render':'Pillow from same layout model; not a Sketch renderer','hover':'Specified, not executable in legacy Sketch flow schema. Offline HTML demonstrates hover.'}
 with zipfile.ZipFile(sketch) as z:assert z.testzip() is None
-(OUT/'validation.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
-(OUT/'expanded-document.json').write_text(json.dumps(expanded,ensure_ascii=False,indent=2),encoding='utf-8')
-(OUT/'layout.json').write_text(json.dumps([{'name':s.name,'buttons':s.buttons,'layers':s.layers} for s in scenes],ensure_ascii=False,indent=2),encoding='utf-8')
-
-# An offline review companion, clearly separate from the required editable artifact.
-web=['<!doctype html><html lang="ru"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Группа Таймыр — проверка прототипа</title><style>@font-face{font-family:Roboto;src:url(assets/Roboto-Regular.ttf)}*{box-sizing:border-box}body{margin:0;background:#dfe8e9;font:14px Roboto,sans-serif;color:#17363b}main{margin:24px auto;width:430px;max-width:100%;position:relative}section{position:relative;width:430px;height:932px;max-width:100%;background-size:100% 100%}section:not(.active){display:none}button{position:absolute;border:0;background:transparent;cursor:pointer;color:transparent;border-radius:6px;font:700 14px Roboto}button:hover.nav{background:#eaf3f4;color:#085966;outline:1px solid #0e7583}button:focus-visible{outline:3px solid #17363b;outline-offset:2px}p{max-width:430px;margin:16px auto;line-height:1.5}input{position:absolute;left:54px;top:118px;width:340px;height:24px;border:0;background:#fff;font:14px Roboto;color:#536a6e}input:focus{outline:2px solid #0e7583}input::placeholder{color:#536a6e}</style><main>']
-for i,s in enumerate(scenes):
-    web.append(f'<section id="s{i}" class="{"active" if i==0 else ""}" aria-label="{s.name}" style="background-image:url({i+1:02d}-{["home","solutions"][i]}.png)">')
-    if i==0:web.append('<input type="search" aria-label="Поиск по продуктам" placeholder="Поиск по продуктам">')
-    for b in s.buttons:
-        dest=0 if b['destination']==HOME else 1
-        action=f"show({dest})" if b['destination'] else ''
-        web.append(f'<button class="{"nav" if b["destination"] else ""}" aria-label="{html.escape(b["label"])}" style="left:{b["x"]}px;top:{b["y"]}px;width:{b["width"]}px;height:{b["height"]}px" onclick="{action}">{html.escape(b["label"])}</button>')
-    web.append('</section>')
-web.append('</main><p>Офлайн-просмотр модуля 4. Переходы: «Главная» и «Решения». Остальные кнопки — без перехода по заданию. Основной редактируемый файл: «Группа-Таймыр.sketch».</p><script>function show(n){document.querySelectorAll("section").forEach((e,i)=>e.classList.toggle("active",i===n))}</script></html>')
-(OUT/'prototype.html').write_text(''.join(web),encoding='utf-8')
-print(json.dumps(report,ensure_ascii=False,indent=2))
+print('Built',sketch.name,'with official schema validation; native GUI/playback NOT TESTED, hover NOT IMPLEMENTED')

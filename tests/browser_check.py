@@ -123,17 +123,33 @@ try:
     time.sleep(1.85)
     assert js(active_slide) == 2
     assert js("[...document.querySelectorAll('.slider [data-step]')].every(button=>{const b=button.getBoundingClientRect(),s=button.closest('.slider').getBoundingClientRect();return b.width>=44 && b.height>=44 && b.left>=s.left && b.right<=s.right && b.top>=s.top && b.bottom<=s.bottom})"), 'Slider arrows must fit inside the photo and have 44px targets'
+    cmd('Emulation.setEmulatedMedia', features=[dict(name='prefers-reduced-motion', value='reduce')])
+    frozen = js(active_slide)
+    time.sleep(3.1)
+    assert js(active_slide) == frozen, 'Reduced-motion must stop automatic rotation'
+    js("document.querySelector('[data-step=\"1\"]').click()")
+    assert js(active_slide) == (frozen + 1) % 4
+    cmd('Emulation.setEmulatedMedia', features=[])
     go('/register'); screenshot('register-mobile')
     assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
-    js("document.querySelector('[name=phone]').focus()")
+    submit(dict(login='bad', password='123', full_name='John', phone='+7', email='<a>@x.ru'), '/register')
+    assert js("document.querySelectorAll('.field-error').length") == 5
+    screenshot('register-errors-mobile')
+    js("document.querySelector('[name=phone]').value='';document.querySelector('[name=phone]').focus()")
     cmd('Input.insertText', text='89991234567')
     assert js("document.querySelector('[name=phone]').value") == '8(999)123-45-67', 'Mobile phone separators missing'
     submit(dict(login='Browser01', password='password123', full_name='Иванов Иван',
                 phone='8(999)123-45-67', email='browser@example.ru'), '/login')
+    submit(dict(login='Browser01', password='wrong'), '/login')
+    assert js("document.querySelectorAll('.field-error').length") == 1
+    screenshot('login-errors-mobile')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('bookings-empty-mobile')
     go('/bookings/new'); screenshot('new-mobile')
-    js("document.querySelector('[name=start_date]').focus()")
+    submit(dict(car='', start_date='31.02.2026', payment=''), '/bookings/new')
+    assert js("document.querySelectorAll('.field-error').length") == 3
+    screenshot('new-errors-mobile')
+    js("document.querySelector('[name=start_date]').value='';document.querySelector('[name=start_date]').focus()")
     cmd('Input.insertText', text='02122026')
     assert js("document.querySelector('[name=start_date]').value") == '02.12.2026', 'Mobile date separators missing'
     submit(dict(car='Toyota Camry', start_date='02.12.2026', payment='Переводом по номеру телефона'), '/bookings')
@@ -142,6 +158,8 @@ try:
     submit({}, '/login', 'header form')
     submit(dict(login='Admin', password='StartNET'), '/admin')
     screenshot('admin-mobile')
+    submit(dict(status='Идет аренда'), '/admin', '.status-form')
+    screenshot('admin-renting-mobile')
     submit(dict(status='Аренда завершена'), '/admin', '.status-form')
     js("document.querySelector('#filter').value='Новая'")
     js("document.querySelector('.filter').requestSubmit()")
@@ -170,11 +188,13 @@ try:
     external = [e['params']['request']['url'] for e in events if e.get('method') == 'Network.requestWillBeSent'
                 and not e['params']['request']['url'].startswith(('http://127.0.0.1:', 'data:', 'about:'))]
     assert not external, external
-    report = dict(result='PASS', mobile='390x844', desktop='1440x1000', external_requests=external,
+    typography = js("({h1:getComputedStyle(document.querySelector('h1')).fontSize,h2:getComputedStyle(document.querySelector('h2')).fontSize,body:getComputedStyle(document.body).fontSize,family:getComputedStyle(document.body).fontFamily})")
+    assert typography['h1'] == '36px' and typography['h2'] == '24px' and typography['body'] == '16px'
+    report = dict(result='PASS', mobile='390x844', desktop='1440x1000', typography=typography, external_requests=external,
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
-                          'mobile phone/date input masks', 'mobile forms above fold', 'model-specific photo and compact mobile summary', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
+                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile phone/date input masks', 'mobile forms above fold', 'model-specific photo and compact mobile summary', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
 finally:

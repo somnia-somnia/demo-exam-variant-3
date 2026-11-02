@@ -15,7 +15,7 @@ class DB:
 
     def execute(self, sql, params=()):
         with self.connection:
-            return self.connection.execute(sql, params).lastrowid
+            self.connection.execute(sql, params)
 
     def script(self, sql):
         self.connection.executescript(sql)

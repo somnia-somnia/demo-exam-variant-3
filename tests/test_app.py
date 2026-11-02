@@ -71,6 +71,17 @@ class RentalTest(unittest.TestCase):
     def test_registration_accepts_boundaries_and_yo(self):
         self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 302)
 
+    def test_email_rejects_invalid_parts_and_accepts_subdomains(self):
+        for i, email in enumerate(['<a>@x.ru', 'a@<x>.ru', 'a@x,com.ru', 'a@-x.ru', 'a@x_.ru',
+                                   '.a@example.ru', 'a..b@example.ru', 'a.@example.ru', 'a@example.ru\0',
+                                   'a' * 65 + '@example.ru', 'a@' + 'x' * 64 + '.ru']):
+            with self.subTest(email=email):
+                self.assertEqual(self.register(login=f'BadMail{i:02}', email=email).status_code, 400)
+        self.assertEqual(self.register(login='ValidMail1', email='ivan_petrov+rent@sub.example.ru').status_code, 302)
+        for i, email in enumerate(["o'connor@example.ru", 'a!b@example.ru']):
+            self.assertEqual(self.register(login=f'MailSpecial{i}', email=email).status_code, 302)
+        self.assertEqual(len(self.query('SELECT id FROM users')), 4)
+
     def test_login_failures_and_admin_routing(self):
         self.register()
         for login, password in [('Driver01', 'wrong'), ("' OR 1=1 --", 'password123'), ('', '')]:
@@ -145,6 +156,22 @@ class RentalTest(unittest.TestCase):
             with self.assertRaises(sqlite3.IntegrityError):
                 get_db().execute('INSERT INTO bookings(user_id, car, start_date, payment) VALUES(?,?,?,?)',
                                  (999, 'LADA Vesta', '2026-12-02', 'Наличными'))
+
+    def test_oversized_booking_ids_return_not_found(self):
+        self.ready()
+        for value in [str(2**63), '9' * 500, '9' * 5000]:
+            self.assertEqual(self.post(f'/bookings/{value}/review', dict(text='Текст')).status_code, 404)
+        self.login('Admin', 'StartNET')
+        for value in [str(2**63), '9' * 500, '9' * 5000]:
+            self.assertEqual(self.post(f'/admin/{value}/status', dict(status='Идет аренда')).status_code, 404)
+
+    def test_nul_review_is_validation_error_not_duplicate(self):
+        self.ready()
+        admin = self.app.test_client()
+        self.login('Admin', 'StartNET', admin)
+        self.post('/admin/1/status', dict(status='Аренда завершена'), admin)
+        self.assertEqual(self.post('/bookings/1/review', dict(text='\0test')).status_code, 400)
+        self.assertEqual(self.query('SELECT id FROM reviews'), [])
 
 
 if __name__ == '__main__':

@@ -5,10 +5,10 @@
   <dl>{% if g.user.is_admin %}<div><dt>Клиент</dt><dd>{{ row.full_name }}</dd></div><div><dt>Телефон</dt><dd>{{ row.phone }}</dd></div><div><dt>Email</dt><dd>{{ row.email }}</dd></div>{% endif %}<div><dt>Начало аренды</dt><dd>{{ row.start_date|date_ru }}</dd></div><div><dt>Оплата</dt><dd>{{ row.payment }}</dd></div></dl>
 </div>
 {% if g.user.is_admin and row.status != 'Аренда завершена' %}
-<form class="status-form" method="post" action="{{ url_for('change_status', booking_id=row.id) }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><input type="hidden" name="filter" value="{{ selected }}"><label class="field">Новый статус<select name="status">{% for status in statuses[1:] %}<option {% if row.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label><button class="button">Сохранить статус</button></form>
+<form class="status-form" method="post" action="{{ url_for('change_status', booking_id=row.id) }}">{{ csrf() }}<input type="hidden" name="filter" value="{{ selected }}"><label class="field">Новый статус<select name="status">{% for status in statuses[1:] %}<option {% if row.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label><button class="button">Сохранить статус</button></form>
 {% endif %}
 {% if row.review %}<div class="review"><h3>{{ 'Отзыв клиента' if g.user.is_admin else 'Ваш отзыв' }}</h3><p>{{ row.review }}</p></div>
 {% elif not g.user.is_admin and row.status == 'Аренда завершена' %}
-<form class="review" method="post" action="{{ url_for('review', booking_id=row.id) }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><label class="field">Как прошла аренда?<textarea name="text" rows="3" maxlength="2000" required placeholder="Поделитесь впечатлениями"></textarea></label><button class="button">Оставить отзыв</button></form>
+<form class="review" method="post" action="{{ url_for('review', booking_id=row.id) }}">{{ csrf() }}<label class="field">Как прошла аренда?<textarea name="text" rows="3" maxlength="2000" required placeholder="Поделитесь впечатлениями"></textarea></label><button class="button">Оставить отзыв</button></form>
 {% elif not g.user.is_admin %}<p class="hint booking-note">Отзыв доступен после завершения аренды.</p>{% endif %}
 </article>

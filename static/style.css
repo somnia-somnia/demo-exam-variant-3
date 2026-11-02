@@ -31,7 +31,7 @@ main{padding-top:40px;padding-bottom:64px;min-height:calc(100vh - 183px)}
 .full{width:100%}
 .field{display:flex;flex-direction:column;gap:7px;margin:20px 0;font-weight:700}
 input,select,textarea{width:100%;min-width:0;min-height:50px;padding:12px 14px;background:var(--white);border:1px solid #bbc1c7;border-radius:6px;font-size:16px;font-weight:400}
-input::placeholder,textarea::placeholder{color:var(--muted);font-size:13px}
+input::placeholder,textarea::placeholder{color:var(--muted)}
 textarea{resize:vertical}
 :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
 input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
@@ -40,9 +40,9 @@ input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
 .entry-layout{display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:start}
 .entry-form{grid-column:2;grid-row:1;padding-left:32px;border-left:1px solid var(--line)}
 .entry-visual{grid-column:1;grid-row:1;padding-top:4px}
-.auth-switch{margin:24px 0 0;font-size:14px}
+.auth-switch{margin:24px 0 0}
 .form-page{max-width:640px;margin:auto}
-.back-link{display:block;margin-top:18px;font-size:14px;text-align:center}
+.back-link{display:block;margin-top:18px;text-align:center}
 .slider{position:relative;overflow:hidden;margin:24px 0 16px;border-radius:8px;background:var(--ink)}
 .slide{position:relative;margin:0;animation:appear .3s ease-out}
 .slide[hidden]{display:none}
@@ -52,16 +52,16 @@ input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
 .slider-arrow[data-step="-1"]{left:16px}
 .slider-arrow[data-step="1"]{right:16px}
 .slider-arrow:hover{background:var(--accent);color:white}
-.slide-count{position:absolute;right:20px;bottom:22px;color:white;font-size:12px;font-variant-numeric:tabular-nums;text-shadow:0 1px 4px #000}
+.slide-count{position:absolute;right:20px;bottom:22px;color:white;font-size:12px;font-style:italic;font-variant-numeric:tabular-nums;text-shadow:0 1px 4px #000}
 .fleet-photo{width:100%;aspect-ratio:8/5;height:auto;object-fit:cover;border-radius:8px}
-.model-list{display:flex;flex-wrap:wrap;gap:8px 24px;margin:20px 0;padding:0;list-style:none;font-weight:700;font-size:14px}
+.model-list{display:flex;flex-wrap:wrap;gap:8px 24px;margin:20px 0;padding:0;list-style:none;font-weight:700}
 .page-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:32px}
 .page-heading p{margin:0}
 .cards{display:grid;gap:20px}
 .booking{display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px 24px;padding:24px;background:var(--white);border-top:2px solid var(--line);animation:appear .3s ease-out}
 .car-photo{width:192px;height:128px;object-fit:cover;border-radius:4px}
 .booking-content{flex:1;min-width:0}
-.card-heading{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;color:var(--muted);font-size:12px}
+.card-heading{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;color:var(--muted);font-size:12px;font-style:italic}
 .status{font-weight:700;text-align:right}
 .status-1{color:var(--accent)}
 .status-2{color:var(--ink)}
