@@ -1,0 +1,59 @@
+{
+  "result": "PASS",
+  "validation": "Official JSON Schema draft-07, read back from actual .sketch archive",
+  "archive_crc": "PASS",
+  "schema_package_version": "6.5.0",
+  "format_version": 146,
+  "artboards": [
+    {
+      "screen": "01 · Главная",
+      "size": [
+        430,
+        932
+      ],
+      "layers": 39
+    },
+    {
+      "screen": "02 · Решения",
+      "size": [
+        430,
+        932
+      ],
+      "layers": 87
+    }
+  ],
+  "native_editable_text_layers": 51,
+  "visible_text_layers": 47,
+  "typography_styles": [
+    [
+      "Roboto-Bold",
+      14
+    ],
+    [
+      "Roboto-Bold",
+      16
+    ],
+    [
+      "Roboto-Bold",
+      28
+    ],
+    [
+      "Roboto-Regular",
+      14
+    ]
+  ],
+  "native_navigation_connections": 4,
+  "native_bitmap_layers": 3,
+  "required_source_paragraphs": 46,
+  "missing_source_paragraphs": [],
+  "source_checked": "Текст.docx / word/document.xml",
+  "minimum_text_px": 14,
+  "minimum_touch_target_px": [
+    40,
+    40
+  ],
+  "sha256": "05382e33ec8cd7914fad60395692a88a1464f9dde04f5ec23f06202949ac3f88",
+  "visual_reference_inspection": "Pillow preview inspected; all copy fits within both 430×932 viewports",
+  "native_app_open_test": "NOT RUN: Sketch GUI is unavailable in the Windows environment",
+  "native_hover": "NOT IMPLEMENTED in legacy format146; editable hover-state layers and precise manual instructions included"
+}

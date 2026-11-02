@@ -1,0 +1,32 @@
+{
+  "schema": "@sketch-hq/sketch-file-format 6.5.0 / document version 146",
+  "schema_validation": "PASS",
+  "archive_crc": "PASS",
+  "artboards": 2,
+  "frames": [
+    [
+      430,
+      932
+    ],
+    [
+      430,
+      932
+    ]
+  ],
+  "columns": 4,
+  "editable_text_layers": 51,
+  "total_layers": 128,
+  "flow_connections": 4,
+  "native_bitmap_layers": 3,
+  "min_text_px": 14,
+  "min_button_height_px": 40,
+  "source_texts_required": 37,
+  "source_texts_present": 37,
+  "home_bottom_px": 838,
+  "solutions_bottom_px": 926,
+  "sketch_sha256": "05382e33ec8cd7914fad60395692a88a1464f9dde04f5ec23f06202949ac3f88",
+  "gui_open_verified": false,
+  "native_prototype_playback_verified": false,
+  "reference_render": "Pillow from same layout model; not a Sketch renderer",
+  "hover": "Specified, not executable in legacy Sketch flow schema. Offline HTML demonstrates hover."
+}
