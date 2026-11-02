@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="page-heading"><div><p class="eyebrow">Управление арендой</p><h1>Панель администратора</h1><p class="muted">Заявки клиентов и текущие статусы.</p></div><span class="total">Найдено: {{ rows|length }}</span></div>
+<form class="filter panel" method="get"><label for="filter">Статус заявки</label><select id="filter" name="status"><option value="">Все статусы</option>{% for status in statuses %}<option {% if selected == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select><button class="button">Показать</button>{% if selected %}<a href="{{ url_for('admin') }}">Сбросить</a>{% endif %}</form>
+<div class="cards">
+{% for row in rows %}<article class="panel booking"><div class="card-heading"><span class="muted">Заявка № {{ row.id }}</span><span class="badge status-{{ statuses.index(row.status) }}">{{ row.status }}</span></div><h2>{{ row.car }}</h2>
+<dl><div><dt>Клиент</dt><dd>{{ row.full_name }}</dd></div><div><dt>Телефон</dt><dd>{{ row.phone }}</dd></div><div><dt>Email</dt><dd>{{ row.email }}</dd></div><div><dt>Начало аренды</dt><dd>{{ row.start_date|date_ru }}</dd></div><div><dt>Оплата</dt><dd>{{ row.payment }}</dd></div></dl>
+{% if row.status != 'Аренда завершена' %}<form class="status-form" method="post" action="{{ url_for('change_status', booking_id=row.id) }}"><input type="hidden" name="csrf" value="{{ session.csrf }}"><input type="hidden" name="filter" value="{{ selected }}"><label class="field">Новый статус<select name="status">{% for status in statuses[1:] %}<option {% if row.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label><button class="button">Сохранить статус</button></form>{% endif %}
+{% if row.review %}<div class="review"><h3>Отзыв клиента</h3><p>{{ row.review }}</p></div>{% endif %}</article>
+{% else %}<section class="panel empty"><h2>Заявок пока нет</h2><p class="muted">{{ 'Измените фильтр, чтобы увидеть другие заявки.' if selected else 'Здесь появятся заявки клиентов.' }}</p></section>{% endfor %}
+</div>
+{% endblock %}

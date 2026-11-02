@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="panel narrow"><p class="eyebrow">Следующая остановка — ваша</p><h1>Новая заявка</h1><p class="muted">Выберите автомобиль и дату. Оплату согласуем при получении.</p>
+<form method="post" novalidate>
+  <input type="hidden" name="csrf" value="{{ session.csrf }}">
+  <label class="field">Автомобиль<select name="car" required {% if errors.car %}aria-invalid="true" aria-describedby="error-car"{% endif %}><option value="">Выберите автомобиль</option>{% for car in cars %}<option {% if values.get('car') == car %}selected{% endif %}>{{ car }}</option>{% endfor %}</select>{% if errors.car %}<span class="field-error" id="error-car">{{ errors.car }}</span>{% endif %}</label>
+  <label class="field">Дата начала аренды<input name="start_date" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" value="{{ values.get('start_date', '') }}" required {% if errors.start_date %}aria-invalid="true" aria-describedby="error-date"{% endif %}>{% if errors.start_date %}<span class="field-error" id="error-date">{{ errors.start_date }}</span>{% endif %}</label>
+  <label class="field">Способ оплаты<select name="payment" required {% if errors.payment %}aria-invalid="true" aria-describedby="error-payment"{% endif %}><option value="">Выберите способ оплаты</option>{% for payment in payments %}<option {% if values.get('payment') == payment %}selected{% endif %}>{{ payment }}</option>{% endfor %}</select>{% if errors.payment %}<span class="field-error" id="error-payment">{{ errors.payment }}</span>{% endif %}</label>
+  <button class="button full">Отправить</button><a class="back-link" href="{{ url_for('bookings') }}">Вернуться к заявкам</a>
+</form></section>
+{% endblock %}

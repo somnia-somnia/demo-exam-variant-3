@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% macro field(name, label, type='text', placeholder='', autocomplete='', maxlength=254) %}
+<label class="field">{{ label }}<input name="{{ name }}" type="{{ type }}" placeholder="{{ placeholder }}" autocomplete="{{ autocomplete }}" maxlength="{{ maxlength }}" value="{{ values.get(name, '') if type != 'password' else '' }}" required {% if errors.get(name) %}aria-invalid="true" aria-describedby="error-{{ name }}"{% endif %}>
+{% if errors.get(name) %}<span class="field-error" id="error-{{ name }}">{{ errors[name] }}</span>{% endif %}</label>
+{% endmacro %}
+{% block content %}
+<div class="auth-layout">
+<section class="intro">
+  <p class="eyebrow">Свобода выбирать свой путь</p><h1>Ключ к вашим<br>новым планам<span class="accent">.</span></h1>
+  <p>Автомобиль для города, путешествий и важных встреч. Оставьте заявку — мы позаботимся об остальном.</p>
+  <div class="slider" aria-roledescription="карусель" aria-label="Аренда автомобилей" tabindex="0">
+    {% for caption in ['Ваш автомобиль ждёт', 'Дорога к новым впечатлениям', 'Свобода большого путешествия', 'Ключ к вашим планам'] %}
+    <figure class="slide" {% if not loop.first %}hidden{% endif %}><img src="{{ url_for('static', filename='img/slide' ~ loop.index ~ '.jpg') }}" alt="{{ caption }}" width="960" height="600"><figcaption>{{ caption }}</figcaption></figure>
+    {% endfor %}
+    <div class="slider-controls"><button type="button" data-step="-1" aria-label="Предыдущее изображение">←</button><span class="slide-count" aria-live="off">1 / 4</span><button type="button" data-step="1" aria-label="Следующее изображение">→</button><button type="button" class="pause" aria-label="Приостановить автосмену" aria-pressed="false">Ⅱ</button></div>
+  </div>
+  <div class="steps"><span>01 · Выберите авто</span><span>02 · Отправьте заявку</span><span>03 · В путь</span></div>
+</section>
+<section class="panel auth-panel">
+  <p class="eyebrow">Личный кабинет</p><h2>{{ 'Создать аккаунт' if register else 'С возвращением' }}</h2>
+  <p class="muted">{{ 'Зарегистрируйтесь, чтобы оформить аренду.' if register else 'Войдите, чтобы управлять арендой.' }}</p>
+  <form method="post" novalidate>
+    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    {{ field('login', 'Логин', placeholder='От 6 букв латиницей или цифр' if register else 'Ваш логин', autocomplete='username', maxlength=40) }}
+    {{ field('password', 'Пароль', 'password', 'Не менее 8 символов' if register else 'Ваш пароль', 'new-password' if register else 'current-password', 128) }}
+    {% if register %}
+    {{ field('full_name', 'ФИО', placeholder='Иванов Иван Иванович', autocomplete='name', maxlength=150) }}
+    {{ field('phone', 'Телефон', 'tel', '8(999)123-45-67', 'tel', 15) }}
+    {{ field('email', 'Электронная почта', 'email', 'name@example.ru', 'email') }}
+    {% endif %}
+    <button class="button full">{{ 'Зарегистрироваться' if register else 'Войти' }}</button>
+  </form>
+  <p class="auth-switch"><a href="{{ url_for('login' if register else 'register') }}">{{ 'Уже зарегистрированы? Вход' if register else 'Еще не зарегистрированы? Регистрация' }}</a></p>
+</section>
+</div>
+{% endblock %}
