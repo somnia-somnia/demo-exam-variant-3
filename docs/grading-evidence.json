@@ -4,8 +4,6 @@
   "criteria_count": 21,
   "maximum": 75,
   "threshold_85_percent": 63.75,
-  "web_assessment_points": 63.5,
-  "web_assessment_percent": 84.66666666666667,
   "unit_tests": {
     "result": "PASS",
     "count": 15,
@@ -736,5 +734,37 @@
       "ratio": 4.689
     }
   ],
-  "judgment_note": "Points are modeled assessments, never awarded examiner marks. WCAG contrast is a readability benchmark, not an additional official exam criterion."
+  "judgment_note": "Points are modeled assessments, never awarded examiner marks. WCAG contrast is a readability benchmark, not an additional official exam criterion.",
+  "scope_clarification": {
+    "source": "User clarification in this chat",
+    "text": "Критерии 3.1–3.4 относятся к макету «Группа Таймыр»",
+    "scope": "module4",
+    "supersedes": "Website-only 63.5/75 scenario is inapplicable."
+  },
+  "website_assessment": {
+    "points": 48,
+    "maximum": 50,
+    "percent": 96,
+    "status": "ESTIMATE_NOT_AWARDED",
+    "graphics_editor_points": 0,
+    "graphics_editor_maximum": 2
+  },
+  "module4_assessment": {
+    "points_if_native_rendering_accepted": 19,
+    "maximum": 25,
+    "native_hover_points": 0,
+    "native_hover_maximum": 6,
+    "status": "CONDITIONAL_NATIVE_EDITOR",
+    "verification_report": "../module4/verification-report.json",
+    "sketch_sha256": "7a06418074603ae67796271ffa0e20713d41dad046cf52e703264e50ee133014"
+  },
+  "combined_assessment": {
+    "points_conditional": 67,
+    "maximum": 75,
+    "percent_conditional": 89.33333333333333,
+    "minimum_module4_points_for_85_percent_at_48_website_points": 16,
+    "points_after_verified_native_hover_conditional": 73,
+    "status": "NOT_AWARDED_NOT_FULLY_VERIFIED"
+  },
+  "website_observations_scope_note": "Small website links, contrast and hover measurements remain useful quality observations; they do not deduct points under criteria3.1–3.4, which assess module4."
 }

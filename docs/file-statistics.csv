@@ -4,14 +4,14 @@ README.md,documentation/config,52,40,2769,4335
 app.py,site,206,169,9281,10106
 db.py,site,24,17,657,657
 docs/AUDIT.md,documentation/config,175,154,17048,27028
-docs/GRADING.md,documentation/config,136,111,9250,15127
+docs/GRADING.md,documentation/config,120,97,7252,12000
 docs/browser-results.json,documentation/config,50,50,1291,1340
 docs/db-verification.json,documentation/config,222,222,4663,4889
 docs/er.mmd,documentation/config,27,27,553,553
 docs/er.svg,documentation/config,11,11,2102,2321
-docs/grading-evidence.json,documentation/config,740,740,17882,18818
+docs/grading-evidence.json,documentation/config,770,770,19089,20097
 docs/grading-source.json,documentation/config,208,208,10791,17086
-docs/grading.csv,documentation/config,,,,7355
+docs/grading.csv,documentation/config,,,,7914
 docs/http-results.json,documentation/config,314,314,5977,6290
 docs/line-statistics.json,documentation/config,74,74,1407,1480
 docs/original/Вариант 3.pdf,resource,,,,105763
