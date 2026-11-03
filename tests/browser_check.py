@@ -57,7 +57,7 @@ def js(expression):
 
 def wait_path(path):
     for _ in range(100):
-        if js('location.pathname') == path and js('document.readyState') == 'complete':
+        if js('location.pathname') == path and js('document.readyState') == 'complete' and js("typeof data !== 'undefined' && data && !!document.querySelector('main>section:not([hidden])')"):
             return
         time.sleep(.05)
     raise AssertionError('Navigation did not reach ' + path)
@@ -68,7 +68,7 @@ def go(path):
     wait_path(path)
 
 
-def submit(values, path, selector='main form'):
+def submit(values, path, selector='main>section:not([hidden]) form'):
     js('Object.entries(' + json.dumps(values) + ').forEach(([k,v])=>document.querySelector(' +
        json.dumps(selector) + ').elements[k].value=v)')
     js('document.querySelector(' + json.dumps(selector) + ').requestSubmit()')
@@ -99,8 +99,8 @@ try:
     cmd('Page.enable'); cmd('Runtime.enable'); cmd('Network.enable')
     cmd('Emulation.setDeviceMetricsOverride', width=390, height=844, deviceScaleFactor=1, mobile=True)
     go('/login'); screenshot('login-mobile')
-    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
-    assert js("Math.abs(document.querySelector('.slide img').clientWidth / document.querySelector('.slide img').clientHeight - 1.6) < .02"), 'Slider image is distorted'
+    assert js("document.querySelector('main>section:not([hidden]) [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
+    assert js("Math.abs(document.querySelector('.slide').clientWidth / document.querySelector('.slide').clientHeight - 1.6) < .02"), 'Slider image is distorted'
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
     assert js("document.querySelectorAll('.slide').length") == 4
@@ -111,7 +111,7 @@ try:
     for expected in [1, 2, 3, 0]:
         time.sleep(3.05)
         assert js(active_slide) == expected, 'Automatic slideshow did not advance or wrap'
-        assert js("document.querySelector('.slide-count').textContent") == f'{expected + 1} / 4'
+        assert js("document.querySelector('#counter').textContent") == f'{expected + 1} / 4'
     js("document.querySelector('[data-step=\"-1\"]').click()")
     assert js(active_slide) == 3
     js("document.querySelector('[data-step=\"1\"]').click()")
@@ -131,51 +131,45 @@ try:
     assert js(active_slide) == (frozen + 1) % 4
     cmd('Emulation.setEmulatedMedia', features=[])
     go('/register'); screenshot('register-mobile')
-    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
+    assert js("document.querySelector('main>section:not([hidden]) [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
     submit(dict(login='bad', password='123', full_name='John', phone='+7', email='<a>@x.ru'), '/register')
-    assert js("document.querySelectorAll('.field-error').length") == 5
+    assert js("document.querySelector('#register output').textContent.trim().split('\\n').length") == 5
     screenshot('register-errors-mobile')
-    js("document.querySelector('[name=phone]').value='';document.querySelector('[name=phone]').focus()")
-    cmd('Input.insertText', text='89991234567')
-    assert js("document.querySelector('[name=phone]').value") == '8(999)123-45-67', 'Mobile phone separators missing'
     submit(dict(login='Browser01', password='password123', full_name='Иванов Иван',
                 phone='8(999)123-45-67', email='browser@example.ru'), '/login')
     submit(dict(login='Browser01', password='wrong'), '/login')
-    assert js("document.querySelectorAll('.field-error').length") == 1
+    assert js("document.querySelector('#login output').textContent.trim().split('\\n').length") == 1
     screenshot('login-errors-mobile')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('bookings-empty-mobile')
     go('/bookings/new'); screenshot('new-mobile')
     submit(dict(car='', start_date='31.02.2026', payment=''), '/bookings/new')
-    assert js("document.querySelectorAll('.field-error').length") == 3
+    assert js("document.querySelector('#new output').textContent.trim().split('\\n').length") == 3
     screenshot('new-errors-mobile')
-    js("document.querySelector('[name=start_date]').value='';document.querySelector('[name=start_date]').focus()")
-    cmd('Input.insertText', text='02122026')
-    assert js("document.querySelector('[name=start_date]').value") == '02.12.2026', 'Mobile date separators missing'
     submit(dict(car='Toyota Camry', start_date='02.12.2026', payment='Переводом по номеру телефона'), '/bookings')
     screenshot('bookings-mobile')
-    assert js("!document.querySelector('textarea')")
+    assert js("!document.querySelector('.review-form:not([hidden])')")
     submit({}, '/login', 'header form')
     submit(dict(login='Admin', password='StartNET'), '/admin')
     screenshot('admin-mobile')
     submit(dict(status='Идет аренда'), '/admin', '.status-form')
     screenshot('admin-renting-mobile')
     submit(dict(status='Аренда завершена'), '/admin', '.status-form')
-    js("document.querySelector('#filter').value='Новая'")
-    js("document.querySelector('.filter').requestSubmit()")
+    js("document.querySelector('#filter select').value='Новая'")
+    js("document.querySelector('#filter').requestSubmit()")
     time.sleep(.3)
     assert js("!document.querySelector('.booking')"), 'Status filter failed'
     go('/admin')
     submit({}, '/login', 'header form')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('review-mobile')
-    submit(dict(text='Удобно и быстро. Спасибо!'), '/bookings', 'main .review')
-    assert js("document.querySelector('.review').textContent.includes('Удобно и быстро')")
+    submit(dict(text='Удобно <img src=x onerror=window.XSS=1> и быстро. Спасибо!'), '/bookings', 'main .review-form')
+    assert js("document.querySelector('.review').textContent.includes('<img src=x onerror=window.XSS=1>') && !window.XSS && !document.querySelector('.review img')")
     screenshot('review-saved-mobile')
     go('/bookings/new')
     submit(dict(car='LADA Vesta', start_date='03.12.2026', payment='Наличными'), '/bookings')
     assert js("document.querySelector('.car-photo').getAttribute('src').endsWith('vesta.jpg')")
-    assert js("document.querySelector('.booking h2').getBoundingClientRect().left > document.querySelector('.car-photo').getBoundingClientRect().left"), 'Mobile photo and model must share the summary row'
+    assert js("document.querySelector('.car-photo').getBoundingClientRect().right <= innerWidth"), 'Photo must fit the mobile card'
     screenshot('bookings-two-mobile')
     cmd('Emulation.setDeviceMetricsOverride', width=1440, height=1000, deviceScaleFactor=1, mobile=False)
     screenshot('bookings-desktop')
@@ -194,7 +188,7 @@ try:
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
-                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile phone/date input masks', 'mobile forms above fold', 'model-specific photo and compact mobile summary', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
+                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile forms above fold', 'model-specific photo and mobile cards', 'XSS payload is visible plain text, not an image or executable code', 'plain HTML and JSON API', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
 finally:

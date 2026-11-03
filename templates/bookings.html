@@ -1,8 +1,0 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="page-heading"><div><h1>Мои заявки</h1><p class="muted">{{ g.user.full_name }}</p></div><a class="button" href="{{ url_for('new_booking') }}">Оформить аренду</a></div>
-<div class="cards">
-{% for row in rows %}{% include '_booking.html' %}
-{% else %}<section class="empty"><img src="{{ url_for('static', filename='img/handover.jpg') }}" alt="Передача ключей от автомобиля" width="360" height="240"><div><h2>У вас пока нет заявок</h2><p>Выберите автомобиль и дату начала аренды. Отправленная заявка появится здесь.</p><a href="{{ url_for('new_booking') }}" class="button">Создать заявку</a></div></section>{% endfor %}
-</div>
-{% endblock %}

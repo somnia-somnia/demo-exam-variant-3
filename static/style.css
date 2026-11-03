@@ -1,115 +1,38 @@
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Regular.ttf');font-weight:400;font-display:swap}
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Bold.ttf');font-weight:700;font-display:swap}
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Italic.ttf');font-style:italic;font-display:swap}
-:root{--accent:#d9480f;--ink:#212b36;--muted:#6c757d;--bg:#f8f9fa;--white:#fff;--line:#e1e4e8}
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Regular.ttf')}
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Bold.ttf');font-weight:700}
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Italic.ttf');font-style:italic}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Montserrat,sans-serif}
-button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-button{border:0;cursor:pointer}
-img{max-width:100%;display:block}
-h1,h2,h3,p{margin:0 0 16px;overflow-wrap:anywhere}
-h1{font-size:36px;line-height:1.2;letter-spacing:-1px}
-h2{font-size:24px;line-height:1.3}
-h3{font-size:18px;line-height:1.4}
-form{margin:0}
-.header,main,.footer{max-width:1200px;margin:auto;padding-left:32px;padding-right:32px}
-.header{min-height:108px;display:flex;justify-content:space-between;align-items:center;gap:24px;border-bottom:1px solid var(--line)}
-.logo img{width:255px;height:50px;object-fit:contain}
-.header nav{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.nav-link,.text-button{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:700}
-.nav-link{color:var(--ink)}
-.nav-link:hover,.text-button:hover{color:var(--accent)}
-.text-button{background:none;padding:0;color:var(--muted)}
-main{padding-top:40px;padding-bottom:64px;min-height:calc(100vh - 183px)}
-.footer{padding-top:24px;padding-bottom:24px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;font-style:italic}
-.muted,.hint,dt{color:var(--muted)}
-.hint,dt{font-size:12px;font-style:italic}
-.button{display:inline-flex;justify-content:center;align-items:center;min-height:50px;padding:12px 22px;background:var(--accent);color:white;border-radius:6px;font-weight:700;text-align:center;transition:background .15s,transform .15s}
-.button:hover{text-decoration:none;background:var(--ink);transform:translateY(-1px)}
-.full{width:100%}
-.field{display:flex;flex-direction:column;gap:7px;margin:20px 0;font-weight:700}
-input,select,textarea{width:100%;min-width:0;min-height:50px;padding:12px 14px;background:var(--white);border:1px solid #bbc1c7;border-radius:6px;font-size:16px;font-weight:400}
-input::placeholder,textarea::placeholder{color:var(--muted)}
-textarea{resize:vertical}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
-.field-error{color:var(--accent);font-size:12px;font-style:italic;font-weight:400}
-.notice{padding:16px 20px;margin-bottom:28px;background:var(--white);border-left:4px solid var(--accent)}
-.entry-layout{display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:start}
-.entry-form{grid-column:2;grid-row:1;padding-left:32px;border-left:1px solid var(--line)}
-.entry-visual{grid-column:1;grid-row:1;padding-top:4px}
-.auth-switch{margin:24px 0 0}
-.form-page{max-width:640px;margin:auto}
-.back-link{display:block;margin-top:18px;text-align:center}
-.slider{position:relative;overflow:hidden;margin:24px 0 16px;border-radius:8px;background:var(--ink)}
-.slide{position:relative;margin:0;animation:appear .3s ease-out}
-.slide[hidden]{display:none}
-.slide img{width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;filter:brightness(.8)}
-.slide figcaption{position:absolute;left:20px;right:80px;bottom:20px;color:white;font-size:18px;font-weight:700;text-shadow:0 1px 4px #000}
-.slider-arrow{position:absolute;top:calc(50% - 22px);display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:50%;background:#fffffff0;color:var(--ink);font-size:32px;line-height:1;transition:background .15s,color .15s}
-.slider-arrow[data-step="-1"]{left:16px}
-.slider-arrow[data-step="1"]{right:16px}
-.slider-arrow:hover{background:var(--accent);color:white}
-.slide-count{position:absolute;right:20px;bottom:22px;color:white;font-size:12px;font-style:italic;font-variant-numeric:tabular-nums;text-shadow:0 1px 4px #000}
-.fleet-photo{width:100%;aspect-ratio:8/5;height:auto;object-fit:cover;border-radius:8px}
-.model-list{display:flex;flex-wrap:wrap;gap:8px 24px;margin:20px 0;padding:0;list-style:none;font-weight:700}
-.page-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:32px}
-.page-heading p{margin:0}
-.cards{display:grid;gap:20px}
-.booking{display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px 24px;padding:24px;background:var(--white);border-top:2px solid var(--line);animation:appear .3s ease-out}
-.car-photo{width:192px;height:128px;object-fit:cover;border-radius:4px}
-.booking-content{flex:1;min-width:0}
-.card-heading{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;color:var(--muted);font-size:12px;font-style:italic}
-.status{font-weight:700;text-align:right}
-.status-1{color:var(--accent)}
-.status-2{color:var(--ink)}
-.booking h2{margin-bottom:16px}
-dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px 24px;margin:0}
-dd{margin:2px 0 0;overflow-wrap:anywhere}
-.review,.booking-note{flex-basis:100%;margin:0;padding-top:16px;border-top:1px solid var(--line)}
-.review p{margin:0;white-space:pre-wrap}
-.review .field,.status-form .field{margin-top:0}
-.status-form{width:264px}
-.status-form .button{width:100%}
-.filter{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}
-.filter label{font-weight:700}
-.filter select{max-width:300px}
-.empty{display:flex;align-items:center;gap:32px;padding:32px 0}
-.empty img{width:240px;aspect-ratio:3/2;height:auto;object-fit:cover;border-radius:8px}
-@keyframes appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:900px){
-.entry-layout{gap:32px;grid-template-columns:1fr 1fr}
-.entry-form{padding-left:24px}
-.header{flex-wrap:wrap;padding-top:20px;padding-bottom:20px;gap:12px}
-.header nav{gap:20px}
-}
-@media(max-width:640px){
-.header,main,.footer{padding-left:20px;padding-right:20px}
-.logo img{width:220px;height:43px}
-.header nav{width:100%;gap:8px 20px}
-.header nav form{margin-left:auto}
-.nav-link,.text-button{font-size:13px}
-main{padding-top:28px;padding-bottom:40px}
-.entry-layout{display:flex;flex-direction:column;gap:40px}
-.entry-form{width:100%;padding:0;border:0}
-.entry-visual{width:100%;padding-top:28px;border-top:1px solid var(--line)}
-.slide figcaption{font-size:16px}
-.page-heading{align-items:flex-start;flex-direction:column;gap:20px}
-.filter select{max-width:none}
-.filter label,.filter select{width:100%}
-.filter .button{flex:1}
-.booking{padding:20px;gap:16px}
-.booking-user{display:grid;grid-template-columns:96px minmax(0,1fr)}
-.booking-user .car-photo{width:96px;height:84px;grid-row:1/3}
-.booking-user .booking-content{display:contents}
-.booking-user .card-heading,.booking-user h2{grid-column:2;margin:0}
-.booking-user dl,.booking-user .review,.booking-user .booking-note{grid-column:1/-1}
-.booking-content{flex-basis:100%}
-.card-heading{gap:8px;flex-wrap:wrap}
-.status-form{width:100%}
-.empty{align-items:flex-start;flex-direction:column;gap:24px;padding:8px 0}
-.empty img{width:100%;max-width:320px}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+[hidden],.logged .guest,body:not(.logged) .user{display:none!important}
+body{margin:0;color:#212b36;background:#f8f9fa;font:16px/1.6 Montserrat,sans-serif;overflow-wrap:anywhere}
+header,main,footer,#notice{max-width:1000px;margin:auto;padding:20px}
+header,nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
+.logo{width:240px}
+a{display:inline-flex;align-items:center;min-height:44px;color:#d9480f}
+a:hover{color:#212b36}
+main{display:grid;grid-template-columns:1fr 1fr;gap:32px;min-height:70vh}
+h1{font-size:36px;line-height:1.2}h2{font-size:24px}h3{font-size:18px}
+h1,h2,h3,p{margin:0 0 16px}
+label{display:block;margin:16px 0;font-weight:700}
+button,input,select,textarea{font:inherit;padding:12px;border:1px solid #bbc1c7;border-radius:6px}
+input,select,textarea{width:100%;min-width:0;background:white;color:inherit}
+button{min-height:44px;background:#d9480f;color:white;cursor:pointer;transition:background .15s}
+button:hover{background:#212b36}
+:focus-visible{outline:3px solid #d9480f}
+img{max-width:100%;display:block;border-radius:6px}
+small,footer,.error{font-size:12px;font-style:italic;color:#6c757d}
+.error{display:block;color:#d9480f;white-space:pre-line}
+#notice:empty{display:none}
+#orders{grid-column:1/-1}
+.booking{padding:20px;margin-bottom:20px;background:white;animation:appear .2s}
+.car-photo{width:150px;height:100px;object-fit:cover;float:right;margin:0 0 12px 12px}
+.booking form{clear:both}
+.details,.review p{white-space:pre-wrap}
+#empty img{width:320px}
+.slider{position:relative}
+.slide,#fleet{width:100%;aspect-ratio:8/5;object-fit:cover}
+.slider button{position:absolute;top:calc(50% - 22px);width:44px;height:44px;padding:0;border-radius:50%;font-size:30px}
+[data-step="-1"]{left:12px}[data-step="1"]{right:12px}
+#counter{position:absolute;bottom:10px;right:12px;background:#212b36;color:white;padding:0 8px}
+@keyframes appear{from{opacity:0}to{opacity:1}}
+@media(max-width:700px){main{grid-template-columns:1fr}.car-photo{width:96px;height:84px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}

@@ -1,9 +1,0 @@
-{% extends 'base.html' %}
-{% block content %}
-<div class="page-heading"><div><h1>Панель администратора</h1><p class="muted">Заявки клиентов</p></div><span class="muted">Найдено: {{ rows|length }}</span></div>
-<form class="filter" method="get"><label for="filter">Статус</label><select id="filter" name="status"><option value="">Все статусы</option>{% for status in statuses %}<option {% if selected == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select><button class="button">Показать</button>{% if selected %}<a href="{{ url_for('admin') }}">Сбросить</a>{% endif %}</form>
-<div class="cards">
-{% for row in rows %}{% include '_booking.html' %}
-{% else %}<section class="empty"><div><h2>Заявок нет</h2><p class="muted">{{ 'Измените фильтр, чтобы увидеть другие заявки.' if selected else 'Здесь появятся заявки клиентов.' }}</p></div></section>{% endfor %}
-</div>
-{% endblock %}

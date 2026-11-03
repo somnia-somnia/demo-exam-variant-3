@@ -1,20 +1,23 @@
 test_admin_filter_status_and_review_lifecycle (test_app.RentalTest.test_admin_filter_status_and_review_lifecycle) ... ok
+test_api_never_exposes_hashes_or_other_owners (test_app.RentalTest.test_api_never_exposes_hashes_or_other_owners) ... ok
 test_booking_validates_and_defaults (test_app.RentalTest.test_booking_validates_and_defaults) ... ok
 test_csrf_rejects_missing_and_wrong_tokens (test_app.RentalTest.test_csrf_rejects_missing_and_wrong_tokens) ... ok
 test_each_registration_rule_and_required_field (test_app.RentalTest.test_each_registration_rule_and_required_field) ... ok
 test_email_rejects_invalid_parts_and_accepts_subdomains (test_app.RentalTest.test_email_rejects_invalid_parts_and_accepts_subdomains) ... ok
 test_foreign_keys_enabled_in_application_connection (test_app.RentalTest.test_foreign_keys_enabled_in_application_connection) ... ok
+test_json_errors_and_http_methods (test_app.RentalTest.test_json_errors_and_http_methods) ... ok
 test_login_failures_and_admin_routing (test_app.RentalTest.test_login_failures_and_admin_routing) ... ok
 test_login_required_and_logout (test_app.RentalTest.test_login_required_and_logout) ... ok
 test_malformed_unicode_csrf_returns_form_error (test_app.RentalTest.test_malformed_unicode_csrf_returns_form_error) ... ok
 test_nul_review_is_validation_error_not_duplicate (test_app.RentalTest.test_nul_review_is_validation_error_not_duplicate) ... ok
 test_oversized_booking_ids_return_not_found (test_app.RentalTest.test_oversized_booking_ids_return_not_found) ... ok
 test_owner_isolation_and_no_role_escalation (test_app.RentalTest.test_owner_isolation_and_no_role_escalation) ... ok
+test_plain_pages_and_state_api (test_app.RentalTest.test_plain_pages_and_state_api) ... ok
 test_registration_accepts_boundaries_and_yo (test_app.RentalTest.test_registration_accepts_boundaries_and_yo) ... ok
 test_registration_stores_hash_and_unique_login (test_app.RentalTest.test_registration_stores_hash_and_unique_login) ... ok
 test_real_http_workflow_and_access (test_http.HTTPAudit.test_real_http_workflow_and_access) ... ok
 
 ----------------------------------------------------------------------
-Ran 15 tests in 38.706s
+Ran 18 tests in 37.967s
 
 OK

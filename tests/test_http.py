@@ -41,7 +41,7 @@ class Session:
     def post(self, path, data=None, token=True):
         fields = dict(data or {})
         if token:
-            fields['csrf'] = re.search(r'name="csrf" value="([a-f0-9]+)"', self.request('/login')[2])[1]
+            fields['csrf'] = json.loads(self.request('/api')[2])['csrf']
         return self.request(path, fields)
 
 
@@ -96,13 +96,13 @@ class HTTPAudit(unittest.TestCase):
         for field, value in [('login', 'abc12'), ('login', 'Логин12'), ('password', '1234567'),
                              ('full_name', 'John Smith'), ('phone', '+79991234567'), ('email', '<a>@x.ru')]:
             self.expect('invalid ' + field, guest.post('/register', user | {field: value}), 400)
-        self.expect('register Alice', alice.post('/register', user | {'is_admin': '1'}), 302)
+        self.expect('register Alice', alice.post('/register', user | {'is_admin': '1'}), 200)
         self.expect('duplicate case-insensitive login', guest.post('/register', user | {'login': 'driver01'}), 400)
-        self.expect('register Bob', bob.post('/register', user | dict(login='Driver02', full_name='Второй Пользователь')), 302)
+        self.expect('register Bob', bob.post('/register', user | dict(login='Driver02', full_name='Второй Пользователь')), 200)
         self.expect('wrong password', alice.post('/login', dict(login='Driver01', password='wrong')), 400)
         self.expect('SQL injection login', alice.post('/login', dict(login="' OR 1=1 --", password='Test1234')), 400)
         for client, login, password in [(alice, 'Driver01', 'Test1234'), (bob, 'Driver02', 'Test1234'), (admin, 'Admin', 'StartNET')]:
-            response = self.expect('login ' + login, client.post('/login', dict(login=login, password=password)), 302)
+            response = self.expect('login ' + login, client.post('/login', dict(login=login, password=password)), 200)
             self.assertIn('HttpOnly', response[1].get('Set-Cookie', ''))
             self.assertIn('SameSite=Lax', response[1].get('Set-Cookie', ''))
         booking = dict(car='LADA Vesta', start_date='01.12.2026', payment='Наличными')
@@ -112,12 +112,12 @@ class HTTPAudit(unittest.TestCase):
             self.expect('invalid booking', alice.post('/bookings/new', booking | change), 400)
         for car in ['LADA Vesta', 'Hyundai Creta', 'Toyota Camry']:
             payment = 'Наличными' if car == 'LADA Vesta' else 'Переводом по номеру телефона'
-            self.expect('Alice books ' + car, alice.post('/bookings/new', booking | dict(car=car, payment=payment, user_id='3', status='Аренда завершена')), 302)
-        self.expect('Bob books', bob.post('/bookings/new', booking | dict(car='Toyota Camry')), 302)
-        ids = lambda response: set(map(int, re.findall(r'Заявка № (\d+)', response[2])))
-        self.assertEqual(ids(alice.request('/bookings')), {1, 2, 3})
-        self.assertEqual(ids(bob.request('/bookings')), {4})
-        self.assertEqual(ids(admin.request('/admin')), {1, 2, 3, 4})
+            self.expect('Alice books ' + car, alice.post('/bookings/new', booking | dict(car=car, payment=payment, user_id='3', status='Аренда завершена')), 200)
+        self.expect('Bob books', bob.post('/bookings/new', booking | dict(car='Toyota Camry')), 200)
+        ids = lambda response: {row['id'] for row in json.loads(response[2])['rows']}
+        self.assertEqual(ids(alice.request('/api')), {1, 2, 3})
+        self.assertEqual(ids(bob.request('/api')), {4})
+        self.assertEqual(ids(admin.request('/api')), {1, 2, 3, 4})
         self.steps.append(dict(check='owner isolation and admin all four bookings', actual='PASS'))
         for client in [alice, bob]:
             self.expect('regular admin page forbidden', client.request('/admin'), 403)
@@ -128,31 +128,31 @@ class HTTPAudit(unittest.TestCase):
         self.expect('guest review forbidden', guest.post('/bookings/1/review', dict(text='Guest')), 302)
         self.expect('guest admin status forbidden', guest.post('/admin/1/status', dict(status='Идет аренда')), 302)
         self.expect('new review forbidden', alice.post('/bookings/1/review', dict(text='Early')), 403)
-        self.expect('start rent', admin.post('/admin/1/status', dict(status='Идет аренда')), 302)
+        self.expect('start rent', admin.post('/admin/1/status', dict(status='Идет аренда')), 200)
         self.expect('active review forbidden', alice.post('/bookings/1/review', dict(text='Early')), 403)
         self.expect('foreign review forbidden', bob.post('/bookings/1/review', dict(text='Foreign')), 404)
-        self.expect('finish rent', admin.post('/admin/1/status', dict(status='Аренда завершена')), 302)
+        self.expect('finish rent', admin.post('/admin/1/status', dict(status='Аренда завершена')), 200)
         self.expect('foreign finished review forbidden', bob.post('/bookings/1/review', dict(text='Foreign')), 404)
         self.expect('empty review rejected', alice.post('/bookings/1/review', dict(text='   ')), 400)
         self.expect('NUL review rejected', alice.post('/bookings/1/review', dict(text='\0test')), 400)
         review = 'Уникальный отзыв <script>alert(1)</script>'
-        self.expect('owner finished review saved', alice.post('/bookings/1/review', dict(text=review)), 302)
+        self.expect('owner finished review saved', alice.post('/bookings/1/review', dict(text=review)), 200)
         self.expect('duplicate review rejected', alice.post('/bookings/1/review', dict(text='Again')), 409)
         for client in [alice, admin]:
-            html = client.request('/bookings' if client is alice else '/admin')[2]
-            self.assertIn('&lt;script&gt;', html)
-            self.assertNotIn('<script>alert(1)</script>', html)
-        self.assertNotIn('Уникальный отзыв', bob.request('/bookings')[2])
+            rows = json.loads(client.request('/api')[2])['rows']
+            self.assertEqual(next(row for row in rows if row['id'] == 1)['review'], review)
+            self.assertNotIn('password', str(rows))
+        self.assertNotIn('Уникальный отзыв', json.loads(bob.request('/api')[2])['rows'].__str__())
         for status, wanted in [('Новая', {2, 3, 4}), ('Идет аренда', set()), ('Аренда завершена', {1})]:
-            self.assertEqual(ids(admin.request('/admin?status=' + status)), wanted)
-        self.expect('unknown filter rejected', admin.request('/admin?status=bad'), 400)
+            self.assertEqual(ids(admin.request('/api?status=' + status)), wanted)
+        self.expect('unknown filter rejected', admin.request('/api?status=bad'), 400)
         self.expect('unknown status rejected', admin.post('/admin/2/status', dict(status='bad')), 400)
         self.expect('terminal status protected', admin.post('/admin/1/status', dict(status='Идет аренда')), 409)
         self.expect('oversized review ID', alice.post('/bookings/9223372036854775808/review', dict(text='Text')), 404)
         self.expect('oversized status ID', admin.post('/admin/9223372036854775808/status', dict(status='Идет аренда')), 404)
         response = self.expect('GET logout is read-only', alice.request('/logout'), 405)
         self.assertIn('POST', response[1]['Allow'])
-        self.expect('logout', alice.post('/logout'), 302)
+        self.expect('logout', alice.post('/logout'), 200)
         self.expect('logged-out history blocked', alice.request('/bookings'), 302)
         with closing(sqlite3.connect(self.db)) as con:
             self.assertEqual(con.execute('PRAGMA integrity_check').fetchone()[0], 'ok')
