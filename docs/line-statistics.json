@@ -1,11 +1,11 @@
 {
-  "scope": "Production website only; no tests, docs, assets or module4 tools",
+  "scope": "Current plain HTML/JS production website only",
   "files": [
     {
       "file": "app.py",
-      "lines": 206,
-      "nonempty": 169,
-      "characters": 9281
+      "lines": 200,
+      "nonempty": 164,
+      "characters": 7825
     },
     {
       "file": "db.py",
@@ -20,55 +20,27 @@
       "characters": 1095
     },
     {
+      "file": "static/index.html",
+      "lines": 77,
+      "nonempty": 77,
+      "characters": 4285
+    },
+    {
       "file": "static/style.css",
-      "lines": 115,
-      "nonempty": 115,
-      "characters": 7452
+      "lines": 38,
+      "nonempty": 38,
+      "characters": 2393
     },
     {
       "file": "static/script.js",
-      "lines": 31,
-      "nonempty": 30,
-      "characters": 1492
-    },
-    {
-      "file": "templates/_booking.html",
-      "lines": 14,
-      "nonempty": 14,
-      "characters": 1977
-    },
-    {
-      "file": "templates/admin.html",
-      "lines": 9,
-      "nonempty": 9,
-      "characters": 898
-    },
-    {
-      "file": "templates/auth.html",
-      "lines": 39,
-      "nonempty": 38,
-      "characters": 2827
-    },
-    {
-      "file": "templates/base.html",
-      "lines": 28,
-      "nonempty": 28,
-      "characters": 1696
-    },
-    {
-      "file": "templates/bookings.html",
-      "lines": 8,
-      "nonempty": 8,
-      "characters": 696
-    },
-    {
-      "file": "templates/new.html",
-      "lines": 13,
-      "nonempty": 13,
-      "characters": 2039
+      "lines": 90,
+      "nonempty": 88,
+      "characters": 4272
     }
   ],
-  "total_lines": 512,
-  "nonempty_lines": 466,
-  "characters": 30110
+  "total_lines": 454,
+  "nonempty_lines": 409,
+  "characters": 20527,
+  "baseline_characters": 30110,
+  "reduction_percent": 31.826635669212887
 }

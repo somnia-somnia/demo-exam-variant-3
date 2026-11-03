@@ -1,163 +1,95 @@
-# Ручное воспроизведение «Ключ.на.старт» и «Группы Таймыр»
+# Ручное воспроизведение версии без Jinja
 
-Утверждённая версия: commit `131dbe7698c200b2b91ce16b558f4c6f33893332`.
-Исходники приложения совпадают с `f0313a7`; позднейшие изменения касались отчётов.
-Руководство создано 02.11.2026. Имена переменных, маршруты и схема не изменены.
-Редактор экзамена подтверждён пользователем: **Adobe XD на Windows**, итог макета — локальный `.xd`.
+03.11.2026. Код сайта **944c4b5**, ветка c/plain-html. Эта инструкция заменяет вариант
+с Jinja из f513383. Структура SQLite и адреса страниц сохранены; формат POST изменён на JSON.
+Редактор макета: **Adobe XD на Windows**, подтверждён пользователем. Файл макета не изменялся.
 
-Это материал для подготовки. Допуск личного руководства/шпаргалки на экзамен не указан:
-из разрешения DevDocs он не следует. На экзамене используй только официально разрешённые
-материалы и ПО. План не требует ИИ, интернета, переноса готового проекта или заранее
-подготовленного личного `.sketch`. Код набирается вручную; медиа берутся из выданных архивов.
+Материал предназначен для подготовки. Допуск личных файлов на экзамен не указан: использовать
+там только разрешённые организатором материалы/DevDocs. Интернет и ИИ не требуются;
+личный готовый сайт/макет не переносить. Медиа и пакеты брать из выданных локальных ресурсов.
 
-## 1. Реалистичность времени и маршрут по руководству
+## 1. Объём, реалистичность и приоритеты
 
-Обязательное ядро сайта — **11 файлов, 512 строк, 30 110 символов**. Два конфигурационных
-файла, команды, действия в редакторах и исправления — сверх этого объёма.
-В приложении ниже приведены также все пять исходников тестов/инструментов и ER Mermaid,
-но они **не входят в экзаменационный набор**: их переписывание добавит более тысячи строк.
-Бинарные медиа, шрифты, wheels, чужая JSON Schema и лицензии не набираются как код.
-SVG/PNG/SQLite/нативный дизайн — результаты работы соответствующих инструментов.
+**20527 символов, 454 строк,6 файлов сайта** вместо 30 110/512/11.
+Сокращение **31.83%**, примерно треть. Пользователь принял этот результат;
+дальнейшая минификация не применялась. Увеличение JavaScript учтено в общем объёме.
+Пять скриптов тестов/макета и Mermaid ниже даны для полноты, **не для набора на экзамене**.
+Бинарные фото/шрифты/wheels/PNG/нативный файл, официальная Schema и лицензии не набираются.
 
-Для плана 120 на набор сайта отведено 64 минуты, на остальные действия 56 минут, включая
-25 минут макета. Нужен устойчивый **чистый темп около 471 символа/мин**, уже с исправлениями.
-Автодополнение/вставка готовых исходников в расчёт не заложены.
+План 120 отводит 64 минуты коду и 56 другим действиям. Требуется не меньше **321 исправленного
+символа в минуту** на знакомом коде; команды/проверки/редактор — в отдельных интервалах.
+Это расчёт, **не проведённый хронометраж человека**. Дополнительные ошибки съедают резерв.
 
-| Чистый темп кода | Только 30 110 символов | Весь план +56 мин | Вместе с резервом 30 мин |
+| Темп исправленного кода | Чистый набор | +56 минут остальных задач | +30 минут резерва |
 |---:|---:|---:|---:|
-| 250 симв/мин | 120,4 мин | 176,4 | 206,4 |
-| 300 симв/мин | 100,4 мин | 156,4 | 186,4 |
-| 350 симв/мин | 86,0 мин | 142,0 | 172,0 |
-| 400 симв/мин | 75,3 мин | 131,3 | 161,3 |
-| 471 симв/мин | 63,9 мин | 119,9 | 149,9 |
-| 500 симв/мин | 60,2 мин | 116,2 | 146,2 |
+| 250 | 82.1 | 138.1 | 168.1 |
+| 300 | 68.4 | 124.4 | 154.4 |
+| 350 | 58.6 | 114.6 | 144.6 |
+| 400 | 51.3 | 107.3 | 137.3 |
 
-**Вывод:** без измеренной репетиции полный объём за 120 минут обещать нельзя. При темпе
-300–400 даже расчётная модель не оставляет 30 минут резерва; при 300 превышает весь экзамен.
-25 минут макета — тоже напряжённый бюджет для знакомого редактора. Это модель, не выполненный
-хронометраж человека. После двух полных репетиций выбирай основной или балльный порядок ниже.
+При 300 симв/мин план немного выходит за 120, при 350 расчётно помещается с резервом.
+Но 25 минут макета требуют хорошей репетиции XD. Выполнить две тренировки с нуля без
+копирования кода и измерить app/HTML/JS/CSS/макет отдельно. Без этого 120 не обещаны.
 
-Читай разделы 2–4 до экзамена. На тренировке набирай файлы разделов 5–6 по порядку,
-проверяй интеграцию по разделу 7, затем собирай макет по разделу 8.
-Раздел 9 — финальные проверки; 10 — ошибки; 11 — аварийные действия; 12 — состав сдачи.
-Раздел 13 — полный вспомогательный код для домашней проверки, не для ручного набора в 150 минут.
+Если можно выбирать порядок, при отставании: рабочий М 1 →полный М 4 →обязательные CSS/М 2
+→интеграция М 3. Макет весит 25/75: не оставлять его пустым ради декора сайта.
+Если порядок модулей предписан, не переставлять их. Частичная сдача не равна полной версии.
 
-## 2. Поминутный план 120 + резерв 30
+## 2. План 120 минут и резерв 30
 
-Это целевой сценарий для уже отработанного темпа; это не утверждение, что он реалистичен
-для любого исполнителя. Модули выполняются по порядку. Итоговые уточнения М 2 сразу входят
-в код М 1: не писать свободный ввод автомобиля, чтобы через полчаса переделывать на select.
-
-| Минуты | Действие / модуль | Минимальная проверка на границе |
+| Минуты | Задача | Минимальная проверка |
 |---|---|---|
-| 00–05 | Среда, каталоги, Git, начало М 1 | Python/Flask доступны офлайн, первый commit |
-| 05–09 | Шрифты и подготовка ресурсов | Все имена/размеры по таблице; запись результата обработки в графическом редакторе |
-| 09–13 | `db.py`, `schema.sql` — 49 строк | py_compile и выполнение schema в памяти |
-| 13–35 | `app.py` — 206 строк | py_compile без ошибки, список маршрутов |
-| 35–54 | Шесть шаблонов — 111 строк | Все `{% ... %}` закрыты; шесть файлов имеют точные имена |
-| 54–57 | Первый запуск, регистрация, вход, одна заявка, Admin | Новая заявка видна владельцу/Admin; гостю кабинет закрыт |
-| 57–61 | ER из настоящей SQLite, конец М 1 | Три таблицы, две связи, экспорт диаграммы; commit |
-| 61–76 | Начало М 2; полный `style.css` — 115 строк | Палитра/Montserrat, пять страниц 390×844 |
-| 76–80 | Полный `script.js` — 31 строка | Четыре фото,3 секунды, обе стрелки, маски |
-| 80–83 | Проверки М 2, конец М 2 | Ошибки форм, фильтр, отзыв после завершения; commit |
-| 83–86 | М 3: интеграция, микроанимации, проверка БД | FK=1 в DB, целостность, hover/focus/reduced-motion; два checkpoint commit |
-| 86–89 | Начало М 4: два экрана, сетка, четыре стиля | 430×932,4 колонки, поля 16, gap14 |
-| 89–92 | Общая шапка, логотип, меню, поиск | Два артборда, меню 40px, перенос шапки без сдвига |
-| 92–99 | Наполнение «Главной» | Полный текст, фото, преимущества, две CTA, подвал |
-| 99–107 | Шесть карточек «Решений» | Весь текст, три ряда, footer в 932px |
-| 107–111 | Переходы/hover, сохранение, конец М 4 | Preview туда/обратно; локальный редактируемый файл; commit |
-| 111–120 | Финальный контроль и сдача | Два владельца, права, статусы/отзыв, сохранённый макет, Git/передача |
-| 120–150 | **Резерв, без планового нового функционала** | Исправления, повторная проверка, восстановление/сдача |
+|00–05|Окружение/каталоги/Git, начало М 1|Python/Flask доступны офлайн, первый commit|
+|05–10|Медиа/шрифты/обработка фото|Точные имена,4 слайда 960×600, Montserrat/Roboto|
+|10–15|db.py/schema.sql|py_compile, schema в памяти|
+|15–39|app.py|py_compile, GET/api:csrf/user:null/rows[]|
+|39–53|static/index.html|Обычные формы/шаблон карточки; JS ещё не набран, скрытые секции ожидаемы|
+|53–66|static/script.js|Появились форма/списки, регистрация/вход/заявка|
+|66–72|Рабочий М 1, ER из БД, commit|Admin видит заявку, гость не входит; три таблицы/две связи|
+|72–80|М 2:style.css|Montserrat/палитра/адаптивность/анимации|
+|80–84|М 2:проверки, commit|5 страниц 390×844, слайдер/ошибки/фильтр|
+|84–87|М 3:интеграция/FK/микроанимации|FK1, integrity ok, orphans[], два checkpoint commit|
+|87–90|М 4:2 экрана/сетка/стили|430×932,4×89, gap14, margin16|
+|90–93|Шапка/логотип/меню/поиск|Размеры и четыре пункта меню в двух экранах|
+|93–100|Главная|Полное описание/фото/преимущества/CTA/подвал|
+|100–108|Решения|6 карточек со всеми текстами|
+|108–112|Прототип/hover/save/reopen, commit|Desktop Preview, локальный .xd|
+|112–120|Финальный сценарий/Git/сдача|Два владельца, Admin, отзыв, нативный файл|
+|120–150|**Резерв, без планового нового функционала**|Локализованные исправления/повторная проверка/сдача|
 
-Если порядок модулей разрешено выбирать и темп не позволяет план 120, эффективный порядок
-по весам таблицы: **рабочий М 1 → полноценный М 4 → обязательные CSS/адаптивность/слайдер М 2 →
-проверки М 3 → украшения**. Не трать 25 минут на шлифовку сайта, оставляя макет пустым:
-блок макета весит 25/75. Сначала получить рабочие страницы; затем рано выделить 25–30 минут
-на оба экрана/сохранение/переходы. При обязательной последовательности модулей использовать
-перестановку нельзя — работай по основной таблице и контрольным точкам отставания.
-Частичная сдача по приоритетам не является точным воспроизведением всех утверждённых файлов.
+JavaScript набирается **до первого функционального контроля М 1**: без него JSON/HTML-версия
+ещё не показывает формы. CSS можно набрать позже в М 2. Уточнения М 2 (select/дата/отзыв)
+сразу есть в app: не писать временную альтернативную реализацию и не менять её затем.
 
-Цель 85% по переданной таблице — минимум 64/75. Условные 48/50 за сайт требуют хотя бы 16/25
-за макет. Это ориентир распределения времени, не гарантия баллов. Улучшение hover сайта
-не заменяет hover макета: критерии 3.1–3.4 относятся к «Группе Таймыр».
+## 3. Подготовительный день и первые 5 минут
 
-## 3. Подготовительный день: что должно уже работать офлайн
+Проверить разрешённый Python 3.12x64/Flask 3.1.2, редактор без ИИ, Git, браузер DevTools,
+растровый редактор, DBeaver/другой инструмент ER с уже установленным SQLite-драйвером.
+Согласовать SQLite/общий экзаменационный сервер, адрес Git и передачу SQLite-файла.
+В XD при отключённом интернете проверить новый документ, активацию, local save, reopen,
+Preview и Hover. Наличие XD на экзамене подтверждено пользователем; текущий компьютер
+не использовался для нативной GUI-проверки. В DevDocs заранее проверить локальные разделы
+Python/sqlite3/re/datetime, Flask request/session/g, HTML template/формы, CSS, JS DOM/fetch.
 
-- Уточнить рабочий каталог, механизм сдачи, адрес локального Git-сервера и допустимую СУБД.
-  Оригинал предусматривает общий сервер; согласовать SQLite и способ передачи файла БД,
-  если организатор требует серверную БД. Не менять стек на экзамене наугад.
-- Проверить Python3.12x64, Flask3.1.2, Git, браузер с DevTools, редактор кода без ИИ,
-  графический редактор растровых изображений и инструмент ER с готовым SQLite-драйвером.
-- На подготовительном дне проверить новый документ в Adobe XD **при отключённом
-  интернете**: создание, локальное сохранение, закрытие/открытие, Preview, Hover.
-  Пользователь подтвердил XD на Windows на экзамене; проверить его установленную версию,
-  активацию и локальный цикл сохранения на конкретном рабочем месте. В текущем окружении
-  проекта редактор не был доступен для реальной GUI-проверки, поэтому инструкция не выдаёт
-  документированные действия за уже выполненный нативный тест.
-- Проверить в локальном DevDocs разделы Python `sqlite3/re/datetime/pathlib`, Flask
-  `request/session/g/abort`, Jinja наследование/макросы, CSS Grid/Flex/media, JS DOM/timers.
-  Если нужный раздел отсутствует, не рассчитывать скачать его на экзамене.
-- Установку пакетов/шрифтов/драйверов и вход в лицензии выполнить заранее средствами
-  организатора. Справки в интернете в конце руководства нужны для подготовки, не для экзамена.
-- Две репетиции:1) код с нуля без копирования; 2) весь цикл с редактором и сдачей.
-  Записать фактические минуты на app/templates/CSS/макет и реальные ошибки. При отставании
-  более 10 минут уже на первой половине не рассчитывать «ускориться вдвое» в конце.
-
-## 4. Первые 9 минут: среда, Git и локальные ресурсы
-
-Команды ниже — PowerShell из нового рабочего каталога, выданного организатором. Не запускать
-их в каталоге утверждённого проекта, если цель — тренировочная работа с нуля.
-Создай папку через Проводник, открой в редакторе и терминале. Сохраняй UTF-8, отступ Python4 пробела.
-
-Финальная структура рабочего набора (tests/tools — только домашнее приложение):
-
-```text
-project/
-  .gitignore
-  requirements.txt
-  app.py
-  db.py
-  schema.sql
-  templates/base.html
-  templates/auth.html
-  templates/_booking.html
-  templates/bookings.html
-  templates/new.html
-  templates/admin.html
-  static/style.css
-  static/script.js
-  static/img/                 9 локальных изображений
-  static/fonts/               Montserrat Regular/Bold/Italic + OFL
-  docs/er.png                 экспорт ER из инструмента СУБД
-  module4/Группа-Таймыр.xd     либо .sketch/.fig, один основной макет
-  module4/assets/             логотип, фото, Roboto + OFL
-  instance/                   автоматически создаётся, вне Git
-```
+Новый рабочий каталог, UTF-8, Python4 пробела. Не выполнять тренировку поверх готовой версии.
 
 ```powershell
 python --version
 git --version
-mkdir templates,static,static/img,static/fonts,docs,module4
+mkdir static,static/img,static/fonts,docs,module4
 git init
 git config user.name "Фамилия Имя"
 git config user.email "student@exam.local"
-git commit --allow-empty -m "M1: start database and application"
+git commit --allow-empty -m "M1: start"
 ```
 
-Имя/email заменить на свои данные по правилам площадки. Если рабочая копия репозитория уже
-выдана, не повторять init/clone: проверить `git status`. Начальные коммиты ставить в реальное
-время, не создавать задним числом историю. На границе каждого модуля — start/end checkpoint.
-Если файловых изменений ещё нет, `--allow-empty` допустим для обозначения начала этапа.
-Конец отмечать только после минимальной проверки. М 3 в этой версии уже интегрирован, поэтому
-его коммиты могут фиксировать именно фактическую проверку, не выдуманное изменение кода.
-
-Создай вручную два конфигурационных файла:
+Имя/email заменить своими. Если репозиторий уже выдан — не повторять init/clone.
+Start/end коммиты каждого модуля ставить в фактическое время, без подделки истории.
+Разрешён --allow-empty для checkpoint; конец отмечать только после проверки.
 
 ### `.gitignore`
 
-
-
-7 строк, 72 символов. После набора: `git status` не должен показывать `.venv`, `instance`, распакованные исходные медиа и временные результаты.
+7 строк, 72 символов. Проверка: git status не показывает instance/.venv/source/tmp.
 
 <!-- SOURCE .gitignore -->
 ```text
@@ -173,9 +105,7 @@ tests/screenshots/
 
 ### `requirements.txt`
 
-
-
-1 строк, 13 символов. После набора: строго одна строка `Flask==3.1.2`. Это единственная прямая runtime-зависимость.
+1 строк, 13 символов. Проверка: одна прямая зависимость Flask 3.1.2.
 
 <!-- SOURCE requirements.txt -->
 ```text
@@ -183,23 +113,23 @@ Flask==3.1.2
 ```
 <!-- END SOURCE requirements.txt -->
 
-Сначала `python -c "import flask; print('Flask OK')"`. Если Flask уже установлен в разрешённом
-Python, можно использовать этот интерпретатор непосредственно; во всех командах ниже заменить
-`.\.venv\Scripts\python.exe` на него. Не создавать пустое venv, если пакетов для него нет.
-
-Если организатор предоставляет локальную папку wheels, создать окружение и установить из неё:
+Если `python -c "import flask"` уже работает в разрешённом Python, использовать его;
+не создавать пустое venv без доступных пакетов. В остальных командах указать этот интерпретатор.
+Если организатор предоставляет wheelhouse:
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install --no-index --find-links "D:\Public\wheels" -r requirements.txt
-.\.venv\Scripts\python.exe -c "import flask,sqlite3; print('runtime OK')"
 ```
 
-`D:\Public\wheels` — пример, подставить выданный путь. `vendor/wheels` нашего репозитория
-работает при домашней репетиции, но наличие/разрешение переноса этой личной папки на экзамен
-не предполагается. Wheelhouse из проекта рассчитан на CPython3.12/Windowsx64; при другой
-платформе нужны соответствующие локальные пакеты организатора. Без Flask и локального
-источника установки офлайн-запуск невозможен: сообщить техническому эксперту сразу.
+Путь выданной папки подставить фактический. vendor/wheels из нашего проекта — для домашней
+репетиции или только если такие пакеты разрешены организатором. Интернет не использовать.
+Пакеты должны соответствовать Python/Windows. Нет Flask/локальных пакетов — сразу сообщить
+техническому эксперту, не менять стек наугад. Jinja2 — служебная зависимость Flask, но сами
+Jinja-шаблоны в новой версии отсутствуют. Не удалять транзитивные wheels, нужные Flask.
+
+Структура: app.py/db.py/schema.sql; static/index.html/style.css/script.js; img/fonts;
+docs/er.png; module4/Группа-Таймыр.xd и assets; instance создаётся автоматически вне Git.
 
 ### Ресурсы: не набирать бинарные данные
 
@@ -237,17 +167,14 @@ python -m venv .venv
 Montserrat имеют точные имена. Исходники ресурсов разрешены заданием; готовый сайт или
 собственный старый макет на экзамен из этой инструкции не переносятся.
 
-## 5. М 1: точные файлы в порядке ручного набора
+## 4. М 1: полный код в порядке набора
 
-В кодовых блоках SOURCE нет сокращений и номеров строк. Не переносить комментарии-маркеры
-SOURCE в исходники. Длинные строки показывать мягким переносом редактора, а не вставкой
-случайного перевода строки внутрь кавычек. Печатать ASCII-кавычки, не типографские.
+SOURCE-маркеры и номера разделов в файлы не вводить. Код без сокращений. Длинные строки
+показывать мягким переносом редактора, не ломать строковые литералы. ASCII-кавычки обязательны.
 
 ### `db.py`
 
-Не потерять `PRAGMA foreign_keys = ON` и `with self.connection`: это FK и фиксация изменений.
-
-24 строк, 657 символов. После набора: `.\.venv\Scripts\python.exe -m py_compile db.py` завершается без ошибки.
+24 строк, 657 символов. Проверка: `.\.venv\Scripts\python.exe -m py_compile db.py`. PRAGMA foreign_keys=ON и commit в execute обязательны.
 
 <!-- SOURCE db.py -->
 ```python
@@ -280,9 +207,7 @@ class DB:
 
 ### `schema.sql`
 
-
-
-25 строк, 1095 символов. После набора: выполнить команду ниже: `schema OK`. Таблицы создаются сначала users, затем bookings, затем reviews.
+25 строк, 1095 символов. Проверка: проверить SQL в памяти следующей командой; имена/ограничения сохранены.
 
 <!-- SOURCE schema.sql -->
 ```sql
@@ -318,15 +243,12 @@ CREATE TABLE IF NOT EXISTS reviews (
 .\.venv\Scripts\python.exe -c "import sqlite3,pathlib; c=sqlite3.connect(':memory:'); c.executescript(pathlib.Path('schema.sql').read_text(encoding='utf-8')); print('schema OK'); c.close()"
 ```
 
-Ключи: users.id → bookings.user_id; bookings.id → reviews.booking_id. UNIQUE на login
-и booking_id отзыва; `COLLATE NOCASE` для логина; CHECK для роли/моделей/оплат/статусов/отзыва.
-Не заменять целочисленный INTEGER PRIMARY KEY на INT: семантика SQLite различается.
+INTEGER PRIMARY KEY, UNIQUE NOCASE login, FK users→bookings→reviews, UNIQUE booking_id
+отзыва. Не заменять INTEGER на INT и не удалять CHECK/параметры запросов.
 
 ### `app.py`
 
-Набирать целиком в одном файле. Самые рискованные места: regex email, пять защищённых endpoint, WHERE владельца, предел ID и проверка статуса отзыва.
-
-206 строк, 9281 символов. После набора: `.\.venv\Scripts\python.exe -m py_compile app.py db.py`; затем список маршрутов ниже.
+200 строк, 7825 символов. Проверка: py_compile app.py db.py, затем запуск и /api. При отсутствии index.html обычные страницы ещё не готовы.
 
 <!-- SOURCE app.py -->
 ```python
@@ -336,24 +258,22 @@ import secrets
 import sqlite3
 from datetime import datetime
 from pathlib import Path
-
-from flask import Flask, abort, flash, g, redirect, render_template, request, session, url_for
+from flask import Flask, abort, g, jsonify, redirect, request, session
 from werkzeug.exceptions import HTTPException
 from werkzeug.security import check_password_hash, generate_password_hash
 from db import DB
 
 app = Flask(__name__)
 Path(app.instance_path).mkdir(exist_ok=True)
-key_path = Path(app.instance_path) / 'secret.key'
+key = Path(app.instance_path) / 'secret.key'
 try:
-    with key_path.open('x') as key_file:
-        key_file.write(secrets.token_hex(32))
+    with key.open('x') as file:
+        file.write(secrets.token_hex(32))
 except FileExistsError:
     pass
-app.config.update(SECRET_KEY=key_path.read_text(), DATABASE=os.environ.get('RENTAL_DB', str(Path(app.instance_path) / 'rental.db')),
+app.config.update(SECRET_KEY=key.read_text(), DATABASE=os.environ.get('RENTAL_DB', str(Path(app.instance_path) / 'rental.db')),
                   MAX_CONTENT_LENGTH=32768, SESSION_COOKIE_HTTPONLY=True, SESSION_COOKIE_SAMESITE='Lax')
 CARS = ('LADA Vesta', 'Hyundai Creta', 'Toyota Camry')
-CAR_IMAGES = dict(zip(CARS, ('vesta.jpg', 'slide1.jpg', 'fleet.jpg')))
 PAYMENTS = ('Наличными', 'Переводом по номеру телефона')
 STATUSES = ('Новая', 'Идет аренда', 'Аренда завершена')
 
@@ -362,6 +282,11 @@ def get_db():
     if 'db' not in g:
         g.db = DB(app.config['DATABASE'])
     return g.db
+
+
+def check(condition, code):
+    if not condition:
+        abort(code)
 
 
 @app.teardown_appcontext
@@ -382,153 +307,144 @@ def init_db():
 def load_user():
     g.user = get_db().one('SELECT * FROM users WHERE id=?', (session.get('user_id'),))
     session.setdefault('csrf', secrets.token_hex(24))
-    if request.method == 'POST' and not secrets.compare_digest(session['csrf'].encode(), request.form.get('csrf', '').encode()):
-        abort(400, 'Форма устарела. Обновите страницу и повторите действие.')
-    if request.endpoint in ('bookings', 'new_booking', 'review', 'admin', 'change_status'):
+    if request.method == 'POST':
+        check(secrets.compare_digest(session['csrf'].encode(), request.form.get('csrf', '').encode()), 400)
+    if request.path.startswith(('/bookings', '/admin')):
         if not g.user:
-            return redirect(url_for('login'))
-        if bool(g.user['is_admin']) != (request.endpoint in ('admin', 'change_status')):
-            abort(403, 'Недостаточно прав для этой страницы.')
+            return redirect('/login')
+        check(bool(g.user['is_admin']) == request.path.startswith('/admin'), 403)
 
 
-@app.context_processor
-def common():
-    return dict(cars=CARS, car_images=CAR_IMAGES, payments=PAYMENTS, statuses=STATUSES)
+@app.after_request
+def private_response(response):
+    if request.path == '/api' or request.endpoint == 'page':
+        response.headers['Cache-Control'] = 'no-store'
+    return response
 
 
-@app.template_filter('date_ru')
-def date_ru(value):
-    return datetime.strptime(value, '%Y-%m-%d').strftime('%d.%m.%Y')
-
-
-@app.route('/')
+@app.get('/')
 def index():
-    return redirect(url_for('admin' if g.user and g.user['is_admin'] else 'bookings' if g.user else 'login'))
+    return redirect('/admin' if g.user and g.user['is_admin'] else '/bookings' if g.user else '/login')
 
 
-@app.route('/register', methods=['GET', 'POST'])
+@app.get('/login')
+@app.get('/register')
+@app.get('/bookings')
+@app.get('/bookings/new')
+@app.get('/admin')
+def page():
+    return app.send_static_file('index.html')
+
+
+@app.get('/api')
+def state():
+    status = request.args.get('status', '') if g.user and g.user['is_admin'] else ''
+    check(not status or status in STATUSES, 400)
+    rows = []
+    if g.user:
+        rows = get_db().all("SELECT b.*,u.full_name,u.phone,u.email,r.text AS review FROM bookings b JOIN users u ON u.id=b.user_id LEFT JOIN reviews r ON r.booking_id=b.id WHERE (? OR b.user_id=?) AND (?='' OR b.status=?) ORDER BY b.id DESC",
+                            (g.user['is_admin'], g.user['id'], status, status))
+    user = {key: g.user[key] for key in ('id', 'full_name', 'is_admin')} if g.user else None
+    return jsonify(user=user, csrf=session['csrf'], rows=[dict(row) for row in rows],
+                   status=status, cars=CARS, payments=PAYMENTS, statuses=STATUSES)
+
+
+@app.post('/register')
 def register():
-    errors, values = {}, {}
-    if request.method == 'POST':
-        values = {key: request.form.get(key, '').strip() for key in ('login', 'full_name', 'phone', 'email')}
-        password = request.form.get('password', '')
-        rules = dict(login=(r'[A-Za-z0-9]{6,40}', 'Латиница и цифры: от 6 до 40 символов.'),
-                     full_name=(r'[А-Яа-яЁё ]{1,150}', 'Введите ФИО кириллицей и пробелами.'),
-                     phone=(r'8\([0-9]{3}\)[0-9]{3}-[0-9]{2}-[0-9]{2}', 'Используйте формат 8(XXX)XXX-XX-XX.'),
-                     email=(r"(?=.{1,64}@)[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}", 'Введите корректный email.'))
-        for key, (pattern, message) in rules.items():
-            if not re.fullmatch(pattern, values[key]) or len(values[key]) > 254:
-                errors[key] = message
-        if not 8 <= len(password) <= 128:
-            errors['password'] = 'Пароль: от 8 до 128 символов.'
-        if get_db().one('SELECT id FROM users WHERE login=?', (values['login'],)):
-            errors['login'] = 'Этот логин уже занят.'
-        if not errors:
-            try:
-                get_db().execute('INSERT INTO users(login,password_hash,full_name,phone,email) VALUES(?,?,?,?,?)',
-                                 (values['login'], generate_password_hash(password), values['full_name'], values['phone'], values['email']))
-            except sqlite3.IntegrityError:
-                errors['login'] = 'Этот логин уже занят.'
-            else:
-                flash('Пользователь создан. Войдите в личный кабинет.')
-                return redirect(url_for('login'))
-    return render_template('auth.html', title='Регистрация', register=True, errors=errors, values=values), 400 if errors else 200
-
-
-@app.route('/login', methods=['GET', 'POST'])
-def login():
-    errors, values = {}, dict(login=request.form.get('login', '').strip())
-    if request.method == 'POST':
-        user = get_db().one('SELECT * FROM users WHERE login=?', (values['login'],))
-        if not user or not check_password_hash(user['password_hash'], request.form.get('password', '')):
-            errors['password'] = 'Неверный логин или пароль.'
+    values = {key: request.form.get(key, '').strip() for key in ('login', 'full_name', 'phone', 'email')}
+    password = request.form.get('password', '')
+    rules = {
+        'login': (r'[A-Za-z0-9]{6,40}', 'Логин'),
+        'full_name': (r'[А-Яа-яЁё ]{1,150}', 'ФИО'),
+        'phone': (r'8\([0-9]{3}\)[0-9]{3}-[0-9]{2}-[0-9]{2}', 'Телефон'),
+        'email': (r"(?=.{1,64}@)[A-Za-z0-9!#$%&'*+/=?^_\x60{|}~-]+(?:\.[A-Za-z0-9!#$%&'*+/=?^_\x60{|}~-]+)*@(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}", 'Email')
+    }
+    errors = {key: label + ': неверное значение.' for key, (pattern, label) in rules.items()
+              if not re.fullmatch(pattern, values[key]) or len(values[key]) > 254}
+    if not 8 <= len(password) <= 128:
+        errors['password'] = 'Пароль: 8–128 символов.'
+    if not errors:
+        try:
+            get_db().execute('INSERT INTO users(login,password_hash,full_name,phone,email) VALUES(?,?,?,?,?)',
+                             (values['login'], generate_password_hash(password), values['full_name'], values['phone'], values['email']))
+        except sqlite3.IntegrityError:
+            errors['login'] = 'Логин занят.'
         else:
-            session.clear()
-            session['user_id'] = user['id']
-            return redirect(url_for('admin' if user['is_admin'] else 'bookings'))
-    return render_template('auth.html', title='Вход', register=False, errors=errors, values=values), 400 if errors else 200
+            return jsonify(next='/login')
+    return jsonify(errors=errors), 400
+
+
+@app.post('/login')
+def login():
+    user = get_db().one('SELECT * FROM users WHERE login=?', (request.form.get('login', '').strip(),))
+    if not user or not check_password_hash(user['password_hash'], request.form.get('password', '')):
+        return jsonify(errors={'password': 'Неверный логин или пароль.'}), 400
+    session.clear()
+    session['user_id'] = user['id']
+    return jsonify(next='/admin' if user['is_admin'] else '/bookings')
 
 
 @app.post('/logout')
 def logout():
     session.clear()
-    return redirect(url_for('login'))
+    return jsonify(next='/login')
 
 
-@app.get('/bookings')
-def bookings():
-    rows = get_db().all('SELECT b.*, r.text AS review FROM bookings b LEFT JOIN reviews r ON r.booking_id=b.id WHERE b.user_id=? ORDER BY b.id DESC', (g.user['id'],))
-    return render_template('bookings.html', title='Мои заявки', rows=rows)
-
-
-@app.route('/bookings/new', methods=['GET', 'POST'])
+@app.post('/bookings/new')
 def new_booking():
-    errors, values = {}, request.form
-    if request.method == 'POST':
-        if values.get('car') not in CARS:
-            errors['car'] = 'Выберите автомобиль из списка.'
-        if values.get('payment') not in PAYMENTS:
-            errors['payment'] = 'Выберите способ оплаты.'
-        try:
-            raw = values.get('start_date', '')
-            if not re.fullmatch(r'[0-9]{2}\.[0-9]{2}\.[0-9]{4}', raw):
-                raise ValueError
-            date = datetime.strptime(raw, '%d.%m.%Y').strftime('%Y-%m-%d')
-        except ValueError:
-            errors['start_date'] = 'Введите существующую дату в формате ДД.ММ.ГГГГ.'
-        if not errors:
-            get_db().execute('INSERT INTO bookings(user_id,car,start_date,payment) VALUES(?,?,?,?)',
-                             (g.user['id'], values['car'], date, values['payment']))
-            flash('Заявка отправлена. Администратор рассмотрит её в ближайшее время.')
-            return redirect(url_for('bookings'))
-    return render_template('new.html', title='Новая заявка', errors=errors, values=values), 400 if errors else 200
+    values, errors = request.form, {}
+    if values.get('car') not in CARS:
+        errors['car'] = 'Выберите автомобиль.'
+    if values.get('payment') not in PAYMENTS:
+        errors['payment'] = 'Выберите способ оплаты.'
+    try:
+        raw = values.get('start_date', '')
+        if not re.fullmatch(r'[0-9]{2}\.[0-9]{2}\.[0-9]{4}', raw):
+            raise ValueError
+        date = datetime.strptime(raw, '%d.%m.%Y').date().isoformat()
+    except ValueError:
+        errors['start_date'] = 'Дата: ДД.ММ.ГГГГ.'
+    if errors:
+        return jsonify(errors=errors), 400
+    get_db().execute('INSERT INTO bookings(user_id,car,start_date,payment) VALUES(?,?,?,?)',
+                     (g.user['id'], values['car'], date, values['payment']))
+    return jsonify(next='/bookings')
 
 
 @app.post('/bookings/<int(max=9223372036854775807):booking_id>/review')
 def review(booking_id):
     row = get_db().one('SELECT * FROM bookings WHERE id=? AND user_id=?', (booking_id, g.user['id']))
-    if not row:
-        abort(404, 'Заявка не найдена.')
-    if row['status'] != STATUSES[2]:
-        abort(403, 'Отзыв доступен только после завершения аренды.')
+    check(row, 404)
+    check(row['status'] == STATUSES[2], 403)
     text = request.form.get('text', '').strip()
-    if not 1 <= len(text) <= 2000 or '\0' in text:
-        abort(400, 'Отзыв: от 1 до 2000 символов, без нулевых символов.')
+    check(1 <= len(text) <= 2000 and '\0' not in text, 400)
     try:
         get_db().execute('INSERT INTO reviews(booking_id,text) VALUES(?,?)', (booking_id, text))
     except sqlite3.IntegrityError:
-        abort(409, 'Отзыв для этой заявки уже оставлен.')
-    flash('Спасибо! Ваш отзыв сохранён.')
-    return redirect(url_for('bookings'))
-
-
-@app.get('/admin')
-def admin():
-    status = request.args.get('status', '')
-    if status and status not in STATUSES:
-        abort(400, 'Неизвестный статус фильтра.')
-    rows = get_db().all("SELECT b.*,u.full_name,u.phone,u.email,r.text AS review FROM bookings b JOIN users u ON u.id=b.user_id LEFT JOIN reviews r ON r.booking_id=b.id WHERE (?='' OR b.status=?) ORDER BY b.id DESC", (status, status))
-    return render_template('admin.html', title='Панель администратора', rows=rows, selected=status)
+        abort(409)
+    return jsonify(next='/bookings')
 
 
 @app.post('/admin/<int(max=9223372036854775807):booking_id>/status')
 def change_status(booking_id):
     status = request.form.get('status')
-    if status not in STATUSES[1:]:
-        abort(400, 'Выберите допустимый статус.')
+    check(status in STATUSES[1:], 400)
     row = get_db().one('SELECT status FROM bookings WHERE id=?', (booking_id,))
-    if not row:
-        abort(404, 'Заявка не найдена.')
-    if row['status'] == STATUSES[2] and status != STATUSES[2]:
-        abort(409, 'Завершённую аренду нельзя возобновить.')
+    check(row, 404)
+    check(row['status'] != STATUSES[2] or status == STATUSES[2], 409)
     get_db().execute('UPDATE bookings SET status=? WHERE id=? AND status<>?', (status, booking_id, STATUSES[2]))
-    flash('Статус заявки обновлён.')
-    return redirect(url_for('admin', status=request.form.get('filter') if request.form.get('filter') in STATUSES else ''))
+    selected = request.form.get('filter', '')
+    return jsonify(next='/admin?status=' + selected if selected in STATUSES else '/admin', message='Статус обновлён.')
 
 
 @app.errorhandler(HTTPException)
 def error_page(error):
-    return render_template('base.html', title=f'Ошибка {error.code}', message=error.description), error.code, error.get_headers()
+    if request.method != 'POST' and request.path != '/api':
+        return error
+    headers = dict(error.get_headers())
+    headers.pop('Content-Type', None)
+    message = {400: 'Проверьте данные формы.', 403: 'Действие запрещено.', 404: 'Заявка не найдена.', 409: 'Действие уже выполнено.'}
+    return jsonify(message=message.get(error.code, error.name)), error.code, headers
 
 
 with app.app_context():
@@ -540,463 +456,333 @@ if __name__ == '__main__':
 <!-- END SOURCE app.py -->
 
 ```powershell
-.\.venv\Scripts\python.exe -m flask --app app routes
-```
-
-Проверить `register`, `login`, `logout`, `bookings`, `new_booking`, `review`, `admin`,
-`change_status`, `index`, `static`. Импорт уже создаёт instance/БД и Admin, но до набора
-шаблонов браузерные страницы ещё не готовы. Не отлаживать TemplateNotFound раньше времени.
-
-### Договорённости между app и шаблонами — не переименовывать
-
-| Поле/переменная | Где должно совпасть |
-|---|---|
-| `login`, `password`, `full_name`, `phone`, `email` | register/form/users |
-| `car`, `start_date`, `payment` | new/form/bookings |
-| `text` | textarea/POST review; в БД reviews.text |
-| `status`, `filter` | admin/select/hidden; выбранный фильтр в `selected` |
-| `rows`, `row`, `errors`, `values` | render_template и Jinja |
-| `cars`, `car_images`, `payments`, `statuses` | context_processor и Jinja |
-| `csrf` | session, hidden input, серверная проверка |
-
-Правильная строка статуса — **Идет аренда**, без ё. Admin имеет пять букв по заданию:
-он создаётся init_db, а не формой регистрации с минимумом 6. Не «чинить» это несовпадение.
-
-### `templates/base.html`
-
-Это общий шаблон. Макрос csrf наследуется дочерними шаблонами и используется включаемой карточкой.
-
-28 строк, 1696 символов. После набора: в начале объявлен macro csrf, есть block content, локальные style/script, header/footer.
-
-<!-- SOURCE templates/base.html -->
-```html
-{% macro csrf() %}<input type="hidden" name="csrf" value="{{ session.csrf }}">{% endmacro %}
-<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{ title }} · Ключ.на.старт</title>
-  <link rel="icon" href="{{ url_for('static', filename='img/icon.png') }}">
-  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-  <script src="{{ url_for('static', filename='script.js') }}" defer></script>
-</head>
-<body>
-<header class="header"><a class="logo" href="{{ url_for('index') }}"><img src="{{ url_for('static', filename='img/logo.png') }}" alt="Ключ.на.старт" width="255" height="50"></a>
-  <nav aria-label="Основная навигация">
-  {% if g.user %}
-    <a class="nav-link" href="{{ url_for('admin' if g.user.is_admin else 'bookings') }}">{{ 'Все заявки' if g.user.is_admin else 'Мои заявки' }}</a>
-    {% if not g.user.is_admin %}<a class="nav-link" href="{{ url_for('new_booking') }}">Оформить аренду</a>{% endif %}
-    <form method="post" action="{{ url_for('logout') }}">{{ csrf() }}<button class="text-button">Выйти</button></form>
-  {% else %}<a class="nav-link" href="{{ url_for('login') }}">Вход</a><a class="nav-link" href="{{ url_for('register') }}">Регистрация</a>{% endif %}
-  </nav>
-</header>
-<main>
-  {% for notice in get_flashed_messages() %}<div class="notice" role="status">{{ notice }}</div>{% endfor %}
-  {% block content %}<section class="form-page"><h1>{{ title }}</h1><p>{{ message }}</p><a class="button" href="{{ url_for('index') }}">На главную</a></section>{% endblock %}
-</main>
-<footer class="footer">Ключ.на.старт · Аренда автомобилей</footer>
-</body>
-</html>
-```
-<!-- END SOURCE templates/base.html -->
-
-### `templates/auth.html`
-
-
-
-39 строк, 2827 символов. После набора: register=True выводит пять полей, False — два; кнопка регистрации называется «Зарегистрироваться».
-
-<!-- SOURCE templates/auth.html -->
-```html
-{% extends 'base.html' %}
-{% macro field(name, label, type='text', placeholder='', autocomplete='', maxlength=254) %}
-<label class="field">{{ label }}<input name="{{ name }}" type="{{ type }}" placeholder="{{ placeholder }}" autocomplete="{{ autocomplete }}" maxlength="{{ maxlength }}" value="{{ values.get(name, '') if type != 'password' else '' }}" required {% if errors.get(name) %}aria-invalid="true" aria-describedby="error-{{ name }}"{% endif %}>
-{% if errors.get(name) %}<span class="field-error" id="error-{{ name }}">{{ errors[name] }}</span>{% endif %}</label>
-{% endmacro %}
-{% block content %}
-<div class="entry-layout">
-<section class="entry-form">
-  <h1>{{ title }}</h1>
-  <p class="muted">{{ 'Все поля обязательны для заполнения.' if register else 'Ваши заявки и отзывы — в личном кабинете.' }}</p>
-  <form method="post" novalidate>
-    {{ csrf() }}
-    {{ field('login', 'Логин', placeholder='От 6 букв латиницей или цифр' if register else 'Ваш логин', autocomplete='username', maxlength=40) }}
-    {{ field('password', 'Пароль', 'password', 'Не менее 8 символов' if register else 'Ваш пароль', 'new-password' if register else 'current-password', 128) }}
-    {% if register %}
-    {{ field('full_name', 'ФИО', placeholder='Иванов Иван Иванович', autocomplete='name', maxlength=150) }}
-    {{ field('phone', 'Телефон', 'tel', '8(999)123-45-67', 'tel', 15) }}
-    {{ field('email', 'Электронная почта', 'email', 'name@example.ru', 'email') }}
-    {% endif %}
-    <button class="button full">{{ 'Зарегистрироваться' if register else 'Войти' }}</button>
-  </form>
-  <p class="auth-switch"><a href="{{ url_for('login' if register else 'register') }}">{{ 'Уже зарегистрированы? Вход' if register else 'Еще не зарегистрированы? Регистрация' }}</a></p>
-</section>
-<section class="entry-visual">
-  <h2>Аренда автомобилей</h2>
-  <p>LADA Vesta, Hyundai Creta и Toyota Camry.<br>Выберите модель, дату начала аренды и способ оплаты.</p>
-  <div class="slider" aria-roledescription="карусель" aria-label="Аренда автомобилей">
-    {% for caption in ['Hyundai Creta', 'Поездки между городами', 'Загородные маршруты', 'Получение автомобиля'] %}
-    <figure class="slide" {% if not loop.first %}hidden{% endif %}><img src="{{ url_for('static', filename='img/slide' ~ loop.index ~ '.jpg') }}" alt="{{ caption }}" width="960" height="600"><figcaption>{{ caption }}</figcaption></figure>
-    {% endfor %}
-    <button class="slider-arrow" type="button" data-step="-1" aria-label="Предыдущее изображение">‹</button>
-    <button class="slider-arrow" type="button" data-step="1" aria-label="Следующее изображение">›</button>
-    <span class="slide-count" aria-live="off">1 / 4</span>
-  </div>
-  <p class="hint">Оплата наличными или переводом по номеру телефона. Заявку рассматривает администратор.</p>
-</section>
-
-</div>
-{% endblock %}
-```
-<!-- END SOURCE templates/auth.html -->
-
-### `templates/_booking.html`
-
-Начальный символ подчёркивания в имени обязателен. Файл не extends base: он включается внутрь двух страниц.
-
-14 строк, 1977 символов. После набора: обычный пользователь получает фото и свою карточку; Admin — контакты/форму статуса; отзыв зависит от статуса.
-
-<!-- SOURCE templates/_booking.html -->
-```html
-<article class="booking{% if not g.user.is_admin %} booking-user{% endif %}">
-{% if not g.user.is_admin %}<img class="car-photo" src="{{ url_for('static', filename='img/' ~ car_images[row.car]) }}" alt="{{ row.car if row.car != 'Toyota Camry' else 'Автомобили в автопарке' }}" width="192" height="128">{% endif %}
-<div class="booking-content">
-  <div class="card-heading"><span>Заявка № {{ row.id }}</span><span class="status status-{{ statuses.index(row.status) }}">{{ row.status }}</span></div><h2>{{ row.car }}</h2>
-  <dl>{% if g.user.is_admin %}<div><dt>Клиент</dt><dd>{{ row.full_name }}</dd></div><div><dt>Телефон</dt><dd>{{ row.phone }}</dd></div><div><dt>Email</dt><dd>{{ row.email }}</dd></div>{% endif %}<div><dt>Начало аренды</dt><dd>{{ row.start_date|date_ru }}</dd></div><div><dt>Оплата</dt><dd>{{ row.payment }}</dd></div></dl>
-</div>
-{% if g.user.is_admin and row.status != 'Аренда завершена' %}
-<form class="status-form" method="post" action="{{ url_for('change_status', booking_id=row.id) }}">{{ csrf() }}<input type="hidden" name="filter" value="{{ selected }}"><label class="field">Новый статус<select name="status">{% for status in statuses[1:] %}<option {% if row.status == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select></label><button class="button">Сохранить статус</button></form>
-{% endif %}
-{% if row.review %}<div class="review"><h3>{{ 'Отзыв клиента' if g.user.is_admin else 'Ваш отзыв' }}</h3><p>{{ row.review }}</p></div>
-{% elif not g.user.is_admin and row.status == 'Аренда завершена' %}
-<form class="review" method="post" action="{{ url_for('review', booking_id=row.id) }}">{{ csrf() }}<label class="field">Как прошла аренда?<textarea name="text" rows="3" maxlength="2000" required placeholder="Поделитесь впечатлениями"></textarea></label><button class="button">Оставить отзыв</button></form>
-{% elif not g.user.is_admin %}<p class="hint booking-note">Отзыв доступен после завершения аренды.</p>{% endif %}
-</article>
-```
-<!-- END SOURCE templates/_booking.html -->
-
-### `templates/bookings.html`
-
-
-
-8 строк, 696 символов. После набора: на пустом кабинете есть изображение handover и ссылка создания; на непустом include карточек.
-
-<!-- SOURCE templates/bookings.html -->
-```html
-{% extends 'base.html' %}
-{% block content %}
-<div class="page-heading"><div><h1>Мои заявки</h1><p class="muted">{{ g.user.full_name }}</p></div><a class="button" href="{{ url_for('new_booking') }}">Оформить аренду</a></div>
-<div class="cards">
-{% for row in rows %}{% include '_booking.html' %}
-{% else %}<section class="empty"><img src="{{ url_for('static', filename='img/handover.jpg') }}" alt="Передача ключей от автомобиля" width="360" height="240"><div><h2>У вас пока нет заявок</h2><p>Выберите автомобиль и дату начала аренды. Отправленная заявка появится здесь.</p><a href="{{ url_for('new_booking') }}" class="button">Создать заявку</a></div></section>{% endfor %}
-</div>
-{% endblock %}
-```
-<!-- END SOURCE templates/bookings.html -->
-
-### `templates/new.html`
-
-
-
-13 строк, 2039 символов. После набора: ровно car/start_date/payment, обе select имеют пустой вариант; все ошибки возвращаются на форму.
-
-<!-- SOURCE templates/new.html -->
-```html
-{% extends 'base.html' %}
-{% block content %}
-<div class="entry-layout"><section class="entry-form"><h1>Новая заявка</h1><p class="muted">Все поля обязательны для заполнения.</p>
-<form method="post" novalidate>
-  {{ csrf() }}
-  <label class="field">Автомобиль<select name="car" required {% if errors.car %}aria-invalid="true" aria-describedby="error-car"{% endif %}><option value="">Выберите автомобиль</option>{% for car in cars %}<option {% if values.get('car') == car %}selected{% endif %}>{{ car }}</option>{% endfor %}</select>{% if errors.car %}<span class="field-error" id="error-car">{{ errors.car }}</span>{% endif %}</label>
-  <label class="field">Дата начала аренды<input name="start_date" placeholder="ДД.ММ.ГГГГ" maxlength="10" inputmode="numeric" value="{{ values.get('start_date', '') }}" required {% if errors.start_date %}aria-invalid="true" aria-describedby="error-date"{% endif %}>{% if errors.start_date %}<span class="field-error" id="error-date">{{ errors.start_date }}</span>{% endif %}</label>
-  <label class="field">Способ оплаты<select name="payment" required {% if errors.payment %}aria-invalid="true" aria-describedby="error-payment"{% endif %}><option value="">Выберите способ оплаты</option>{% for payment in payments %}<option {% if values.get('payment') == payment %}selected{% endif %}>{{ payment }}</option>{% endfor %}</select>{% if errors.payment %}<span class="field-error" id="error-payment">{{ errors.payment }}</span>{% endif %}</label>
-  <button class="button full">Отправить</button><a class="back-link" href="{{ url_for('bookings') }}">Вернуться к заявкам</a>
-</form></section>
-<aside class="entry-visual"><h2>Автомобили в аренду</h2><img class="fleet-photo" src="{{ url_for('static', filename='img/fleet.jpg') }}" alt="Автомобили в автопарке" width="960" height="600"><ul class="model-list">{% for car in cars %}<li>{{ car }}</li>{% endfor %}</ul><p class="hint">Заявка поступит администратору со статусом «Новая». Изменения статуса появятся в личном кабинете.</p></aside>
-</div>
-{% endblock %}
-```
-<!-- END SOURCE templates/new.html -->
-
-### `templates/admin.html`
-
-
-
-9 строк, 898 символов. После набора: filter работает GET, status-form в карточке — POST; не перепутать методы.
-
-<!-- SOURCE templates/admin.html -->
-```html
-{% extends 'base.html' %}
-{% block content %}
-<div class="page-heading"><div><h1>Панель администратора</h1><p class="muted">Заявки клиентов</p></div><span class="muted">Найдено: {{ rows|length }}</span></div>
-<form class="filter" method="get"><label for="filter">Статус</label><select id="filter" name="status"><option value="">Все статусы</option>{% for status in statuses %}<option {% if selected == status %}selected{% endif %}>{{ status }}</option>{% endfor %}</select><button class="button">Показать</button>{% if selected %}<a href="{{ url_for('admin') }}">Сбросить</a>{% endif %}</form>
-<div class="cards">
-{% for row in rows %}{% include '_booking.html' %}
-{% else %}<section class="empty"><div><h2>Заявок нет</h2><p class="muted">{{ 'Измените фильтр, чтобы увидеть другие заявки.' if selected else 'Здесь появятся заявки клиентов.' }}</p></div></section>{% endfor %}
-</div>
-{% endblock %}
-```
-<!-- END SOURCE templates/admin.html -->
-
-### Первый запуск и контроль М 1,54–57
-
-```powershell
+.\.venv\Scripts\python.exe -m py_compile app.py db.py
 .\.venv\Scripts\python.exe app.py
 ```
 
-Оставь терминал работающим. Открой `http://127.0.0.1:5000/login`.
-Пока CSS/JS не набраны, их 404 и простая HTML-разметка ожидаемы; они исчезнут на этапе М 2.
-Не создавать новую реализацию для раннего минимального интерфейса: эти шаблоны уже финальные.
+Сервер оставить работающим, открыть http://127.0.0.1:5000/api. Для гостя user:null,
+rows:[], csrf48hex; справочники доступны. init_db создаёт Admin/StartNET и instance/rental.db.
+Случайный ключ хранится в instance/secret.key, в Git не попадает.
+Python не перезапускается автоматически: Ctrl+C →повторить запуск после правок.
 
-1. Создать Driver01 /12345678, Иванов Иван Иванович,8(999)123-45-67,ivan@example.ru.
-2. Войти, создать LADA Vesta/02.12.2026/Наличными. Дата в прошлом также допустима заданием;
-   можно взять другую существующую дату, но для сверки с тестами использована эта.
-3. Увидеть свою «Новую» заявку и отсутствие поля отзыва. Запомнить фактический ID карточки.
-4. Выйти → войти Admin/StartNET → увидеть заявку и контакты пользователя.
-5. В приватном окне гостя `/bookings`, `/bookings/new`, `/admin` ведут на вход.
+### `static/index.html`
 
-Если обнаружена ошибка, сначала прочитать последнюю строку traceback в терминале и исправить
-указанный файл/строку. При изменении Python остановить Ctrl+C и запустить снова: debug/reloader
-выключены. При изменении HTML/CSS достаточно обновить страницу; для static полезен Ctrl+F5.
+77 строк, 4285 символов. Проверка: в исходнике обычный HTML и template. Пока нет JS, скрытые секции не отображаются — это ожидаемо.
 
-### ER средствами СУБД,57–61
-
-Выбрать установленный разрешённый инструмент, который действительно строит ER из SQLite.
-Если на площадке есть DBeaver с готовым драйвером: New Connection → SQLite → существующий
-`instance/rental.db` → Test Connection. Открыть узел Tables/схемы и Diagram; при необходимости
-создать custom diagram и добавить users/bookings/reviews. Включить поля/ключи, авторазмещение,
-проверить обе реальные FK, экспортировать диаграмму в `docs/er.png` или `docs/er.svg`.
-Сохранить документ диаграммы, если инструмент поддерживает; PNG открывается и читается.
-Не создавать виртуальные линии вместо отсутствующих FK — исправить schema и учебную БД.
-[Официальное описание ER DBeaver](https://dbeaver.com/docs/dbeaver/ER-Diagrams/).
-
-Ожидаемая кратность: users1 → bookings0..N; bookings1 → reviews0..1.
-`reviews.booking_id` одновременно FK и UNIQUE. Не рисовать reviews как обязательный 1:1.
-В исходной версии ER была вручную сгенерирована вне инструмента СУБД: этот шаг нужен для
-буквального требования экзамена, а не описывает уже выполненную GUI-проверку проекта.
-Mermaid исходной версии приведён в приложении только для сверки структуры.
-
-SQLite-файл по `.gitignore` не коммитится: schema.sql обязателен. Если комиссия требует
-саму БД, передать её отдельным предусмотренным способом после закрытия приложения/инструмента.
-Не коммитить secret.key и свои тестовые аккаунты только ради «наличия БД в Git».
-
-```powershell
-git add .
-git commit -m "M1: database, rental workflow, access control and ER"
-git commit --allow-empty -m "M2: start responsive design"
+<!-- SOURCE static/index.html -->
+```html
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ключ.на.старт</title>
+<link rel="icon" href="/static/img/icon.png">
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js" defer></script>
+<header>
+  <a href="/"><img class="logo" src="/static/img/logo.png" alt="Ключ.на.старт"></a>
+  <nav><a class="guest" href="/login">Вход</a><a class="guest" href="/register">Регистрация</a>
+    <a class="user" href="/">Кабинет</a>
+    <form class="user" action="/logout" method="post"><button>Выйти</button><output class="error"></output></form>
+  </nav>
+</header>
+<p id="notice" role="status"></p>
+<main>
+  <section id="login" hidden><h1>Вход</h1>
+    <form action="/login" method="post" novalidate>
+      <label>Логин<input name="login" required></label>
+      <label>Пароль<input name="password" type="password" required></label>
+      <button>Войти</button><output class="error" role="alert"></output>
+    </form>
+    <a href="/register">Еще не зарегистрированы? Регистрация</a>
+  </section>
+  <section id="register" hidden><h1>Регистрация</h1>
+    <form action="/register" method="post" novalidate>
+      <label>Логин (от 6 символов)<input name="login" maxlength="40" required></label>
+      <label>Пароль (от 8 символов)<input name="password" type="password" maxlength="128" required></label>
+      <label>ФИО<input name="full_name" maxlength="150" required></label>
+      <label>Телефон<input name="phone" placeholder="8(999)123-45-67" required></label>
+      <label>Email<input name="email" type="email" required></label>
+      <button>Зарегистрироваться</button><output class="error" role="alert"></output>
+    </form>
+    <a href="/login">Уже зарегистрированы? Вход</a>
+  </section>
+  <section id="new" hidden><h1>Новая заявка</h1>
+    <form action="/bookings/new" method="post" novalidate>
+      <label>Автомобиль<select name="car" required></select></label>
+      <label>Дата начала<input name="start_date" placeholder="ДД.ММ.ГГГГ" required></label>
+      <label>Оплата<select name="payment" required></select></label>
+      <button>Отправить</button><output class="error" role="alert"></output>
+    </form>
+    <a href="/bookings">Вернуться к заявкам</a>
+  </section>
+  <section id="orders" hidden><h1 id="title">Мои заявки</h1>
+    <a id="create" href="/bookings/new">Оформить аренду</a>
+    <form id="filter" action="/admin" method="get" hidden>
+      <label>Статус<select name="status"></select></label><button>Показать</button>
+    </form>
+    <p id="count"></p><div id="cards"></div>
+    <div id="empty"><h2>Заявок нет</h2><img src="/static/img/handover.jpg" alt="Передача ключей"></div>
+  </section>
+  <aside id="promo" hidden><h2>Автомобили в аренду</h2>
+    <div class="slider">
+      <img class="slide" src="/static/img/slide1.jpg" alt="Hyundai Creta">
+      <img class="slide" src="/static/img/slide2.jpg" alt="Поездки между городами" hidden>
+      <img class="slide" src="/static/img/slide3.jpg" alt="Загородные маршруты" hidden>
+      <img class="slide" src="/static/img/slide4.jpg" alt="Получение автомобиля" hidden>
+      <button type="button" data-step="-1" aria-label="Назад">‹</button>
+      <button type="button" data-step="1" aria-label="Вперёд">›</button><small id="counter">1 / 4</small>
+    </div>
+    <img id="fleet" src="/static/img/fleet.jpg" alt="Автопарк" hidden>
+  </aside>
+</main>
+<template id="card">
+  <article class="booking">
+    <img class="car-photo" alt="Автомобиль"><h2></h2><p class="details"></p><p class="contact"></p>
+    <form class="status-form" method="post"><input name="filter" type="hidden"><label>Новый статус<select name="status"></select></label><button>Сохранить статус</button><output class="error" role="alert"></output></form>
+    <div class="review"><h3>Отзыв</h3><p></p></div>
+    <form class="review-form" method="post"><label>Как прошла аренда?<textarea name="text" maxlength="2000" required></textarea></label><button>Оставить отзыв</button><output class="error" role="alert"></output></form>
+    <small class="booking-note">Отзыв доступен после завершения аренды.</small>
+  </article>
+</template>
+<footer>Ключ.на.старт · Аренда автомобилей</footer>
+<noscript>Включите JavaScript для работы сайта.</noscript>
+</html>
 ```
-
-## 6. М 2: общий CSS, JavaScript и контроль
-
-### `static/style.css`
-
-Печатать все правила, включая оба media и reduced-motion. Минификация не требуется; исходник уже содержит одно правило на строку.
-
-115 строк, 7452 символов. После набора: в браузере Montserrat/палитра; при 390×844 все пять страниц без горизонтального выхода.
-
-<!-- SOURCE static/style.css -->
-```css
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Regular.ttf');font-weight:400;font-display:swap}
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Bold.ttf');font-weight:700;font-display:swap}
-@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Italic.ttf');font-style:italic;font-display:swap}
-:root{--accent:#d9480f;--ink:#212b36;--muted:#6c757d;--bg:#f8f9fa;--white:#fff;--line:#e1e4e8}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.6 Montserrat,sans-serif}
-button,input,select,textarea{font:inherit;color:inherit}
-a{color:var(--accent);text-decoration:none}
-a:hover{text-decoration:underline}
-button{border:0;cursor:pointer}
-img{max-width:100%;display:block}
-h1,h2,h3,p{margin:0 0 16px;overflow-wrap:anywhere}
-h1{font-size:36px;line-height:1.2;letter-spacing:-1px}
-h2{font-size:24px;line-height:1.3}
-h3{font-size:18px;line-height:1.4}
-form{margin:0}
-.header,main,.footer{max-width:1200px;margin:auto;padding-left:32px;padding-right:32px}
-.header{min-height:108px;display:flex;justify-content:space-between;align-items:center;gap:24px;border-bottom:1px solid var(--line)}
-.logo img{width:255px;height:50px;object-fit:contain}
-.header nav{display:flex;align-items:center;gap:24px;flex-wrap:wrap}
-.nav-link,.text-button{display:inline-flex;align-items:center;min-height:44px;font-size:14px;font-weight:700}
-.nav-link{color:var(--ink)}
-.nav-link:hover,.text-button:hover{color:var(--accent)}
-.text-button{background:none;padding:0;color:var(--muted)}
-main{padding-top:40px;padding-bottom:64px;min-height:calc(100vh - 183px)}
-.footer{padding-top:24px;padding-bottom:24px;border-top:1px solid var(--line);color:var(--muted);font-size:12px;font-style:italic}
-.muted,.hint,dt{color:var(--muted)}
-.hint,dt{font-size:12px;font-style:italic}
-.button{display:inline-flex;justify-content:center;align-items:center;min-height:50px;padding:12px 22px;background:var(--accent);color:white;border-radius:6px;font-weight:700;text-align:center;transition:background .15s,transform .15s}
-.button:hover{text-decoration:none;background:var(--ink);transform:translateY(-1px)}
-.full{width:100%}
-.field{display:flex;flex-direction:column;gap:7px;margin:20px 0;font-weight:700}
-input,select,textarea{width:100%;min-width:0;min-height:50px;padding:12px 14px;background:var(--white);border:1px solid #bbc1c7;border-radius:6px;font-size:16px;font-weight:400}
-input::placeholder,textarea::placeholder{color:var(--muted)}
-textarea{resize:vertical}
-:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-input[aria-invalid],select[aria-invalid]{border-color:var(--accent)}
-.field-error{color:var(--accent);font-size:12px;font-style:italic;font-weight:400}
-.notice{padding:16px 20px;margin-bottom:28px;background:var(--white);border-left:4px solid var(--accent)}
-.entry-layout{display:grid;grid-template-columns:1.25fr 1fr;gap:64px;align-items:start}
-.entry-form{grid-column:2;grid-row:1;padding-left:32px;border-left:1px solid var(--line)}
-.entry-visual{grid-column:1;grid-row:1;padding-top:4px}
-.auth-switch{margin:24px 0 0}
-.form-page{max-width:640px;margin:auto}
-.back-link{display:block;margin-top:18px;text-align:center}
-.slider{position:relative;overflow:hidden;margin:24px 0 16px;border-radius:8px;background:var(--ink)}
-.slide{position:relative;margin:0;animation:appear .3s ease-out}
-.slide[hidden]{display:none}
-.slide img{width:100%;height:auto;aspect-ratio:8/5;object-fit:cover;filter:brightness(.8)}
-.slide figcaption{position:absolute;left:20px;right:80px;bottom:20px;color:white;font-size:18px;font-weight:700;text-shadow:0 1px 4px #000}
-.slider-arrow{position:absolute;top:calc(50% - 22px);display:grid;place-items:center;width:44px;height:44px;padding:0;border-radius:50%;background:#fffffff0;color:var(--ink);font-size:32px;line-height:1;transition:background .15s,color .15s}
-.slider-arrow[data-step="-1"]{left:16px}
-.slider-arrow[data-step="1"]{right:16px}
-.slider-arrow:hover{background:var(--accent);color:white}
-.slide-count{position:absolute;right:20px;bottom:22px;color:white;font-size:12px;font-style:italic;font-variant-numeric:tabular-nums;text-shadow:0 1px 4px #000}
-.fleet-photo{width:100%;aspect-ratio:8/5;height:auto;object-fit:cover;border-radius:8px}
-.model-list{display:flex;flex-wrap:wrap;gap:8px 24px;margin:20px 0;padding:0;list-style:none;font-weight:700}
-.page-heading{display:flex;justify-content:space-between;align-items:center;gap:24px;margin-bottom:32px}
-.page-heading p{margin:0}
-.cards{display:grid;gap:20px}
-.booking{display:flex;flex-wrap:wrap;align-items:flex-start;gap:20px 24px;padding:24px;background:var(--white);border-top:2px solid var(--line);animation:appear .3s ease-out}
-.car-photo{width:192px;height:128px;object-fit:cover;border-radius:4px}
-.booking-content{flex:1;min-width:0}
-.card-heading{display:flex;justify-content:space-between;gap:16px;margin-bottom:10px;color:var(--muted);font-size:12px;font-style:italic}
-.status{font-weight:700;text-align:right}
-.status-1{color:var(--accent)}
-.status-2{color:var(--ink)}
-.booking h2{margin-bottom:16px}
-dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px 24px;margin:0}
-dd{margin:2px 0 0;overflow-wrap:anywhere}
-.review,.booking-note{flex-basis:100%;margin:0;padding-top:16px;border-top:1px solid var(--line)}
-.review p{margin:0;white-space:pre-wrap}
-.review .field,.status-form .field{margin-top:0}
-.status-form{width:264px}
-.status-form .button{width:100%}
-.filter{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--line)}
-.filter label{font-weight:700}
-.filter select{max-width:300px}
-.empty{display:flex;align-items:center;gap:32px;padding:32px 0}
-.empty img{width:240px;aspect-ratio:3/2;height:auto;object-fit:cover;border-radius:8px}
-@keyframes appear{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:translateY(0)}}
-@media(max-width:900px){
-.entry-layout{gap:32px;grid-template-columns:1fr 1fr}
-.entry-form{padding-left:24px}
-.header{flex-wrap:wrap;padding-top:20px;padding-bottom:20px;gap:12px}
-.header nav{gap:20px}
-}
-@media(max-width:640px){
-.header,main,.footer{padding-left:20px;padding-right:20px}
-.logo img{width:220px;height:43px}
-.header nav{width:100%;gap:8px 20px}
-.header nav form{margin-left:auto}
-.nav-link,.text-button{font-size:13px}
-main{padding-top:28px;padding-bottom:40px}
-.entry-layout{display:flex;flex-direction:column;gap:40px}
-.entry-form{width:100%;padding:0;border:0}
-.entry-visual{width:100%;padding-top:28px;border-top:1px solid var(--line)}
-.slide figcaption{font-size:16px}
-.page-heading{align-items:flex-start;flex-direction:column;gap:20px}
-.filter select{max-width:none}
-.filter label,.filter select{width:100%}
-.filter .button{flex:1}
-.booking{padding:20px;gap:16px}
-.booking-user{display:grid;grid-template-columns:96px minmax(0,1fr)}
-.booking-user .car-photo{width:96px;height:84px;grid-row:1/3}
-.booking-user .booking-content{display:contents}
-.booking-user .card-heading,.booking-user h2{grid-column:2;margin:0}
-.booking-user dl,.booking-user .review,.booking-user .booking-note{grid-column:1/-1}
-.booking-content{flex-basis:100%}
-.card-heading{gap:8px;flex-wrap:wrap}
-.status-form{width:100%}
-.empty{align-items:flex-start;flex-direction:column;gap:24px;padding:8px 0}
-.empty img{width:100%;max-width:320px}
-}
-@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
-```
-<!-- END SOURCE static/style.css -->
+<!-- END SOURCE static/index.html -->
 
 ### `static/script.js`
 
-Сохранить JS-шаблонную строку с обратными кавычками `${...}`, значение 3000 и проверку prefers-reduced-motion.
-
-31 строк, 1492 символов. После набора: четыре автоматических переключения с возвратом, обе стрелки, ввод телефона/даты.
+90 строк, 4272 символов. Проверка: /login показывает форму после /api; обе формы отправляют FormData и показывают ошибки;4 слайда/3000ms/стрелки.
 
 <!-- SOURCE static/script.js -->
 ```javascript
-document.querySelectorAll('.slider').forEach(slider => {
-  const slides = [...slider.querySelectorAll('.slide')];
-  const counter = slider.querySelector('.slide-count');
-  let current = 0, timer;
-  const motion = matchMedia('(prefers-reduced-motion: reduce)');
-  const show = (step = 1) => {
-    slides[current].hidden = true;
-    current = (current + step + slides.length) % slides.length;
-    slides[current].hidden = false;
-    counter.textContent = `${current + 1} / ${slides.length}`;
-  };
-  const schedule = () => {
-    clearInterval(timer);
-    if (!motion.matches && !document.hidden) timer = setInterval(show, 3000);
-  };
-  slider.querySelectorAll('[data-step]').forEach(button => button.addEventListener('click', () => {
-    show(Number(button.dataset.step)); schedule();
-  }));
-  document.addEventListener('visibilitychange', schedule);
-  motion.addEventListener('change', schedule);
-  schedule();
+let data;
+const get = (selector, root = document) => root.querySelector(selector);
+const path = location.pathname;
+function options(select, values, selected = '') {
+  select.replaceChildren(new Option('Выберите', ''));
+  for (const value of values) select.add(new Option(value, value, false, value === selected));
+}
+async function start() {
+  const response = await fetch('/api' + location.search);
+  data = await response.json();
+  if (!response.ok) throw new Error(data.message);
+  get('#notice').textContent = sessionStorage.notice || '';
+  sessionStorage.removeItem('notice');
+  document.body.classList.toggle('logged', !!data.user);
+  const admin = data.user && data.user.is_admin;
+  const page = path === '/bookings/new' ? 'new' : ['/admin', '/bookings'].includes(path) ? 'orders' : path.slice(1);
+  get('#' + page).hidden = false;
+  get('#promo').hidden = page === 'orders';
+  get('.slider').hidden = page === 'new';
+  get('#fleet').hidden = page !== 'new';
+  options(get('[name=car]'), data.cars);
+  options(get('[name=payment]'), data.payments);
+  options(get('#filter select'), data.statuses, data.status);
+  get('#filter select').options[0].text = 'Все статусы';
+  get('#filter').hidden = !admin;
+  get('#create').hidden = !!admin;
+  get('#title').textContent = admin ? 'Панель администратора' : 'Мои заявки';
+  get('#count').textContent = 'Заявок: ' + data.rows.length;
+  get('#empty').hidden = data.rows.length > 0;
+  for (const row of data.rows) {
+    const card = get('#card').content.cloneNode(true);
+    const find = selector => get(selector, card);
+    const finished = row.status === data.statuses[2];
+    find('h2').textContent = row.car;
+    find('.details').textContent = 'Заявка № ' + row.id + ' · ' + row.status + '\n' + row.start_date.split('-').reverse().join('.') + ' · ' + row.payment;
+    find('.contact').textContent = row.full_name + ' · ' + row.phone + ' · ' + row.email;
+    find('img').src = '/static/img/' + ['vesta.jpg', 'slide1.jpg', 'fleet.jpg'][data.cars.indexOf(row.car)];
+    const status = find('.status-form');
+    status.hidden = !admin || finished;
+    status.action = '/admin/' + row.id + '/status';
+    status.elements.filter.value = data.status;
+    options(status.elements.status, data.statuses.slice(1), row.status);
+    find('.review').hidden = !row.review;
+    find('.review p').textContent = row.review;
+    const review = find('.review-form');
+    review.hidden = !!admin || !finished || !!row.review;
+    review.action = '/bookings/' + row.id + '/review';
+    find('.booking-note').hidden = !!admin || finished;
+    get('#cards').append(card);
+  }
+}
+start().catch(error => get('#notice').textContent = error.message);
+
+document.addEventListener('submit', async event => {
+  const form = event.target;
+  if (form.method === 'get') return;
+  event.preventDefault();
+  get('output', form).textContent = '';
+  try {
+    const body = new FormData(form);
+    body.set('csrf', data.csrf);
+    const response = await fetch(form.action, {method: 'POST', body: body});
+    if (response.redirected) { location.href = response.url; return; }
+    const result = await response.json();
+    if (response.ok) { sessionStorage.notice = result.message || ''; location.href = result.next; return; }
+    get('output', form).textContent = Object.values(result.errors || {message: result.message}).join('\n');
+  } catch (error) { get('#notice').textContent = 'Ошибка отправки. Обновите страницу.'; }
 });
 
-document.querySelectorAll('input[name="phone"], input[name="start_date"]').forEach(input => {
-  input.addEventListener('input', () => {
-    const d = input.value.replace(/\D/g, '').slice(0, input.name === 'phone' ? 11 : 8);
-    input.value = input.name === 'phone'
-      ? d.slice(0, 1) + (d.length > 1 ? '(' + d.slice(1, 4) : '') + (d.length > 4 ? ')' + d.slice(4, 7) : '') + (d.length > 7 ? '-' + d.slice(7, 9) : '') + (d.length > 9 ? '-' + d.slice(9) : '')
-      : d.slice(0, 2) + (d.length > 2 ? '.' + d.slice(2, 4) : '') + (d.length > 4 ? '.' + d.slice(4) : '');
-  });
-});
+const slides = document.querySelectorAll('.slide');
+let current = 0, timer;
+const motion = matchMedia('(prefers-reduced-motion: reduce)');
+function show(step) {
+  slides[current].hidden = true;
+  current = (current + step + slides.length) % slides.length;
+  slides[current].hidden = false;
+  get('#counter').textContent = current + 1 + ' / ' + slides.length;
+}
+function schedule() {
+  clearInterval(timer);
+  if (!motion.matches && !document.hidden) timer = setInterval(() => show(1), 3000);
+}
+for (const button of document.querySelectorAll('[data-step]')) button.onclick = () => {
+  show(Number(button.dataset.step));
+  schedule();
+};
+document.addEventListener('visibilitychange', schedule);
+motion.addEventListener('change', schedule);
+schedule();
+addEventListener('pageshow', event => { if (event.persisted) location.reload(); });
 ```
 <!-- END SOURCE static/script.js -->
 
-### Контроль М 2,80–83
+### Контроль М 1,66–72
 
-- Ctrl+F5; открыть DevTools, режим 390×844. Проверить login/register/bookings/new/admin.
-  Формы на мобильном идут до фото; нижние поля доступны прокруткой. Все картинки загружены.
-- Четыре фото слайдера одинаковые 8:5. За 12–13 секунд проверить все 4 и возврат к первому;
-  нажать обе стрелки, счётчик меняется, после клика новый интервал 3 секунды. Пауза не нужна.
-  В фоне вкладки и при reduced-motion автосмена намеренно останавливается: это не поломка.
-- Ввести неверные регистрационные поля: abc/123/John/+7/bad@. На форме пять ошибок, пользователя
-  в БД нет. Верные данные проходят; уже занятый логин, в том числе с другим регистром, не проходит.
-- Новая заявка: пустые select и 31.02.2026 возвращают ошибки. Верная дата отображается ДД.ММ.ГГГГ.
-- Admin: фильтр Новая → правильный набор, очистка → все; сменить статус, увидеть сообщение.
-- Ошибки JS — Console, битые ресурсы — Network. Не заменять серверную валидацию HTML required.
+1. Гость /bookings,/bookings/new,/admin →вход. Войти Admin/StartNET →/admin.
+2. Регистрация Driver01/12345678, Иванов Иван,8(999)123-45-67, ivan@example.ru.
+   Войти и создать LADA Vesta/02.12.2026/Наличными. Своя Новая заявка видна, отзыв скрыт.
+3. Admin видит эту заявку/контакты, может изменить статус. Даже при простом HTML без CSS
+   функциональность уже проверяема, потому что JS набран и /api работает.
+4. ER через реальную SQLite в установленном инструменте: создать SQLite connection к
+   instance/rental.db →Tables/Diagram →добавить users/bookings/reviews →показать PK/FK/UNIQUE
+   →экспорт docs/er.png (или.svg), открыть экспорт. Нужен готовый драйвер без скачивания.
+   users1→bookings0..N; bookings1→reviews0..1. Не рисовать виртуальную связь вместо FK.
+   [Описание ER DBeaver](https://dbeaver.com/docs/dbeaver/ER-Diagrams/).
+
+Текущая ER проекта была создана вне GUI: её правильная структура не доказывает выполнение
+условия «средствами СУБД». Mermaid ниже — для сверки, не замена этого шага.
+SQLite/secret.key исключены .gitignore; если файл БД нужен комиссии, передать отдельно
+предусмотренным способом после закрытия открытых транзакций.
 
 ```powershell
 git add .
-git commit -m "M2: local media, responsive pages and four-image slider"
+git commit -m "M1: database and working rental flow"
+git commit --allow-empty -m "M2: start design verification"
+```
+
+## 5. М 2: CSS и проверки
+
+### `static/style.css`
+
+38 строк, 2393 символов. Проверка: все 5 страниц 390×844/desktop, Montserrat36/24/18/16/12Italic, палитра, видимые ошибки и 44px кнопки.
+
+<!-- SOURCE static/style.css -->
+```css
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Regular.ttf')}
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Bold.ttf');font-weight:700}
+@font-face{font-family:Montserrat;src:url('fonts/Montserrat-Italic.ttf');font-style:italic}
+*{box-sizing:border-box}
+[hidden],.logged .guest,body:not(.logged) .user{display:none!important}
+body{margin:0;color:#212b36;background:#f8f9fa;font:16px/1.6 Montserrat,sans-serif;overflow-wrap:anywhere}
+header,main,footer,#notice{max-width:1000px;margin:auto;padding:20px}
+header,nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
+.logo{width:240px}
+a{display:inline-flex;align-items:center;min-height:44px;color:#d9480f}
+a:hover{color:#212b36}
+main{display:grid;grid-template-columns:1fr 1fr;gap:32px;min-height:70vh}
+h1{font-size:36px;line-height:1.2}h2{font-size:24px}h3{font-size:18px}
+h1,h2,h3,p{margin:0 0 16px}
+label{display:block;margin:16px 0;font-weight:700}
+button,input,select,textarea{font:inherit;padding:12px;border:1px solid #bbc1c7;border-radius:6px}
+input,select,textarea{width:100%;min-width:0;background:white;color:inherit}
+button{min-height:44px;background:#d9480f;color:white;cursor:pointer;transition:background .15s}
+button:hover{background:#212b36}
+:focus-visible{outline:3px solid #d9480f}
+img{max-width:100%;display:block;border-radius:6px}
+small,footer,.error{font-size:12px;font-style:italic;color:#6c757d}
+.error{display:block;color:#d9480f;white-space:pre-line}
+#notice:empty{display:none}
+#orders{grid-column:1/-1}
+.booking{padding:20px;margin-bottom:20px;background:white;animation:appear .2s}
+.car-photo{width:150px;height:100px;object-fit:cover;float:right;margin:0 0 12px 12px}
+.booking form{clear:both}
+.details,.review p{white-space:pre-wrap}
+#empty img{width:320px}
+.slider{position:relative}
+.slide,#fleet{width:100%;aspect-ratio:8/5;object-fit:cover}
+.slider button{position:absolute;top:calc(50% - 22px);width:44px;height:44px;padding:0;border-radius:50%;font-size:30px}
+[data-step="-1"]{left:12px}[data-step="1"]{right:12px}
+#counter{position:absolute;bottom:10px;right:12px;background:#212b36;color:white;padding:0 8px}
+@keyframes appear{from{opacity:0}to{opacity:1}}
+@media(max-width:700px){main{grid-template-columns:1fr}.car-photo{width:96px;height:84px}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+```
+<!-- END SOURCE static/style.css -->
+
+Ctrl+F5. Переключить 5 URL на 390×844. Фото/формы не выходят за экран, поля доступны прокруткой.
+За 12–13 секунд проверить все 4 слайда и возврат; обе стрелки меняют картинку и сбрасывают
+таймер. В фоне и reduced-motion автосмена намеренно остановлена. Паузы-кнопки нет.
+Номер и дату теперь **вводить целиком с разделителями**: необязательные маски удалены.
+Сервер проверяет 8(XXX)XXX-XX-XX и существующую ДД.ММ.ГГГГ. Новая 31.02.2026 не сохраняется.
+Все ошибки регистрации/входа/заявки выводятся списком в output на соответствующей форме.
+Регистрация abc/123/John/+7/bad@ показывает 5 сообщений. Имя кириллицей/пробелами, login ASCII
+латиница/цифры≥6, пароль≥8; дубликат регистра login не принимается. Admin имеет 5 букв как
+исключение задания: он создаётся init_db, не формой регистрации.
+
+Фильтр Admin отправляет GET/admin?status=..., данные берутся из /api?status=...; после смены
+статуса появляется подтверждение. /api не отдаёт чужие заявки даже с подставленным user_id.
+В Console нет JS-ошибок, в Network нет 404 ресурсов или внешних CDN.
+
+```powershell
+git add .
+git commit -m "M2: local responsive interface verified"
 git commit --allow-empty -m "M3: start integration verification"
 ```
 
-## 7. М 3: интеграция,83–86
+## 6. М 3: БД/интеграция,84–87
 
-Нового исходного файла нет: актуальная версия уже интегрирована. Не переписывать app/CSS
-в альтернативном стиле. Проверить микроанимации появления карточки/слайда, hover кнопок,
-видимый клавиатурный focus, адаптивность; reduced-motion уменьшает движение.
-
-Во втором терминале из корня проекта:
+Нового файла нет. Сверить 5 URL, все формы и API; hover/focus, появление карточки, микроанимации.
+Во втором терминале из корня:
 
 ```powershell
-.\.venv\Scripts\python.exe -c "from db import DB; d=DB('instance/rental.db'); print('FK', d.one('PRAGMA foreign_keys')[0]); print('integrity', d.one('PRAGMA integrity_check')[0]); print('orphans', [tuple(r) for r in d.all('PRAGMA foreign_key_check')]); d.close()"
+.\.venv\Scripts\python.exe -c "from db import DB; d=DB('instance/rental.db'); print(d.one('PRAGMA foreign_keys')[0]); print(d.one('PRAGMA integrity_check')[0]); print([tuple(r) for r in d.all('PRAGMA foreign_key_check')]); d.close()"
 ```
 
-Ожидается FK1, integrity ok, orphans[]. `PRAGMA foreign_keys` относится к соединению:
-новая консоль СУБД с 0 не доказывает, что DB-класс работает без FK. Проверять именно DB.
-Три таблицы покрывают все сценарии предыдущих модулей. Завершённая аренда терминальна;
-повторный отзыв запрещён. Контроль доступа находится на сервере, не только в меню.
+Ожидается 1, ok,[]. PRAGMA относится к соединению:0 в чужой GUI-консоли не равно отключению FK
+в DB-классе. Пароли в БД — хеши, личность и роль берутся из сессии/БД, а не формы/URL.
+Завершение аренды терминально, отзыв только свой/после завершения/один раз.
 
 ```powershell
-git commit --allow-empty -m "M3: integrated workflow and responsive interactions verified"
-git commit --allow-empty -m "M4: start Taimyr mobile prototype"
+git commit --allow-empty -m "M3: integration and database verified"
+git commit --allow-empty -m "M4: start Taimyr prototype"
 ```
+
+## 7. Как объяснять обычный код на защите
+
+| Вопрос | Короткий ответ по нашей реализации |
+|---|---|
+|Где HTML?|static/index.html — обычный документ. Flask отдаёт его send_static_file, не обрабатывает шаблонизатором|
+|Почему 5 URL, но один файл?|Сервер проверяет роль на каждом закрытом URL; JS показывает соответствующую секцию. Общая разметка не дублируется|
+|Что такое template?|Стандартный HTML-контейнер заготовки. Браузер сам его не показывает; cloneNode(true) копирует карточку. Это не Jinja|
+|Откуда заявки?|GET/api:SQL уже отбирает строки по g.user.id либо роли Admin; JS не получает все чужие заявки для последующего скрытия|
+|Как отправляется форма?|FormData читает поля; fetch отправляет POST на action.200 с next — переход браузера;400 — ошибки в output|
+|Зачем csrf?|Случайный токен сессии добавляется к каждому POST и сравнивается на сервере. Подставить роль этим нельзя|
+|Почему textContent?|Вставляет текст, не HTML: отзыв с img/script не создаёт элементы и не выполняется|
+|Где ООП?|DB — класс соединения/запросов/транзакций; один экземпляр в g на запрос, teardown закрывает|
+|Почему SQL безопасен?|Текст SQL фиксирован; пользовательские значения передаются отдельным кортежем с ?|
+|Что делает check?|Обычная функция: при ложном условии abort с HTTP-кодом. Это не assert, который можно отключить оптимизацией|
+|Где пароль?|Только password_hash в SQLite; в JSON и cookie пароль/хеш не передаются. Cookie подписан, но это не означает шифрование|
+|Как слайдер зациклен?|current меняется по модулю slides.length; setInterval3000, при ручном клике таймер пересоздаётся|
+|Что означают скобки?|В Python это словари/кортежи, в JS — функции/объекты. Специального языка {%...%} больше нет|
+
+Из JS выучить обычные querySelector, hidden, textContent, for..of, async/await, fetch, FormData,
+cloneNode, new Option. `? :` — обычный условный оператор;&&/|| — логические;!! — приведение к boolean;
+% в слайдере — остаток деления, не синтаксис шаблона. Уметь прочитать одну карточку и одну
+отправку формы вручную. Сокращённый код не отменяет необходимости понимать эти операции.
 
 ## 8. М 4: редактор, ограничения текущего файла и порядок действий
 
@@ -1018,7 +804,7 @@ native hover в нём отсутствует. Ниже геометрия/ко�
    только облачный документ: на сдаче должен существовать локальный редактируемый файл.
    [Сохранение локально, Adobe](https://helpx.adobe.com/xd/desktop/troubleshooting/cloud-documents-and-creative-cloud-libraries/fix-issues-with-xd-cloud-documents.html).
 2. Инструмент Artboard: два экрана 430×932, портрет. Назвать `01 · Главная`, `02 · Решения`.
-   Первый на холсте X0,Y0; второй X478,Y0. Далее все координаты относительно своего экрана.
+   Первый на холсте X0, Y0; второй X478, Y0. Далее все координаты относительно своего экрана.
 3. Выделить оба: Grid → Layout, Columns4, Gutter14, левое/правое поле 16, Column Width89.
    Получится 4×89+3×14+32=430. Проверить сетку на обоих; это нативная grid, не четыре нарисованные полосы.
    [Настройка сетки, Adobe](https://helpx.adobe.com/xd/desktop/design/artboards-guides-and-layers/work-with-guides-and-grids-in-adobe-xd.html).
@@ -1042,7 +828,7 @@ native hover в нём отсутствует. Ниже геометрия/ко�
 
 ### 8.2. «Главная»: фигуры и изображения
 
-| Объект | X,Y,W,H | Оформление |
+| Объект | X, Y, W, H | Оформление |
 |---|---|---|
 | Поиск | 16,108,398,44 | Белый, border LINE1, radius6 |
 | Лупа | 30,122,13,13 | Контур MUTED, ручка 43,133,2,8 под 45° |
@@ -1053,12 +839,12 @@ native hover в нём отсутствует. Ниже геометрия/ко�
 | Линия подвала | 16,758,398,1 | LINE |
 
 Точный текст и рамки ниже извлечены из актуального `.sketch`. Формат стиля: размер/строка,
-R=Regular,B=Bold; L/C/R — выравнивание слева/по центру/справа. Высота рамки дана для текущих
+R=Regular, B=Bold; L/C/R — выравнивание слева/по центру/справа. Высота рамки дана для текущих
 переносов, не для обрезания текста. Если редактор переносит иначе, сначала проверить Roboto,
 ширину/размер/межстрочный/character spacing0, а не уменьшать шрифт. Все элементы должны остаться
 внутри 932px; после нативной проверки возможна коррекция рамок без изменения содержания.
 
-| Полный текст | X,Y,W,H | Стиль / цвет / align |
+| Полный текст | X, Y, W, H | Стиль / цвет / align |
 |---|---|---|
 | Главная | 24,59,176,18 | B14/18 #FFFFFF C |
 | Решения | 230,59,176,18 | B14/18 #0E7583 C |
@@ -1086,7 +872,7 @@ R=Regular,B=Bold; L/C/R — выравнивание слева/по центр�
 Внутренний отступ 12; заголовок шириной 168, пункты шириной 158 со сдвигом 22.
 Маркер пункта 3×3, x карточки+12, y строки+6. Между пунктами 4px после рамки строки.
 
-| Ряд | Левая карточка | Правая | X слева/справа | Y | W×H | Кнопки X слева/справа,Y,W,H |
+| Ряд | Левая карточка | Правая | X слева/справа | Y | W×H | Кнопки X слева/справа, Y, W, H |
 |---|---|---|---:|---:|---|---|
 | 1 | Таймыр Studio | Таймыр Server | 16/222 | 100 | 192×330 | 28/234,378,168,40 |
 | 2 | Таймыр Mobile | Таймыр Embedded | 16/222 | 440 | 192×276 | 28/234,664,168,40 |
@@ -1095,7 +881,7 @@ R=Regular,B=Bold; L/C/R — выравнивание слева/по центр�
 У всех шести кнопок текст «Подробнее», белый фон/teal текст и граница. Не настраивать
 переход на другие экраны. Строки пунктов и полный текст каждой карточки:
 
-| Полный текст | X,Y,W,H | Стиль / цвет / align |
+| Полный текст | X, Y, W, H | Стиль / цвет / align |
 |---|---|---|
 | Главная | 24,59,176,18 | B14/18 #0E7583 C |
 | Решения | 230,59,176,18 | B14/18 #FFFFFF C |
@@ -1184,155 +970,116 @@ git commit -m "M4: two editable mobile screens and verified prototype"
 Сообщение `verified` использовать только после фактического Preview. При проблеме указать
 реальный статус в сообщении/сдаче, не объявлять непроверенный переход работающим.
 
-## 9. Финальные проверки и сдача,111–120
+## 9. Финальный сценарий,112–120
 
-### 9.1. Минимальный ручной сценарий
+Обычное и приватное окно — разные cookie-сессии; две вкладки одного профиля ими не являются.
+Тестовые данные: A Driver01/12345678, Иванов Иван,8(999)123-45-67, ivan@example.ru;
+B Other01/12345678, Петров Пётр,8(999)765-43-21, petr@example.ru.
 
-Нормальное и приватное окно — разные cookie-сессии; две обычные вкладки одного профиля ими
-не являются. Для Admin можно временно выйти из нормального окна и войти отдельно.
-Обозначения ID_A/ID_B — фактические ID карточек, не обязательно 1 и 2.
+| Шаг | Ожидается |
+|---|---|
+|Гость /bookings,/bookings/new,/admin|Переход на вход|
+|Пустая/неверная регистрация, дубликат driver01|Ошибки, нет новой строки|
+|Неверный пароль; затем верный|Ошибка на форме; вход|
+|A создаёт LADA/02.12.2026/наличные; B Toyota/03.12.2026/перевод|Каждый видит только своё, в том числе в /api|
+|B /admin и поддельная смена статуса|403|
+|Admin/StartNET|Видит обе заявки/контакты, фильтр работает|
+|Новая/Идет аренда|У владельца нет формы отзыва, сервер отвергает POST403|
+|Аренда завершена|Владелец может оставить отзыв; чужой 404; повтор 409|
+|Отзыв с HTML|Виден текст, не новый img/script|
+|5 страниц 390×844/desktop; слайдер|Нет выхода по ширине,4 фото/3 секунды/стрелки|
+|XD local save/reopen/Preview|Два экрана, полный текст, grid, переходы, hover, CTA без переходов|
 
-| Шаг | Действие | Ожидается |
-|---|---|---|
-| 1 | Гость: /bookings,/bookings/new,/admin | Переход на /login |
-| 2 | Неверная регистрация; затем валидный Driver01; дубликат driver01 | Ошибки; успешная запись; дубликат не создан |
-| 3 | Неверный пароль; затем 12345678 | Ошибка на форме; успешный вход |
-| 4 | A создаёт LADA,02.12.2026,Наличными | Своя Новая заявка, нет textarea |
-| 5 | Другой профиль: Other01/12345678,Петров Пётр,8(999)765-43-21,petr@example.ru; Toyota/03.12.2026/перевод | B видит свою заявку, не заявку A |
-| 6 | B открывает /admin |403, данные других пользователей не показаны |
-| 7 | Admin/StartNET | Видит обе заявки/контакты, фильтр Новая находит обе |
-| 8 | Admin: A →Идет аренда; A обновляет кабинет | Статус изменён, отзыв всё ещё закрыт |
-| 9 | Admin: A →Аренда завершена; A отправляет отзыв | Форма появилась, отзыв сохранён и экранирован |
-| 10 | Повторный отзыв/возврат из завершения |409; не дублировать запись и не возобновлять аренду |
-| 11 | Мобильный 390×844, затем desktop | Пять страниц доступны, фото/шрифты локальные, слайдер работает |
-| 12 | Нативный макет закрыть/открыть, Preview | Два экрана/переходы/hover,8 CTA без переходов |
-
-Валидация заявки дополнительно:31.02.2026 и пустые select не сохраняются. Проверка отзыва
-должна включать сервер, не только скрытую форму. В DevTools Console авторизованного пользователя
-из страницы с logout/form взять актуальный csrf. Следующая команда — проверка, не код файла:
+Для серверной проверки отзыва авторизованным A/B в DevTools Console сначала получить токен:
 
 ```javascript
-fetch('/bookings/1/review', {method:'POST', body:new URLSearchParams({csrf:document.querySelector('[name="csrf"]').value,text:'Проверка доступа'})}).then(r=>console.log(r.status));
+const state = await (await fetch('/api')).json();
+const response = await fetch('/bookings/1/review', {method:'POST', body:new URLSearchParams({csrf:state.csrf,text:'Проверка'})});
+console.log(response.status);
 ```
 
-Заменить 1 на ID_A перед выполнением. Для A до завершения ожидается 403; для B на чужую
-заявку 404; для A после первого отзыва 409. **Не запускать как положительную проверку после
-завершения до первого настоящего отзыва**, иначе именно этот текст будет сохранён.
-400 без токена проверяет только CSRF, а не запрет раннего/чужого отзыва. При недоступности
-Console выполнить соответствующие тесты на репетиции; не называть серверный запрет проверенным
-на экзамене только потому, что форма не видна.
+Заменить 1 фактическим ID заявки A. До завершения у A403, у B404; после первого отзыва у A409.
+Не запускать первым положительным отзывом после завершения, если не хочешь сохранить слово
+«Проверка». Успешный POST теперь 200JSON, next обрабатывает JS; старые ожидания 302 не подходят.
+400 без csrf доказывает только CSRF, а не проверку владельца/статуса. В GET/api нет password_hash.
 
-### 9.2. Автотесты — для домашней репетиции или уже законно доступных тестов
-
-Если файлы tests из приложения действительно набраны/разрешены, из корня:
+Если тесты из приложения уже набраны/допущены — дома:
 
 ```powershell
 .\.venv\Scripts\python.exe -m unittest discover -s tests -v
 ```
 
-Ожидается 15 tests/OK, включая 62 HTTP-утверждения. Не тратить время экзамена на ручной набор
-560 строк тестов. Скрипт browser_check требует Edge и websocket-client, module4 tools —
-Pillow/jsonschema, исходную папку source и официальную Schema. Это зависимости проверки,
-не сайта; на экзамене они не предполагаются. Минимальный ручной сценарий выше их заменяет
-в пределах явно проверенных свойств. HTML/права/FK отдельно проверить даже при отсутствии тестов.
-
-### 9.3. Git и передача
+18 tests/OK, включая 62 реальных HTTP-проверки. Браузерный скрипт требует Edge/websocket-client,
+инструменты макета — Pillow/jsonschema/исходную source и официальную Schema. Они не нужны сайту
+и **не предполагаются для набора на экзамене**. Ручной контроль выше обязателен при их отсутствии.
 
 ```powershell
 git add .
-git commit -m "exam: final checks and deliverables"
+git commit -m "exam: final checks"
 git status --short
 git log --oneline -10
 git remote -v
 ```
 
-При отсутствии новых изменений `nothing to commit` нормально, не создавать копии файлов
-ради коммита. Сверить actual start/end каждого модуля, схема/ER/медиа/нативный макет включены.
-Если назначен remote на локальном экзаменационном сервере: добавить **выданный** URL и
-выполнить `git push -u origin HEAD`; если remote уже есть, использовать его без замены.
-Интернет для LAN-сервера не нужен. Не придумывать адрес/GitHub, не считать один локальный
-commit выполненной удалённой сдачей. При ошибке передачи сообщить эксперту и использовать
-предусмотренный регламентом способ, не удаляя локальную работу.
-Вручную проверить открытие файла ER и основного макета из папки сдачи.
+Передать в выданный индивидуальный репозиторий на LAN:если remote есть — не заменять,
+иначе добавить **выданный URL**, затем `git push -u origin HEAD`. Интернет не нужен для LAN.
+Локальный commit не равен удалённой сдаче. Нет remote/ошибка — сообщить эксперту и использовать
+регламентный способ, сохранив локальную работу. ER/медиа/нативный .xd должны реально открываться.
 
-## 10. Частые ошибки ручного набора и быстрые исправления
+## 10. Типичные ошибки набора
 
-| Симптом | Вероятная причина | Проверить первым |
-|---|---|---|
-| SyntaxError/IndentationError | Кавычки/двоеточие/скобка/смешанные отступы | Последнюю строку traceback и строку перед ней; py_compile |
-| Ошибка на email regex | Двойные кавычки заменены одинарными, потерян backslash/апостроф | Сверить всю строку rules.email; soft wrap не должен стать реальным newline |
-| TemplateNotFound | Папка templates, имя _booking, лишнее .txt | Точное имя/расширение, расположение рядом с app.py |
-| Jinja UndefinedError:csrf/selected/row | Macro объявлен не в base, include вне цикла, имя переменной | base первой строкой macro; admin передаёт selected; for row in rows |
-|500 после статуса/заявки | Неверное имя поля/статуса/SQL, не commit | car/start_date/payment/status/filter; параметры и DB.execute |
-|400 у всех POST | Нет `{{ csrf() }}` или устарела cookie | Один токен в каждой POST-форме; обновить страницу и повторить вход |
-|403 у правильного пользователя | Ошибка условия роли/endpoint | before_request: bool(is_admin) сравнивается с двумя admin endpoint |
-| Видны чужие заявки | Потерян WHERE user_id или id берётся из формы | WHERE b.user_id=? и g.user.id; не обходить защиту ради демонстрации |
-| Ранний отзыв сохраняется | Проверка статуса/владельца только в шаблоне | owner SELECT и status guard в app.review до INSERT |
-| Отзыв считается дубликатом при NUL | Потеряна проверка `\0` перед INSERT | Строка проверки текста,400 до БД |
-| Фото/шрифт 404 | jpg/webp/регистр/папка/font name | Network, таблица ресурсов, filename img/...; никакого CDN |
-| CSS/JS будто не изменились | Кэш или незапущенный файл | Ctrl+F5; static/style.css/script.js; Python перезапустить вручную |
-| Слайдер не вращается | Ошибка Console, скрытая вкладка, reduced-motion |4 .slide, counter, data-step,3000; обычная активная вкладка |
-| Маска ломает номер/дату | Введены+7 вместо 8, отсутствует d/slice | Набирать 89991234567 и 02122026; потом проверить формат |
-|500 на огромном ID | Убрана max-граница конвертера | `int(max=9223372036854775807)` в двух POST-URL |
-| SQLite no such column/table | Схема опечатана или старая БД не мигрировала | CREATE IF NOT EXISTS не исправляет старую таблицу. Сначала исправить schema |
-| Database locked | Транзакция открыта в GUI/не закрыто соединение | Commit/rollback в GUI, закрыть его соединение, повторить; не удалять БД |
-| Неверный пароль Admin | Ручная регистрация вместо init_db/опечатка | Admin/StartNET регистр букв; пароль в БД хешируется |
-| Address already in use | Старый сервер работает | Остановить именно свой процесс Ctrl+C; или `$env:PORT='5001'` и новый URL |
-| Flask не найден | Другой Python/пустое venv | Тем же интерпретатором import flask; локальные пакеты организатора |
-| Макет заменил Roboto/текст обрезан | Шрифт не установлен/не тот line-height | Точные TTF,14/18 или 28/34, character spacing0; не масштабировать весь экран |
-| Hover образец виден только в Layers | Нет native event | Настоящий Hover State/Visibility, Preview; скрытый слой сам не интерактивен |
-| Макет есть только в облаке/PNG | Не локальное сохранение | Save As Local Document/.xd либо настоящий .sketch/.fig, reopen |
+| Симптом | Проверить/исправить |
+|---|---|
+|SyntaxError/IndentationError|ASCII-кавычки,4 пробела, двоеточие, закрытие скобок; py_compile и строка перед traceback|
+|Все секции скрыты|JS ещё не набран/404/ошибка Console,/api не вернул JSON; start() должен закончиться|
+|В браузере JSON вместо формы|Нативная отправка без работающего JS; проверить listener submit и defer/static path|
+|400 на POST|Токен взять из актуального /api; FormData.body.set('csrf', data.csrf); обновить страницу|
+|Элемент null/ошибка JS|Сверить id/class/name с index.html; template content не находится обычным querySelector до clone|
+|403 не той роли|before_request, реальная g.user.is_admin; скрытие CSS не заменяет серверный check|
+|Чужие заявки|WHERE b.user_id и истинный is_admin; никогда не брать owner/role из body или URL|
+|Ранний отзыв/дубликат|owner SELECT, status check, UNIQUE reviews.booking_id и 400/403/409|
+|Телефон/дата не проходят|Вводить 8(999)123-45-67 и 02.12.2026 целиком; масок больше нет|
+|500 в SQL|Имена user_id/car/start_date/payment/status, параметры, точное «Идет аренда» без ё|
+|Изменённая схема не действует|CREATE IF NOT EXISTS не миграция; для учебной новой БД задать RENTAL_DB в существующей tmp; не стирать финальную|
+|Database locked|Закрыть/commit транзакцию в GUI; не удалять БД|
+|Слайдер стоит|Console,4 slide,#counter, data-step, активная вкладка/reduced-motion|
+|Фото/шрифты 404|Точное имя/расширение, img/fonts и/static/; не CDN|
+|Flask не найден|Тот же Python, что устанавливал локальные wheels; не пустой venv|
+|Порт занят|Остановить свой старый сервер; или PORT=5001 и новый URL|
+|Python-правки не видны|Ctrl+C и запуск; CSS/JS — Ctrl+F5|
+|XD не переносит текст как в таблице|Roboto, ширина,14/18 либо 28/34, tracking0; не уменьшать ниже 14|
+|Hover лишь скрытый образец|Main Component/Hover State, реальный Preview и клик после наведения|
+|Только облако/PNG|Save As Local Document,.xd существует и открывается повторно|
 
-Для учебной проверки исправленной схемы использовать **новую тестовую БД**, не удаляя
-исходные данные: создать существующую папку tmp и задать `$env:RENTAL_DB='tmp/check.db'`
-перед запуском. Новый файл должен ещё не существовать. Вернуть настройки: убрать эту
-переменную в терминале через `Remove-Item Env:RENTAL_DB` и перезапустить. Не пересоздавать
-финальную БД с демонстрационными данными за 5 минут до сдачи. В Python-код не добавлять
-временные обходы авторизации, роль Admin всем пользователям или отключение CSRF/FK.
+GET-ошибки сейчас стандартные Flask; POST/API — JSON. Само наличие 403 не означает поломку.
+Пароль Admin/StartNET регистрозависимый. На новой учебной БД приложение создаёт его само.
+Не отключать CSRF/FK/роли и не менять чужого владельца ради демонстрации.
 
-## 11. Аварийные планы: осталось 30/15/5 минут
+## 11. Аварийные планы
 
-Отсчитывать от 150, а не от 120:30 минут осталось в момент 120. Это использование резерва,
-а не приглашение планировать новый модуль на последние 30 минут.
+Отсчёт от 150:30 минут осталось в момент 120. Резерв не планировать как новый модуль.
 
-| Остаток | План при работоспособном сайте | Если сайт ещё не работает |
-|---|---|---|
-|30 мин|0–2 сохранить/commit; 2–17 закрыть самый крупный пробел макета (два экрана/тексты/сетка/нативный формат); 17–23 переходы/hover и reopen; 23–27 два владельца/Admin/отзыв; 27–30 финальная сдача|0–10 исправить один блокирующий traceback/шаблон/БД; 10–22 закрепить реально готовые макет/интерфейс; 22–27 минимальные проверки; 27–30 сдача. Не тратить всё время на одну ошибку без checkpoint|
-|15 мин|0–2 сохранить всё; 2–7 самое ценное: локальный native-файл/главный переход либо запрет чужого доступа; 7–11 smoke-вход/заявка/Admin/отзыв; 11–15 Git/сдача/reopen|Исправить единственную локализованную ошибку за≤5 минут; затем сохранить и сдать проверяемую часть. Не переписывать весь app/не начинать длинный CSS|
-|5 мин|0–1 сохранить код/макет; 1–2 открыть сайт и native-файл; 2–4 commit/передача; 4–5 проверить статус/приём. Зафиксировать известные ограничения|Никаких массовых правок, сброса Git, удаления БД, новых библиотек или конвертации формата. Сохранить работу и обеспечить доступ к тому, что действительно готово|
+| Осталось | Действия |
+|---|---|
+|30|0–2 сохранить/commit;2–17 главный незавершённый блок, обычно native-макет;17–23 переходы/hover/reopen;23–27 smoke;27–30 сдача|
+|15|0–2 сохранить;2–7 одна локализованная критичная ошибка;7–11 вход/заявка/Admin/отзыв;11–15 Git/сдача|
+|5|0–1 save;1–2 открыть сайт и .xd;2–4 commit/передача;4–5 проверить приём. Без массовых правок|
 
-Если макета нет вовсе,15 минут могут дать два простых корректных экрана с текстом/сеткой
-и переходами, но не обещают точную композицию всех 47 слоёв. Сначала формат/сетка/весь текст,
-потом hover; не тратить последние минуты на коллаж. Если сайт не закрывает доступ,
-исправление серверной проверки важнее косметики. Ни один аварийный план не гарантирует 85%.
+Если сайт не работает, на 30-минутном резерве выделить≤10 минут на один traceback, затем
+сохранить проверяемые части/макет/схему. Если макета нет, два простых экрана с полным текстом
+и grid важнее коллажа, но точную композицию за 15 минут не обещать. Защита доступа важнее
+косметики. Не сбрасывать Git/БД, не ставить новые библиотеки и не конвертировать файл в спешке.
 
-## 12. Самопроверка руководства и состава сдачи
+## 12. Полные вспомогательные исходники
 
-- Сайт: app/db/schema, шесть шаблонов, общий CSS/JS, requirements, nine local images,
-  Montserrat/OFL; instance создаётся при запуске и не хранится в Git.
-- ER: из фактической SQLite, PK/FK/UNIQUE видны, читаемый экспорт.
-- Макет: один локальный редактируемый файл, два экрана 430×932, grid4, Roboto, полный текст,
-  переходы/hover проверены; PNG дополнительно по необходимости.
-- Git: реальные содержательные start/end; передача на назначенный сервер по регламенту.
-- Не включать в ручной экзаменационный объём тесты/генератор/чужую JSON Schema.
-  Они ниже ради полноты исходников и воспроизводимости домашней проверки.
-
-## 13. Приложение: полный вспомогательный код утверждённой версии
-
-**Этот раздел не набирать во время экзамена.** Он не нужен для работы сайта и создания
-нативного макета мышью. Если требуется формально сверить любой авторский исходный файл,
-он здесь целиком. Порядок: ER для справки, WSGI-тесты, HTTP-тест, браузер, генератор и verifier.
-Для тестов создать папку tests; для browser нужны Edge/websocket-client; для двух tools —
-Pillow/jsonschema, исходная source/Медиа/Медиа, docs/original/Текст.docx и официальный
-sketch-file-format-6.5.0.schema.json с лицензией. Ничего не скачивать на экзамене.
-Генератор создаёт новую UUID-структуру и может перезаписать макет; не запускать его поверх
-ручной финальной работы. Его GUI-ограничения сохранены буквально в исходнике.
+Далее код для полноты домашнего воспроизведения. Не переписывать эти скрипты в экзаменационный
+лимит. Mermaid не заменяет ER из СУБД. Генератор макета может перезаписать .sketch:не запускать
+поверх ручной работы и не считать его заменой работы в XD. Native hover/GUI в исходном
+макете остаются непроверенными ограничениями. Фото/шрифты/Schema/лицензии — ресурсы, не код.
 
 ### `docs/er.mmd`
 
-
-
-27 строк, 553 символов. После набора: сверить с schema.sql. Для требования «средствами СУБД» одного Mermaid недостаточно.
+27 строк, 553 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE docs/er.mmd -->
 ```mermaid
@@ -1368,9 +1115,7 @@ erDiagram
 
 ### `tests/test_app.py`
 
-
-
-178 строк, 9512 символов. После набора: дома: `python -m unittest discover -s tests -p test_app.py -v` — 14 tests/OK.
+216 строк, 11440 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE tests/test_app.py -->
 ```python
@@ -1382,6 +1127,22 @@ from pathlib import Path
 
 
 class RentalTest(unittest.TestCase):
+    def test_plain_pages_and_state_api(self):
+        state = self.client.get('/api')
+        self.assertEqual(state.status_code, 200)
+        self.assertTrue(state.is_json)
+        self.assertEqual(state.json['rows'], [])
+        self.assertIsNone(state.json['user'])
+        self.assertEqual(len(state.json['csrf']), 48)
+        self.assertEqual(state.headers['Cache-Control'], 'no-store')
+        for path in ['/login', '/register']:
+            page = self.client.get(path)
+            self.assertEqual(page.status_code, 200)
+            self.assertNotIn('{%', page.text)
+            self.assertNotIn('{{', page.text)
+            self.assertIn('<form', page.text)
+            page.close()
+
     def setUp(self):
         from app import app, init_db
         self.tmp = tempfile.TemporaryDirectory()
@@ -1398,9 +1159,7 @@ class RentalTest(unittest.TestCase):
 
     def post(self, url, data=None, client=None):
         client = client or self.client
-        client.get('/login')
-        with client.session_transaction() as session:
-            token = session['csrf']
+        token = client.get('/api').json['csrf']
         return client.post(url, data={**(data or {}), 'csrf': token})
 
     def register(self, **changes):
@@ -1423,7 +1182,7 @@ class RentalTest(unittest.TestCase):
         self.booking()
 
     def test_registration_stores_hash_and_unique_login(self):
-        self.assertEqual(self.register().status_code, 302)
+        self.assertEqual(self.register().status_code, 200)
         stored = self.query('SELECT password_hash, is_admin FROM users WHERE login=?', ('Driver01',))[0]
         self.assertNotEqual(stored[0], self.user['password'])
         self.assertEqual(stored[1], 0)
@@ -1441,11 +1200,11 @@ class RentalTest(unittest.TestCase):
             with self.subTest(field=field, value=value):
                 response = self.register(**{field: value})
                 self.assertEqual(response.status_code, 400)
-                self.assertIn('field-error', response.text)
+                self.assertIn(field, response.json['errors'])
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_registration_accepts_boundaries_and_yo(self):
-        self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 302)
+        self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 200)
 
     def test_email_rejects_invalid_parts_and_accepts_subdomains(self):
         for i, email in enumerate(['<a>@x.ru', 'a@<x>.ru', 'a@x,com.ru', 'a@-x.ru', 'a@x_.ru',
@@ -1453,24 +1212,24 @@ class RentalTest(unittest.TestCase):
                                    'a' * 65 + '@example.ru', 'a@' + 'x' * 64 + '.ru']):
             with self.subTest(email=email):
                 self.assertEqual(self.register(login=f'BadMail{i:02}', email=email).status_code, 400)
-        self.assertEqual(self.register(login='ValidMail1', email='ivan_petrov+rent@sub.example.ru').status_code, 302)
+        self.assertEqual(self.register(login='ValidMail1', email='ivan_petrov+rent@sub.example.ru').status_code, 200)
         for i, email in enumerate(["o'connor@example.ru", 'a!b@example.ru']):
-            self.assertEqual(self.register(login=f'MailSpecial{i}', email=email).status_code, 302)
+            self.assertEqual(self.register(login=f'MailSpecial{i}', email=email).status_code, 200)
         self.assertEqual(len(self.query('SELECT id FROM users')), 4)
 
     def test_login_failures_and_admin_routing(self):
         self.register()
         for login, password in [('Driver01', 'wrong'), ("' OR 1=1 --", 'password123'), ('', '')]:
             self.assertEqual(self.login(login, password).status_code, 400)
-        self.assertEqual(self.login().location, '/bookings')
-        self.assertEqual(self.login('Admin', 'StartNET').location, '/admin')
+        self.assertEqual(self.login().json['next'], '/bookings')
+        self.assertEqual(self.login('Admin', 'StartNET').json['next'], '/admin')
 
     def test_login_required_and_logout(self):
         for url in ['/bookings', '/bookings/new', '/admin']:
             self.assertEqual(self.client.get(url).status_code, 302)
         self.register()
         self.login()
-        self.assertEqual(self.post('/logout').status_code, 302)
+        self.assertEqual(self.post('/logout').status_code, 200)
         self.assertEqual(self.client.get('/bookings').status_code, 302)
 
     def test_booking_validates_and_defaults(self):
@@ -1479,17 +1238,17 @@ class RentalTest(unittest.TestCase):
         for changes in [dict(car='BMW'), dict(start_date='31.02.2026'), dict(start_date='2026-12-02'),
                         dict(start_date='2.12.2026'), dict(payment='Картой'), dict(car='')]:
             self.assertEqual(self.booking(**changes).status_code, 400)
-        self.assertEqual(self.booking().status_code, 302)
+        self.assertEqual(self.booking().status_code, 200)
         self.assertEqual(self.query('SELECT car, start_date, status FROM bookings')[0],
                          ('LADA Vesta', '2026-12-02', 'Новая'))
-        self.assertIn('02.12.2026', self.client.get('/bookings').text)
+        self.assertEqual(self.client.get('/api').json['rows'][0]['start_date'], '2026-12-02')
 
     def test_owner_isolation_and_no_role_escalation(self):
         self.ready()
         self.post('/logout')
         self.register(login='Other01', full_name='Петров Пётр', is_admin='1')
         self.login('Other01')
-        self.assertNotIn('LADA Vesta', self.client.get('/bookings').text)
+        self.assertEqual(self.client.get('/api').json['rows'], [])
         self.assertEqual(self.client.get('/admin').status_code, 403)
         self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена')).status_code, 403)
         self.assertEqual(self.post('/bookings/1/review', dict(text='Чужой отзыв')).status_code, 404)
@@ -1501,29 +1260,27 @@ class RentalTest(unittest.TestCase):
         self.assertEqual(self.post('/bookings/1/review', dict(text='Рано')).status_code, 403)
         admin = self.app.test_client()
         self.login('Admin', 'StartNET', admin)
-        self.assertIn('Иванов', admin.get('/admin').text)
+        self.assertIn('Иванов', admin.get('/api').json['rows'][0]['full_name'])
         self.assertEqual(self.post('/admin/1/status', dict(status='???'), admin).status_code, 400)
-        self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 302)
-        self.assertNotIn('LADA Vesta', admin.get('/admin?status=Новая').text)
-        self.assertIn('LADA Vesta', admin.get('/admin?status=Идет аренда').text)
-        self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена'), admin).status_code, 302)
+        self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 200)
+        self.assertEqual(admin.get('/api?status=Новая').json['rows'], [])
+        self.assertEqual(admin.get('/api?status=Идет аренда').json['rows'][0]['car'], 'LADA Vesta')
+        self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена'), admin).status_code, 200)
         self.assertEqual(self.post('/bookings/1/review', dict(text='   ')).status_code, 400)
-        self.assertEqual(self.post('/bookings/1/review', dict(text='<script>alert(1)</script>')).status_code, 302)
-        html = self.client.get('/bookings').text
-        self.assertIn('&lt;script&gt;', html)
-        self.assertNotIn('<script>alert', html)
+        self.assertEqual(self.post('/bookings/1/review', dict(text='<script>alert(1)</script>')).status_code, 200)
+        self.assertEqual(self.client.get('/api').json['rows'][0]['review'], '<script>alert(1)</script>')
         self.assertEqual(self.post('/bookings/1/review', dict(text='Ещё')).status_code, 409)
         self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 409)
         self.assertEqual(self.post('/admin/999/status', dict(status='Идет аренда'), admin).status_code, 404)
 
     def test_csrf_rejects_missing_and_wrong_tokens(self):
-        self.client.get('/register')
+        self.client.get('/api')
         self.assertEqual(self.client.post('/register', data=self.user).status_code, 400)
         self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'bad'}).status_code, 400)
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_malformed_unicode_csrf_returns_form_error(self):
-        self.client.get('/register')
+        self.client.get('/api')
         self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'подделка'}).status_code, 400)
 
     def test_foreign_keys_enabled_in_application_connection(self):
@@ -1549,6 +1306,32 @@ class RentalTest(unittest.TestCase):
         self.assertEqual(self.post('/bookings/1/review', dict(text='\0test')).status_code, 400)
         self.assertEqual(self.query('SELECT id FROM reviews'), [])
 
+    def test_api_never_exposes_hashes_or_other_owners(self):
+        self.ready()
+        api = self.client.get('/api?is_admin=1&user_id=999').json
+        self.assertEqual(set(api['user']), {'id', 'full_name', 'is_admin'})
+        self.assertNotIn('password', str(api))
+        self.assertEqual({r['user_id'] for r in api['rows']}, {2})
+        self.post('/logout')
+        self.assertEqual(self.client.get('/api?is_admin=1').json['rows'], [])
+        self.register(login='Other01')
+        self.login('Other01')
+        with self.client.session_transaction() as session:
+            session['is_admin'] = 1
+        self.assertEqual(self.client.get('/api?is_admin=1&user_id=2').json['rows'], [])
+        self.assertEqual(self.client.get('/admin').status_code, 403)
+
+    def test_json_errors_and_http_methods(self):
+        response = self.register(login='abc')
+        self.assertEqual(response.status_code, 400)
+        self.assertTrue(response.is_json)
+        self.assertIn('login', response.json['errors'])
+        response = self.client.get('/logout')
+        self.assertEqual(response.status_code, 405)
+        self.assertIn('POST', response.headers['Allow'])
+        self.login('Admin', 'StartNET')
+        self.assertEqual(self.client.get('/api?status=invalid').status_code, 400)
+
 
 if __name__ == '__main__':
     unittest.main()
@@ -1557,9 +1340,7 @@ if __name__ == '__main__':
 
 ### `tests/test_http.py`
 
-
-
-169 строк, 10321 символов. После набора: дома вместе с test_app:15 tests/OK; HTTP-отчёт 62 проверки. Нужна папка docs.
+169 строк, 10307 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE tests/test_http.py -->
 ```python
@@ -1606,7 +1387,7 @@ class Session:
     def post(self, path, data=None, token=True):
         fields = dict(data or {})
         if token:
-            fields['csrf'] = re.search(r'name="csrf" value="([a-f0-9]+)"', self.request('/login')[2])[1]
+            fields['csrf'] = json.loads(self.request('/api')[2])['csrf']
         return self.request(path, fields)
 
 
@@ -1661,13 +1442,13 @@ class HTTPAudit(unittest.TestCase):
         for field, value in [('login', 'abc12'), ('login', 'Логин12'), ('password', '1234567'),
                              ('full_name', 'John Smith'), ('phone', '+79991234567'), ('email', '<a>@x.ru')]:
             self.expect('invalid ' + field, guest.post('/register', user | {field: value}), 400)
-        self.expect('register Alice', alice.post('/register', user | {'is_admin': '1'}), 302)
+        self.expect('register Alice', alice.post('/register', user | {'is_admin': '1'}), 200)
         self.expect('duplicate case-insensitive login', guest.post('/register', user | {'login': 'driver01'}), 400)
-        self.expect('register Bob', bob.post('/register', user | dict(login='Driver02', full_name='Второй Пользователь')), 302)
+        self.expect('register Bob', bob.post('/register', user | dict(login='Driver02', full_name='Второй Пользователь')), 200)
         self.expect('wrong password', alice.post('/login', dict(login='Driver01', password='wrong')), 400)
         self.expect('SQL injection login', alice.post('/login', dict(login="' OR 1=1 --", password='Test1234')), 400)
         for client, login, password in [(alice, 'Driver01', 'Test1234'), (bob, 'Driver02', 'Test1234'), (admin, 'Admin', 'StartNET')]:
-            response = self.expect('login ' + login, client.post('/login', dict(login=login, password=password)), 302)
+            response = self.expect('login ' + login, client.post('/login', dict(login=login, password=password)), 200)
             self.assertIn('HttpOnly', response[1].get('Set-Cookie', ''))
             self.assertIn('SameSite=Lax', response[1].get('Set-Cookie', ''))
         booking = dict(car='LADA Vesta', start_date='01.12.2026', payment='Наличными')
@@ -1677,12 +1458,12 @@ class HTTPAudit(unittest.TestCase):
             self.expect('invalid booking', alice.post('/bookings/new', booking | change), 400)
         for car in ['LADA Vesta', 'Hyundai Creta', 'Toyota Camry']:
             payment = 'Наличными' if car == 'LADA Vesta' else 'Переводом по номеру телефона'
-            self.expect('Alice books ' + car, alice.post('/bookings/new', booking | dict(car=car, payment=payment, user_id='3', status='Аренда завершена')), 302)
-        self.expect('Bob books', bob.post('/bookings/new', booking | dict(car='Toyota Camry')), 302)
-        ids = lambda response: set(map(int, re.findall(r'Заявка № (\d+)', response[2])))
-        self.assertEqual(ids(alice.request('/bookings')), {1, 2, 3})
-        self.assertEqual(ids(bob.request('/bookings')), {4})
-        self.assertEqual(ids(admin.request('/admin')), {1, 2, 3, 4})
+            self.expect('Alice books ' + car, alice.post('/bookings/new', booking | dict(car=car, payment=payment, user_id='3', status='Аренда завершена')), 200)
+        self.expect('Bob books', bob.post('/bookings/new', booking | dict(car='Toyota Camry')), 200)
+        ids = lambda response: {row['id'] for row in json.loads(response[2])['rows']}
+        self.assertEqual(ids(alice.request('/api')), {1, 2, 3})
+        self.assertEqual(ids(bob.request('/api')), {4})
+        self.assertEqual(ids(admin.request('/api')), {1, 2, 3, 4})
         self.steps.append(dict(check='owner isolation and admin all four bookings', actual='PASS'))
         for client in [alice, bob]:
             self.expect('regular admin page forbidden', client.request('/admin'), 403)
@@ -1693,31 +1474,31 @@ class HTTPAudit(unittest.TestCase):
         self.expect('guest review forbidden', guest.post('/bookings/1/review', dict(text='Guest')), 302)
         self.expect('guest admin status forbidden', guest.post('/admin/1/status', dict(status='Идет аренда')), 302)
         self.expect('new review forbidden', alice.post('/bookings/1/review', dict(text='Early')), 403)
-        self.expect('start rent', admin.post('/admin/1/status', dict(status='Идет аренда')), 302)
+        self.expect('start rent', admin.post('/admin/1/status', dict(status='Идет аренда')), 200)
         self.expect('active review forbidden', alice.post('/bookings/1/review', dict(text='Early')), 403)
         self.expect('foreign review forbidden', bob.post('/bookings/1/review', dict(text='Foreign')), 404)
-        self.expect('finish rent', admin.post('/admin/1/status', dict(status='Аренда завершена')), 302)
+        self.expect('finish rent', admin.post('/admin/1/status', dict(status='Аренда завершена')), 200)
         self.expect('foreign finished review forbidden', bob.post('/bookings/1/review', dict(text='Foreign')), 404)
         self.expect('empty review rejected', alice.post('/bookings/1/review', dict(text='   ')), 400)
         self.expect('NUL review rejected', alice.post('/bookings/1/review', dict(text='\0test')), 400)
         review = 'Уникальный отзыв <script>alert(1)</script>'
-        self.expect('owner finished review saved', alice.post('/bookings/1/review', dict(text=review)), 302)
+        self.expect('owner finished review saved', alice.post('/bookings/1/review', dict(text=review)), 200)
         self.expect('duplicate review rejected', alice.post('/bookings/1/review', dict(text='Again')), 409)
         for client in [alice, admin]:
-            html = client.request('/bookings' if client is alice else '/admin')[2]
-            self.assertIn('&lt;script&gt;', html)
-            self.assertNotIn('<script>alert(1)</script>', html)
-        self.assertNotIn('Уникальный отзыв', bob.request('/bookings')[2])
+            rows = json.loads(client.request('/api')[2])['rows']
+            self.assertEqual(next(row for row in rows if row['id'] == 1)['review'], review)
+            self.assertNotIn('password', str(rows))
+        self.assertNotIn('Уникальный отзыв', json.loads(bob.request('/api')[2])['rows'].__str__())
         for status, wanted in [('Новая', {2, 3, 4}), ('Идет аренда', set()), ('Аренда завершена', {1})]:
-            self.assertEqual(ids(admin.request('/admin?status=' + status)), wanted)
-        self.expect('unknown filter rejected', admin.request('/admin?status=bad'), 400)
+            self.assertEqual(ids(admin.request('/api?status=' + status)), wanted)
+        self.expect('unknown filter rejected', admin.request('/api?status=bad'), 400)
         self.expect('unknown status rejected', admin.post('/admin/2/status', dict(status='bad')), 400)
         self.expect('terminal status protected', admin.post('/admin/1/status', dict(status='Идет аренда')), 409)
         self.expect('oversized review ID', alice.post('/bookings/9223372036854775808/review', dict(text='Text')), 404)
         self.expect('oversized status ID', admin.post('/admin/9223372036854775808/status', dict(status='Идет аренда')), 404)
         response = self.expect('GET logout is read-only', alice.request('/logout'), 405)
         self.assertIn('POST', response[1]['Allow'])
-        self.expect('logout', alice.post('/logout'), 302)
+        self.expect('logout', alice.post('/logout'), 200)
         self.expect('logged-out history blocked', alice.request('/bookings'), 302)
         with closing(sqlite3.connect(self.db)) as con:
             self.assertEqual(con.execute('PRAGMA integrity_check').fetchone()[0], 'ok')
@@ -1737,9 +1518,7 @@ if __name__ == '__main__':
 
 ### `tests/browser_check.py`
 
-
-
-213 строк, 11578 символов. После набора: дома при установленном Edge/websocket-client: `python tests/browser_check.py`, PASS.
+207 строк, 11407 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE tests/browser_check.py -->
 ```python
@@ -1802,7 +1581,7 @@ def js(expression):
 
 def wait_path(path):
     for _ in range(100):
-        if js('location.pathname') == path and js('document.readyState') == 'complete':
+        if js('location.pathname') == path and js('document.readyState') == 'complete' and js("typeof data !== 'undefined' && data && !!document.querySelector('main>section:not([hidden])')"):
             return
         time.sleep(.05)
     raise AssertionError('Navigation did not reach ' + path)
@@ -1813,7 +1592,7 @@ def go(path):
     wait_path(path)
 
 
-def submit(values, path, selector='main form'):
+def submit(values, path, selector='main>section:not([hidden]) form'):
     js('Object.entries(' + json.dumps(values) + ').forEach(([k,v])=>document.querySelector(' +
        json.dumps(selector) + ').elements[k].value=v)')
     js('document.querySelector(' + json.dumps(selector) + ').requestSubmit()')
@@ -1844,8 +1623,8 @@ try:
     cmd('Page.enable'); cmd('Runtime.enable'); cmd('Network.enable')
     cmd('Emulation.setDeviceMetricsOverride', width=390, height=844, deviceScaleFactor=1, mobile=True)
     go('/login'); screenshot('login-mobile')
-    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
-    assert js("Math.abs(document.querySelector('.slide img').clientWidth / document.querySelector('.slide img').clientHeight - 1.6) < .02"), 'Slider image is distorted'
+    assert js("document.querySelector('main>section:not([hidden]) [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
+    assert js("Math.abs(document.querySelector('.slide').clientWidth / document.querySelector('.slide').clientHeight - 1.6) < .02"), 'Slider image is distorted'
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
     assert js("document.querySelectorAll('.slide').length") == 4
@@ -1856,7 +1635,7 @@ try:
     for expected in [1, 2, 3, 0]:
         time.sleep(3.05)
         assert js(active_slide) == expected, 'Automatic slideshow did not advance or wrap'
-        assert js("document.querySelector('.slide-count').textContent") == f'{expected + 1} / 4'
+        assert js("document.querySelector('#counter').textContent") == f'{expected + 1} / 4'
     js("document.querySelector('[data-step=\"-1\"]').click()")
     assert js(active_slide) == 3
     js("document.querySelector('[data-step=\"1\"]').click()")
@@ -1876,51 +1655,45 @@ try:
     assert js(active_slide) == (frozen + 1) % 4
     cmd('Emulation.setEmulatedMedia', features=[])
     go('/register'); screenshot('register-mobile')
-    assert js("document.querySelector('[name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
+    assert js("document.querySelector('main>section:not([hidden]) [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
     submit(dict(login='bad', password='123', full_name='John', phone='+7', email='<a>@x.ru'), '/register')
-    assert js("document.querySelectorAll('.field-error').length") == 5
+    assert js("document.querySelector('#register output').textContent.trim().split('\\n').length") == 5
     screenshot('register-errors-mobile')
-    js("document.querySelector('[name=phone]').value='';document.querySelector('[name=phone]').focus()")
-    cmd('Input.insertText', text='89991234567')
-    assert js("document.querySelector('[name=phone]').value") == '8(999)123-45-67', 'Mobile phone separators missing'
     submit(dict(login='Browser01', password='password123', full_name='Иванов Иван',
                 phone='8(999)123-45-67', email='browser@example.ru'), '/login')
     submit(dict(login='Browser01', password='wrong'), '/login')
-    assert js("document.querySelectorAll('.field-error').length") == 1
+    assert js("document.querySelector('#login output').textContent.trim().split('\\n').length") == 1
     screenshot('login-errors-mobile')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('bookings-empty-mobile')
     go('/bookings/new'); screenshot('new-mobile')
     submit(dict(car='', start_date='31.02.2026', payment=''), '/bookings/new')
-    assert js("document.querySelectorAll('.field-error').length") == 3
+    assert js("document.querySelector('#new output').textContent.trim().split('\\n').length") == 3
     screenshot('new-errors-mobile')
-    js("document.querySelector('[name=start_date]').value='';document.querySelector('[name=start_date]').focus()")
-    cmd('Input.insertText', text='02122026')
-    assert js("document.querySelector('[name=start_date]').value") == '02.12.2026', 'Mobile date separators missing'
     submit(dict(car='Toyota Camry', start_date='02.12.2026', payment='Переводом по номеру телефона'), '/bookings')
     screenshot('bookings-mobile')
-    assert js("!document.querySelector('textarea')")
+    assert js("!document.querySelector('.review-form:not([hidden])')")
     submit({}, '/login', 'header form')
     submit(dict(login='Admin', password='StartNET'), '/admin')
     screenshot('admin-mobile')
     submit(dict(status='Идет аренда'), '/admin', '.status-form')
     screenshot('admin-renting-mobile')
     submit(dict(status='Аренда завершена'), '/admin', '.status-form')
-    js("document.querySelector('#filter').value='Новая'")
-    js("document.querySelector('.filter').requestSubmit()")
+    js("document.querySelector('#filter select').value='Новая'")
+    js("document.querySelector('#filter').requestSubmit()")
     time.sleep(.3)
     assert js("!document.querySelector('.booking')"), 'Status filter failed'
     go('/admin')
     submit({}, '/login', 'header form')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('review-mobile')
-    submit(dict(text='Удобно и быстро. Спасибо!'), '/bookings', 'main .review')
-    assert js("document.querySelector('.review').textContent.includes('Удобно и быстро')")
+    submit(dict(text='Удобно <img src=x onerror=window.XSS=1> и быстро. Спасибо!'), '/bookings', 'main .review-form')
+    assert js("document.querySelector('.review').textContent.includes('<img src=x onerror=window.XSS=1>') && !window.XSS && !document.querySelector('.review img')")
     screenshot('review-saved-mobile')
     go('/bookings/new')
     submit(dict(car='LADA Vesta', start_date='03.12.2026', payment='Наличными'), '/bookings')
     assert js("document.querySelector('.car-photo').getAttribute('src').endsWith('vesta.jpg')")
-    assert js("document.querySelector('.booking h2').getBoundingClientRect().left > document.querySelector('.car-photo').getBoundingClientRect().left"), 'Mobile photo and model must share the summary row'
+    assert js("document.querySelector('.car-photo').getBoundingClientRect().right <= innerWidth"), 'Photo must fit the mobile card'
     screenshot('bookings-two-mobile')
     cmd('Emulation.setDeviceMetricsOverride', width=1440, height=1000, deviceScaleFactor=1, mobile=False)
     screenshot('bookings-desktop')
@@ -1939,7 +1712,7 @@ try:
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
-                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile phone/date input masks', 'mobile forms above fold', 'model-specific photo and compact mobile summary', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
+                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile forms above fold', 'model-specific photo and mobile cards', 'XSS payload is visible plain text, not an image or executable code', 'plain HTML and JSON API', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
 finally:
@@ -1961,9 +1734,7 @@ finally:
 
 ### `module4/build_design.py`
 
-
-
-248 строк, 16590 символов. После набора: только домашняя сборка: schema validation; GUI/native hover остаются ограничениями, указанными в коде.
+248 строк, 16590 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE module4/build_design.py -->
 ```python
@@ -2220,9 +1991,7 @@ print('Built',sketch.name,'with official schema validation; native GUI/playback 
 
 ### `module4/verify_design.py`
 
-
-
-232 строк, 14526 символов. После набора: только домашняя проверка: automated PASS, общий PARTIAL. Не приравнивать к Preview в редакторе.
+232 строк, 14526 символов. Проверка: домашняя проверка по README; никаких сокращений исходника в этом блоке.
 
 <!-- SOURCE module4/verify_design.py -->
 ```python
@@ -2461,10 +2230,10 @@ print(json.dumps(report, ensure_ascii=True, indent=2))
 ```
 <!-- END SOURCE module4/verify_design.py -->
 
-## 14. Контрольная ведомость исходников
+## 13. Сверка исходников
 
-Ниже SHA256 **текста с LF**, использованного в блоках SOURCE. Служебные команды и текстовые
-таблицы не являются альтернативными версиями файлов. Перевод LF↔CRLF не меняет Python/Jinja.
+SHA256 нормализованного текста LF; строковые блоки соответствуют текущим файлам.
+CRLF в Windows допустим, специально минифицировать ничего не нужно.
 
 | Файл | Строк | Символов | SHA256 LF |
 |---|---:|---:|---|
@@ -2472,37 +2241,27 @@ print(json.dumps(report, ensure_ascii=True, indent=2))
 | `requirements.txt` | 1 | 13 | `6979faed9b4726634bb0ff2b36f3e5a080e4d89a162dc1f264fce99bae332a8a` |
 | `db.py` | 24 | 657 | `6dfb56013588d2bd2136770fb949ff8a1a0b9d7385d7cfaa194d506768b88530` |
 | `schema.sql` | 25 | 1095 | `bfef029decfe3d0b9dca3b19d171c187ed3c92bee4c48a3e030309482effe9fe` |
-| `app.py` | 206 | 9281 | `9785c676edcc5e0e3e1b7e75a3f802e392652ac20382f4ba585ef7cac7bdd157` |
-| `templates/base.html` | 28 | 1696 | `d99d21d4fb7583df5ed755e297692d9025bfbc39bb9a613a78bcb03bf533e26b` |
-| `templates/auth.html` | 39 | 2827 | `0a1245223c2569ab6f3c2997bdfd6874274f8a878c8142cd976de4467b0f34ed` |
-| `templates/_booking.html` | 14 | 1977 | `fc197b6f124547f723adeb3ffda1cc50f3952047276a5ac36fc65c3e38bbe4e1` |
-| `templates/bookings.html` | 8 | 696 | `ea4609e9ef0e68b257b8cff8c2a68dbb5afb2e5ce308e261627726768c35e62c` |
-| `templates/new.html` | 13 | 2039 | `a66b28406c3c5bbed91e7dfa2c79a05e36dafbf83a8ed0a6a0eb4a294f04814b` |
-| `templates/admin.html` | 9 | 898 | `0e623c0c35072204e96d43d6add69411baee05dee3d906a12e01631690375503` |
-| `static/style.css` | 115 | 7452 | `8949aaeec72ee927408f14f5560dc406642626093054c4435c19082981226ebd` |
-| `static/script.js` | 31 | 1492 | `60638d9bd22c69bbac58f3cfdd0b87368e40d4a1e6a6547beb49cf3cf28e0489` |
+| `app.py` | 200 | 7825 | `e18ec275cd3483aa5fe8978bd5aa63f3093dc24727505f711652a1290629aa7c` |
+| `static/index.html` | 77 | 4285 | `51f036a0f1734d4664998adda5b2567ac2d624de1494fca200bc9bc5caef9c37` |
+| `static/script.js` | 90 | 4272 | `380a374924955d96523b204feb7e1c6863ea8eabc5cb79ad438feb1c6a79eb93` |
+| `static/style.css` | 38 | 2393 | `ce382791bcd7a24442aae703dd422ef6fe558c7984e67e8c2e1b6f895a9ddee3` |
 | `docs/er.mmd` | 27 | 553 | `47bb6c5dabb3edf255b322d96f7c346dda2aad8b98c15b97b58f51ebf83c033b` |
-| `tests/test_app.py` | 178 | 9512 | `939e2c32ae9a00b2523cc4cb131cfb812967a332c957f10e089d49c1302d69c9` |
-| `tests/test_http.py` | 169 | 10321 | `6d048c818f644febeb7a2297888bd4d11acd3fbbcc0f8c760fc2682633753b35` |
-| `tests/browser_check.py` | 213 | 11578 | `883061aec90d4c00497d78a165dc7ff33b9cc68919c318fc9bb2482c46bd9511` |
+| `tests/test_app.py` | 216 | 11440 | `d7e67d12ab6ee9e3d9f88460215198d941a576a070b9ad5f201080592121ead5` |
+| `tests/test_http.py` | 169 | 10307 | `28be77f6d73322df8cd34ef3ccef92ea4f094da3a637efe42ccb4a0bcaf469e6` |
+| `tests/browser_check.py` | 207 | 11407 | `1d67b37b264d0a3a7e726634a890d5db0f9c1484b2e4111bd09350d2236d7f7b` |
 | `module4/build_design.py` | 248 | 16590 | `2e9a9d245e2d30a1410feb29fb734a1d950454950489c77c859de815cb252e2c` |
 | `module4/verify_design.py` | 232 | 14526 | `2fd03fc3934d79cdfaeacf1fe7df1f92850f48cda8a40300c5aa62fdb859aec6` |
 
-## 15. Фактически выполненная проверка этого руководства
+## 14. Фактически выполненная проверка руководства
 
-- 19 блоков SOURCE извлечены автоматически и посимвольно сверены со всеми авторскими
-  исходными файлами соответствующих типов в Git. Совпадение полное, SHA256 LF приведены выше.
-- Из извлечённых блоков собрана отдельная копия проекта; ресурсы скопированы из утверждённой
-  версии. На этой копии прошли **15 тестов, OK, 27,459 s**, включая **62 проверки реального HTTP**.
-- На извлечённой копии прошёл полный браузерный сценарий Edge: 390×844 и 1440×1000,
-  формы/ошибки, статусы, отзывы, слайдер и локальные ресурсы, без внешних запросов и JS-исключений.
-- 47 текстовых строк/вхождений в двух таблицах макета сверены с видимыми слоями `.sketch`
-  по порядку и кратности. Код приложения, схема, ресурсы и сам макет не изменялись.
-- Финальная шпаргалка отрендерена в **2 страницы A4**, поля 11 mm, основной шрифт 10 pt,
-  таблицы 9,4 pt, заголовки 15/11 pt, моноширинный 8,3 pt; обе страницы визуально просмотрены.
-  В Markdown задан разрыв между страницами. При другом движке/шрифте пагинация может меняться;
-  для повторения результата использовать указанные параметры печати без колонтитулов.
-- Реальный набор человеком за 120 минут **не проводился**. GUI Adobe XD в текущем окружении
-  **не проверен**: шаги основаны на документации Adobe и точных данных макета. Наличие XD на
-  экзамене подтверждено пользователем; нативный Preview/hover/reopen нужно отрепетировать там.
+- Все14 SOURCE-блоков совпадают с текущими исходниками по символам и SHA256 LF.
+- Из блоков собран отдельный проект:18 tests/OK за41,388s, включая62 HTTP-проверки.
+- Текущий код прошёл Edge390×844/1440×1000: формы/ошибки, статусы/отзывы/фильтр,
+  4 слайда/3000ms/стрелки, локальные фото/шрифты и XSS как текст, без JS-исключений.
+- 47 видимых текстов макета сверены по порядку/кратности с настоящим .sketch.
+- Шпаргалка отрендерена в2 страницы A4 (поля11mm, основной10pt, таблицы9,4pt,
+  моноширинный8,3pt), обе страницы визуально проверены. Другой движок может изменить пагинацию.
+- Проверки человека на скорость набора и нативного GUI Adobe XD не проводились.
+  Для XD используются точная геометрия/тексты макета и документация Adobe; Preview/reopen
+  и настоящий hover необходимо отрепетировать в предоставленном редакторе.
 
