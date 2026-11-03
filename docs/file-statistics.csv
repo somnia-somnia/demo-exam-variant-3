@@ -1,8 +1,9 @@
 ﻿file,category,lines,nonempty,characters,bytes
 .gitignore,documentation/config,7,7,72,72
+CHATGPT_TUTOR_PROMPT.md,documentation/config,118,106,8329,14329
 EXAM_CHEATSHEET.md,documentation/config,104,86,4884,6969
 EXAM_REPRODUCTION.md,documentation/config,2267,1985,124117,148811
-README.md,documentation/config,57,44,3054,4675
+README.md,documentation/config,62,47,3274,5046
 app.py,site,200,164,7825,8323
 db.py,site,24,17,657,657
 docs/AUDIT.md,documentation/config,177,155,17320,27454
