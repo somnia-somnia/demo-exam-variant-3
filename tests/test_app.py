@@ -168,7 +168,7 @@ class RentalTest(unittest.TestCase):
         from app import get_db
         with self.app.app_context():
             with self.assertRaises(sqlite3.IntegrityError):
-                get_db().execute('INSERT INTO bookings(user_id, car, start_date, payment) VALUES(?,?,?,?)',
+                get_db().query('INSERT INTO bookings(user_id, car, start_date, payment) VALUES(?,?,?,?)',
                                  (999, 'LADA Vesta', '2026-12-02', 'Наличными'))
 
     def test_oversized_booking_ids_return_not_found(self):

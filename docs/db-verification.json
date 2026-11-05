@@ -124,14 +124,6 @@
           "notnull": 1,
           "dflt_value": "'Новая'",
           "pk": 0
-        },
-        {
-          "cid": 6,
-          "name": "created_at",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": "CURRENT_TIMESTAMP",
-          "pk": 0
         }
       ],
       "foreign_keys": [
@@ -146,15 +138,7 @@
           "match": "NONE"
         }
       ],
-      "indexes": [
-        {
-          "seq": 0,
-          "name": "bookings_user",
-          "unique": 0,
-          "origin": "c",
-          "partial": 0
-        }
-      ]
+      "indexes": []
     },
     "reviews": {
       "columns": [
@@ -180,14 +164,6 @@
           "type": "TEXT",
           "notnull": 1,
           "dflt_value": null,
-          "pk": 0
-        },
-        {
-          "cid": 3,
-          "name": "created_at",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": "CURRENT_TIMESTAMP",
           "pk": 0
         }
       ],

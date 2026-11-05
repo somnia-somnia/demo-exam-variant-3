@@ -19,13 +19,11 @@
 <text x="426" y="257" font-size="16">start_date TEXT</text>
 <text x="426" y="286" font-size="16">payment TEXT</text>
 <text x="426" y="315" font-size="16">status TEXT</text>
-<text x="426" y="344" font-size="16">created_at TEXT</text>
 <rect x="790" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
 <text x="806" y="135" font-size="21" fill="#d9480f">reviews</text>
 <text x="806" y="170" font-size="16">id INTEGER · PK</text>
 <text x="806" y="199" font-size="16">booking_id INTEGER · FK, UK</text>
 <text x="806" y="228" font-size="16">text TEXT</text>
-<text x="806" y="257" font-size="16">created_at TEXT</text>
 <path d="M320 205H410 M700 205H790" fill="none" stroke="#212b36" stroke-width="2"/>
 <text x="330" y="192" font-size="13">1 → 0..N</text><text x="710" y="192" font-size="13">1 → 0..1</text>
 <text x="30" y="430" font-size="14">Один отзыв на заявку; владельца отзыва определяет связь с заявкой.</text></g></svg>

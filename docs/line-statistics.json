@@ -3,65 +3,72 @@
   "files": [
     {
       "file": "app.py",
-      "lines": 204,
-      "nonempty": 168,
-      "characters": 8707,
-      "bytes": 9222
+      "lines": 153,
+      "nonempty": 139,
+      "characters": 6042,
+      "bytes": 6491
     },
     {
       "file": "db.py",
-      "lines": 24,
-      "nonempty": 17,
-      "characters": 657,
-      "bytes": 657
+      "lines": 16,
+      "nonempty": 12,
+      "characters": 370,
+      "bytes": 386
     },
     {
       "file": "schema.sql",
-      "lines": 25,
-      "nonempty": 25,
-      "characters": 1095,
-      "bytes": 1164
+      "lines": 22,
+      "nonempty": 22,
+      "characters": 856,
+      "bytes": 947
     },
     {
       "file": "static/style.css",
-      "lines": 37,
-      "nonempty": 37,
-      "characters": 2322,
-      "bytes": 2359
+      "lines": 25,
+      "nonempty": 25,
+      "characters": 1433,
+      "bytes": 1433
     },
     {
       "file": "static/script.js",
-      "lines": 18,
-      "nonempty": 18,
-      "characters": 659,
-      "bytes": 659
+      "lines": 13,
+      "nonempty": 13,
+      "characters": 344,
+      "bytes": 357
+    },
+    {
+      "file": "requirements.txt",
+      "lines": 1,
+      "nonempty": 1,
+      "characters": 13,
+      "bytes": 13
     },
     {
       "file": "templates/base.html",
-      "lines": 19,
-      "nonempty": 19,
-      "characters": 898,
-      "bytes": 977
+      "lines": 15,
+      "nonempty": 15,
+      "characters": 865,
+      "bytes": 920
     },
     {
       "file": "templates/bookings.html",
-      "lines": 30,
-      "nonempty": 30,
-      "characters": 2249,
-      "bytes": 2421
+      "lines": 16,
+      "nonempty": 16,
+      "characters": 1135,
+      "bytes": 1248
     },
     {
       "file": "templates/form.html",
-      "lines": 30,
-      "nonempty": 30,
-      "characters": 1915,
-      "bytes": 2146
+      "lines": 16,
+      "nonempty": 16,
+      "characters": 934,
+      "bytes": 1038
     }
   ],
   "total": {
-    "lines": 387,
-    "nonempty": 344,
-    "characters": 18502,
-    "bytes": 19605
+    "lines": 277,
+    "nonempty": 259,
+    "characters": 11992,
+    "bytes": 12833
   }
 }

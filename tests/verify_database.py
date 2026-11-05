@@ -12,15 +12,15 @@ from db import DB
 
 with tempfile.TemporaryDirectory() as directory:
     db = DB(str(Path(directory)/'schema.db'))
-    db.script((ROOT/'schema.sql').read_text(encoding='utf-8'))
+    db.c.executescript((ROOT/'schema.sql').read_text(encoding='utf-8'))
     tables = {}
     for name in ('users', 'bookings', 'reviews'):
-        tables[name] = dict(columns=[dict(r) for r in db.all(f'PRAGMA table_info({name})')],
-            foreign_keys=[dict(r) for r in db.all(f'PRAGMA foreign_key_list({name})')],
-            indexes=[dict(r) for r in db.all(f'PRAGMA index_list({name})')])
-    assert db.one('PRAGMA foreign_keys')[0] == 1
-    assert db.one('PRAGMA integrity_check')[0] == 'ok'
-    assert not db.all('PRAGMA foreign_key_check')
+        tables[name] = dict(columns=[dict(r) for r in db.query(f'PRAGMA table_info({name})', many=True)],
+            foreign_keys=[dict(r) for r in db.query(f'PRAGMA foreign_key_list({name})', many=True)],
+            indexes=[dict(r) for r in db.query(f'PRAGMA index_list({name})', many=True)])
+    assert db.query('PRAGMA foreign_keys')[0] == 1
+    assert db.query('PRAGMA integrity_check')[0] == 'ok'
+    assert not db.query('PRAGMA foreign_key_check', many=True)
     assert tables['bookings']['foreign_keys'][0]['table'] == 'users'
     assert tables['reviews']['foreign_keys'][0]['table'] == 'bookings'
     report = dict(result='PASS', sqlite_version=sqlite3.sqlite_version, foreign_keys_enabled=1,
@@ -36,9 +36,9 @@ with tempfile.TemporaryDirectory() as directory:
         svg += [f'<rect x="{x}" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>',
                 f'<text x="{x+16}" y="135" font-size="21" fill="#d9480f">{name}</text>']
         unique = set()
-        for idx in db.all(f'PRAGMA index_list({name})'):
+        for idx in db.query(f'PRAGMA index_list({name})', many=True):
             if idx['unique']:
-                unique.update(r['name'] for r in db.all(f"PRAGMA index_info({idx['name']})"))
+                unique.update(r['name'] for r in db.query(f"PRAGMA index_info({idx['name']})", many=True))
         foreign = {r['from'] for r in meta['foreign_keys']}
         for i, column in enumerate(meta['columns']):
             flags = [flag for flag, yes in [('PK', column['pk']), ('FK', column['name'] in foreign), ('UK', column['name'] in unique)] if yes]
