@@ -1,11 +1,31 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="500" viewBox="0 0 1120 500">
-<rect width="1120" height="500" fill="#f8f9fa"/><g font-family="Arial,sans-serif" fill="#212b36">
-<text x="40" y="45" font-size="25" font-weight="bold">Ключ.на.старт · ER-диаграмма</text>
-<text x="40" y="76" font-size="15">PK — первичный ключ · FK — внешний ключ · UK — уникальное значение</text>
-<g fill="white" stroke="#212b36" stroke-width="1.5"><rect x="40" y="115" width="280" height="295" rx="12"/><rect x="420" y="115" width="280" height="295" rx="12"/><rect x="800" y="115" width="280" height="230" rx="12"/></g>
-<g fill="#d9480f" font-size="21" font-weight="bold"><text x="60" y="152">users</text><text x="440" y="152">bookings</text><text x="820" y="152">reviews</text></g>
-<g font-size="16"><text x="60" y="189">id INTEGER · PK</text><text x="60" y="220">login TEXT · UK, NOCASE</text><text x="60" y="251">password_hash TEXT</text><text x="60" y="282">full_name TEXT</text><text x="60" y="313">phone TEXT</text><text x="60" y="344">email TEXT</text><text x="60" y="375">is_admin INTEGER</text>
-<text x="440" y="189">id INTEGER · PK</text><text x="440" y="220">user_id INTEGER · FK</text><text x="440" y="251">car TEXT</text><text x="440" y="282">start_date TEXT · ISO date</text><text x="440" y="313">payment TEXT</text><text x="440" y="344">status TEXT</text><text x="440" y="375">created_at TEXT</text>
-<text x="820" y="189">id INTEGER · PK</text><text x="820" y="220">booking_id INTEGER · FK, UK</text><text x="820" y="251">text TEXT</text><text x="820" y="282">created_at TEXT</text></g>
-<g stroke="#212b36" fill="none" stroke-width="2"><path d="M320 220H420M320 210V230M410 210L420 220L410 230M700 220H800M700 210V230M790 210V230"/></g>
-<g font-size="14"><text x="330" y="200">1 → 0..N</text><text x="710" y="200">1 → 0..1</text><text x="40" y="452">Все поля NOT NULL. Один пользователь создаёт много заявок; одна заявка получает не более одного отзыва.</text><text x="40" y="478">Владельца отзыва определяет заявка. PRAGMA foreign_keys = ON на каждом соединении приложения.</text></g></g></svg>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="460" viewBox="0 0 1120 460">
+<rect width="1120" height="460" fill="#f8f9fa"/><g font-family="Arial,sans-serif" fill="#212b36">
+<text x="30" y="40" font-size="24">Ключ.на.старт · ER из метаданных SQLite</text>
+<text x="30" y="72" font-size="14">PK — первичный ключ · FK — внешний ключ · UK — уникальное значение</text>
+<rect x="30" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<text x="46" y="135" font-size="21" fill="#d9480f">users</text>
+<text x="46" y="170" font-size="16">id INTEGER · PK</text>
+<text x="46" y="199" font-size="16">login TEXT · UK</text>
+<text x="46" y="228" font-size="16">password_hash TEXT</text>
+<text x="46" y="257" font-size="16">full_name TEXT</text>
+<text x="46" y="286" font-size="16">phone TEXT</text>
+<text x="46" y="315" font-size="16">email TEXT</text>
+<text x="46" y="344" font-size="16">is_admin INTEGER</text>
+<rect x="410" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<text x="426" y="135" font-size="21" fill="#d9480f">bookings</text>
+<text x="426" y="170" font-size="16">id INTEGER · PK</text>
+<text x="426" y="199" font-size="16">user_id INTEGER · FK</text>
+<text x="426" y="228" font-size="16">car TEXT</text>
+<text x="426" y="257" font-size="16">start_date TEXT</text>
+<text x="426" y="286" font-size="16">payment TEXT</text>
+<text x="426" y="315" font-size="16">status TEXT</text>
+<text x="426" y="344" font-size="16">created_at TEXT</text>
+<rect x="790" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<text x="806" y="135" font-size="21" fill="#d9480f">reviews</text>
+<text x="806" y="170" font-size="16">id INTEGER · PK</text>
+<text x="806" y="199" font-size="16">booking_id INTEGER · FK, UK</text>
+<text x="806" y="228" font-size="16">text TEXT</text>
+<text x="806" y="257" font-size="16">created_at TEXT</text>
+<path d="M320 205H410 M700 205H790" fill="none" stroke="#212b36" stroke-width="2"/>
+<text x="330" y="192" font-size="13">1 → 0..N</text><text x="710" y="192" font-size="13">1 → 0..1</text>
+<text x="30" y="430" font-size="14">Один отзыв на заявку; владельца отзыва определяет связь с заявкой.</text></g></svg>

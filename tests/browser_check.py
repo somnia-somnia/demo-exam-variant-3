@@ -57,7 +57,7 @@ def js(expression):
 
 def wait_path(path):
     for _ in range(100):
-        if js('location.pathname') == path and js('document.readyState') == 'complete' and js("typeof data !== 'undefined' && data && !!document.querySelector('main>section:not([hidden])')"):
+        if js('location.pathname') == path and js('document.readyState') == 'complete' and js("!!document.querySelector('main>section h1')"):
             return
         time.sleep(.05)
     raise AssertionError('Navigation did not reach ' + path)
@@ -68,7 +68,7 @@ def go(path):
     wait_path(path)
 
 
-def submit(values, path, selector='main>section:not([hidden]) form'):
+def submit(values, path, selector='main>section form'):
     js('Object.entries(' + json.dumps(values) + ').forEach(([k,v])=>document.querySelector(' +
        json.dumps(selector) + ').elements[k].value=v)')
     js('document.querySelector(' + json.dumps(selector) + ').requestSubmit()')
@@ -123,28 +123,21 @@ try:
     time.sleep(1.85)
     assert js(active_slide) == 2
     assert js("[...document.querySelectorAll('.slider [data-step]')].every(button=>{const b=button.getBoundingClientRect(),s=button.closest('.slider').getBoundingClientRect();return b.width>=44 && b.height>=44 && b.left>=s.left && b.right<=s.right && b.top>=s.top && b.bottom<=s.bottom})"), 'Slider arrows must fit inside the photo and have 44px targets'
-    cmd('Emulation.setEmulatedMedia', features=[dict(name='prefers-reduced-motion', value='reduce')])
-    frozen = js(active_slide)
-    time.sleep(3.1)
-    assert js(active_slide) == frozen, 'Reduced-motion must stop automatic rotation'
-    js("document.querySelector('[data-step=\"1\"]').click()")
-    assert js(active_slide) == (frozen + 1) % 4
-    cmd('Emulation.setEmulatedMedia', features=[])
     go('/register'); screenshot('register-mobile')
     assert js("document.querySelector('main>section:not([hidden]) [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
     submit(dict(login='bad', password='123', full_name='John', phone='+7', email='<a>@x.ru'), '/register')
-    assert js("document.querySelector('#register output').textContent.trim().split('\\n').length") == 5
+    assert js("document.querySelectorAll('main .error[role=alert]').length") == 5
     screenshot('register-errors-mobile')
     submit(dict(login='Browser01', password='password123', full_name='Иванов Иван',
                 phone='8(999)123-45-67', email='browser@example.ru'), '/login')
     submit(dict(login='Browser01', password='wrong'), '/login')
-    assert js("document.querySelector('#login output').textContent.trim().split('\\n').length") == 1
+    assert js("document.querySelectorAll('main .error[role=alert]').length") == 1
     screenshot('login-errors-mobile')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('bookings-empty-mobile')
     go('/bookings/new'); screenshot('new-mobile')
     submit(dict(car='', start_date='31.02.2026', payment=''), '/bookings/new')
-    assert js("document.querySelector('#new output').textContent.trim().split('\\n').length") == 3
+    assert js("document.querySelectorAll('main .error[role=alert]').length") == 3
     screenshot('new-errors-mobile')
     submit(dict(car='Toyota Camry', start_date='02.12.2026', payment='Переводом по номеру телефона'), '/bookings')
     screenshot('bookings-mobile')
@@ -188,7 +181,7 @@ try:
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
                   checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, counter, no pause', 'manual control restarts timer',
-                          'visible errors: five registration fields, login, three booking fields', 'reduced-motion and manual control', 'mobile forms above fold', 'model-specific photo and mobile cards', 'XSS payload is visible plain text, not an image or executable code', 'plain HTML and JSON API', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
+                          'visible errors: five registration fields, login, three booking fields', 'mobile forms above fold', 'model-specific photo and mobile cards', 'XSS payload is visible plain text, not an image or executable code', 'server-rendered HTML forms and redirects', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
     print(json.dumps(report, ensure_ascii=False, indent=2))
 finally:

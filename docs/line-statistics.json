@@ -1,46 +1,67 @@
 {
-  "scope": "Current plain HTML/JS production website only",
+  "scope": "site source only; line endings normalized to LF; Unicode code points",
   "files": [
     {
       "file": "app.py",
-      "lines": 200,
-      "nonempty": 164,
-      "characters": 7825
+      "lines": 204,
+      "nonempty": 168,
+      "characters": 8707,
+      "bytes": 9222
     },
     {
       "file": "db.py",
       "lines": 24,
       "nonempty": 17,
-      "characters": 657
+      "characters": 657,
+      "bytes": 657
     },
     {
       "file": "schema.sql",
       "lines": 25,
       "nonempty": 25,
-      "characters": 1095
-    },
-    {
-      "file": "static/index.html",
-      "lines": 77,
-      "nonempty": 77,
-      "characters": 4285
+      "characters": 1095,
+      "bytes": 1164
     },
     {
       "file": "static/style.css",
-      "lines": 38,
-      "nonempty": 38,
-      "characters": 2393
+      "lines": 37,
+      "nonempty": 37,
+      "characters": 2322,
+      "bytes": 2359
     },
     {
       "file": "static/script.js",
-      "lines": 90,
-      "nonempty": 88,
-      "characters": 4272
+      "lines": 18,
+      "nonempty": 18,
+      "characters": 659,
+      "bytes": 659
+    },
+    {
+      "file": "templates/base.html",
+      "lines": 19,
+      "nonempty": 19,
+      "characters": 898,
+      "bytes": 977
+    },
+    {
+      "file": "templates/bookings.html",
+      "lines": 30,
+      "nonempty": 30,
+      "characters": 2249,
+      "bytes": 2421
+    },
+    {
+      "file": "templates/form.html",
+      "lines": 30,
+      "nonempty": 30,
+      "characters": 1915,
+      "bytes": 2146
     }
   ],
-  "total_lines": 454,
-  "nonempty_lines": 409,
-  "characters": 20527,
-  "baseline_characters": 30110,
-  "reduction_percent": 31.826635669212887
+  "total": {
+    "lines": 387,
+    "nonempty": 344,
+    "characters": 18502,
+    "bytes": 19605
+  }
 }

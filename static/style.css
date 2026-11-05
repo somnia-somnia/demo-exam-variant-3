@@ -2,9 +2,9 @@
 @font-face{font-family:Montserrat;src:url('fonts/Montserrat-Bold.ttf');font-weight:700}
 @font-face{font-family:Montserrat;src:url('fonts/Montserrat-Italic.ttf');font-style:italic}
 *{box-sizing:border-box}
-[hidden],.logged .guest,body:not(.logged) .user{display:none!important}
+[hidden]{display:none!important}
 body{margin:0;color:#212b36;background:#f8f9fa;font:16px/1.6 Montserrat,sans-serif;overflow-wrap:anywhere}
-header,main,footer,#notice{max-width:1000px;margin:auto;padding:20px}
+header,main,footer,.notice{max-width:1000px;margin:auto;padding:20px}
 header,nav{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:space-between}
 .logo{width:240px}
 a{display:inline-flex;align-items:center;min-height:44px;color:#d9480f}
@@ -21,13 +21,12 @@ button:hover{background:#212b36}
 img{max-width:100%;display:block;border-radius:6px}
 small,footer,.error{font-size:12px;font-style:italic;color:#6c757d}
 .error{display:block;color:#d9480f;white-space:pre-line}
-#notice:empty{display:none}
 #orders{grid-column:1/-1}
 .booking{padding:20px;margin-bottom:20px;background:white;animation:appear .2s}
 .car-photo{width:150px;height:100px;object-fit:cover;float:right;margin:0 0 12px 12px}
 .booking form{clear:both}
 .details,.review p{white-space:pre-wrap}
-#empty img{width:320px}
+#empty{width:320px}
 .slider{position:relative}
 .slide,#fleet{width:100%;aspect-ratio:8/5;object-fit:cover}
 .slider button{position:absolute;top:calc(50% - 22px);width:44px;height:44px;padding:0;border-radius:50%;font-size:30px}

@@ -1,25 +1,22 @@
+import re
 import sqlite3
 import tempfile
 import unittest
 from contextlib import closing
 from pathlib import Path
+from urllib.parse import parse_qs, urlsplit
 
 
 class RentalTest(unittest.TestCase):
-    def test_plain_pages_and_state_api(self):
-        state = self.client.get('/api')
-        self.assertEqual(state.status_code, 200)
-        self.assertTrue(state.is_json)
-        self.assertEqual(state.json['rows'], [])
-        self.assertIsNone(state.json['user'])
-        self.assertEqual(len(state.json['csrf']), 48)
-        self.assertEqual(state.headers['Cache-Control'], 'no-store')
+    def test_server_pages_with_no_javascript_dependency(self):
         for path in ['/login', '/register']:
             page = self.client.get(path)
             self.assertEqual(page.status_code, 200)
             self.assertNotIn('{%', page.text)
             self.assertNotIn('{{', page.text)
             self.assertIn('<form', page.text)
+            self.assertRegex(page.text, r'name="csrf" value="[a-f0-9]{48}"')
+            self.assertEqual(page.headers['Cache-Control'], 'no-store')
             page.close()
 
     def setUp(self):
@@ -38,7 +35,7 @@ class RentalTest(unittest.TestCase):
 
     def post(self, url, data=None, client=None):
         client = client or self.client
-        token = client.get('/api').json['csrf']
+        token = re.search(r'name="csrf" value="([^"]+)"', client.get('/login').text)[1]
         return client.post(url, data={**(data or {}), 'csrf': token})
 
     def register(self, **changes):
@@ -61,7 +58,7 @@ class RentalTest(unittest.TestCase):
         self.booking()
 
     def test_registration_stores_hash_and_unique_login(self):
-        self.assertEqual(self.register().status_code, 200)
+        self.assertEqual(self.register().status_code, 302)
         stored = self.query('SELECT password_hash, is_admin FROM users WHERE login=?', ('Driver01',))[0]
         self.assertNotEqual(stored[0], self.user['password'])
         self.assertEqual(stored[1], 0)
@@ -79,11 +76,11 @@ class RentalTest(unittest.TestCase):
             with self.subTest(field=field, value=value):
                 response = self.register(**{field: value})
                 self.assertEqual(response.status_code, 400)
-                self.assertIn(field, response.json['errors'])
+                self.assertIn('role="alert"', response.text)
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_registration_accepts_boundaries_and_yo(self):
-        self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 200)
+        self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 302)
 
     def test_email_rejects_invalid_parts_and_accepts_subdomains(self):
         for i, email in enumerate(['<a>@x.ru', 'a@<x>.ru', 'a@x,com.ru', 'a@-x.ru', 'a@x_.ru',
@@ -91,24 +88,24 @@ class RentalTest(unittest.TestCase):
                                    'a' * 65 + '@example.ru', 'a@' + 'x' * 64 + '.ru']):
             with self.subTest(email=email):
                 self.assertEqual(self.register(login=f'BadMail{i:02}', email=email).status_code, 400)
-        self.assertEqual(self.register(login='ValidMail1', email='ivan_petrov+rent@sub.example.ru').status_code, 200)
+        self.assertEqual(self.register(login='ValidMail1', email='ivan_petrov+rent@sub.example.ru').status_code, 302)
         for i, email in enumerate(["o'connor@example.ru", 'a!b@example.ru']):
-            self.assertEqual(self.register(login=f'MailSpecial{i}', email=email).status_code, 200)
+            self.assertEqual(self.register(login=f'MailSpecial{i}', email=email).status_code, 302)
         self.assertEqual(len(self.query('SELECT id FROM users')), 4)
 
     def test_login_failures_and_admin_routing(self):
         self.register()
         for login, password in [('Driver01', 'wrong'), ("' OR 1=1 --", 'password123'), ('', '')]:
             self.assertEqual(self.login(login, password).status_code, 400)
-        self.assertEqual(self.login().json['next'], '/bookings')
-        self.assertEqual(self.login('Admin', 'StartNET').json['next'], '/admin')
+        self.assertEqual(self.login().location, '/bookings')
+        self.assertEqual(self.login('Admin', 'StartNET').location, '/admin')
 
     def test_login_required_and_logout(self):
         for url in ['/bookings', '/bookings/new', '/admin']:
             self.assertEqual(self.client.get(url).status_code, 302)
         self.register()
         self.login()
-        self.assertEqual(self.post('/logout').status_code, 200)
+        self.assertEqual(self.post('/logout').status_code, 302)
         self.assertEqual(self.client.get('/bookings').status_code, 302)
 
     def test_booking_validates_and_defaults(self):
@@ -117,17 +114,17 @@ class RentalTest(unittest.TestCase):
         for changes in [dict(car='BMW'), dict(start_date='31.02.2026'), dict(start_date='2026-12-02'),
                         dict(start_date='2.12.2026'), dict(payment='Картой'), dict(car='')]:
             self.assertEqual(self.booking(**changes).status_code, 400)
-        self.assertEqual(self.booking().status_code, 200)
+        self.assertEqual(self.booking().status_code, 302)
         self.assertEqual(self.query('SELECT car, start_date, status FROM bookings')[0],
                          ('LADA Vesta', '2026-12-02', 'Новая'))
-        self.assertEqual(self.client.get('/api').json['rows'][0]['start_date'], '2026-12-02')
+        self.assertIn('02.12.2026', self.client.get('/bookings').text)
 
     def test_owner_isolation_and_no_role_escalation(self):
         self.ready()
         self.post('/logout')
         self.register(login='Other01', full_name='Петров Пётр', is_admin='1')
         self.login('Other01')
-        self.assertEqual(self.client.get('/api').json['rows'], [])
+        self.assertNotIn('<article', self.client.get('/bookings').text)
         self.assertEqual(self.client.get('/admin').status_code, 403)
         self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена')).status_code, 403)
         self.assertEqual(self.post('/bookings/1/review', dict(text='Чужой отзыв')).status_code, 404)
@@ -139,27 +136,32 @@ class RentalTest(unittest.TestCase):
         self.assertEqual(self.post('/bookings/1/review', dict(text='Рано')).status_code, 403)
         admin = self.app.test_client()
         self.login('Admin', 'StartNET', admin)
-        self.assertIn('Иванов', admin.get('/api').json['rows'][0]['full_name'])
+        self.assertIn('Иванов', admin.get('/admin').text)
         self.assertEqual(self.post('/admin/1/status', dict(status='???'), admin).status_code, 400)
-        self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 200)
-        self.assertEqual(admin.get('/api?status=Новая').json['rows'], [])
-        self.assertEqual(admin.get('/api?status=Идет аренда').json['rows'][0]['car'], 'LADA Vesta')
-        self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена'), admin).status_code, 200)
+        response = self.post('/admin/1/status', dict(status='Идет аренда', filter='Идет аренда'), admin)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(urlsplit(response.location).path, '/admin')
+        self.assertEqual(parse_qs(urlsplit(response.location).query), {'status': ['Идет аренда']})
+        self.assertNotIn('<article', admin.get('/admin?status=Новая').text)
+        self.assertIn('LADA Vesta', admin.get('/admin?status=Идет аренда').text)
+        self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена'), admin).status_code, 302)
         self.assertEqual(self.post('/bookings/1/review', dict(text='   ')).status_code, 400)
-        self.assertEqual(self.post('/bookings/1/review', dict(text='<script>alert(1)</script>')).status_code, 200)
-        self.assertEqual(self.client.get('/api').json['rows'][0]['review'], '<script>alert(1)</script>')
+        self.assertEqual(self.post('/bookings/1/review', dict(text='<script>alert(1)</script>')).status_code, 302)
+        html = self.client.get('/bookings').text
+        self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt;', html)
+        self.assertNotIn('<script>alert(1)</script>', html)
         self.assertEqual(self.post('/bookings/1/review', dict(text='Ещё')).status_code, 409)
         self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 409)
         self.assertEqual(self.post('/admin/999/status', dict(status='Идет аренда'), admin).status_code, 404)
 
     def test_csrf_rejects_missing_and_wrong_tokens(self):
-        self.client.get('/api')
+        self.client.get('/login')
         self.assertEqual(self.client.post('/register', data=self.user).status_code, 400)
         self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'bad'}).status_code, 400)
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_malformed_unicode_csrf_returns_form_error(self):
-        self.client.get('/api')
+        self.client.get('/login')
         self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'подделка'}).status_code, 400)
 
     def test_foreign_keys_enabled_in_application_connection(self):
@@ -185,31 +187,30 @@ class RentalTest(unittest.TestCase):
         self.assertEqual(self.post('/bookings/1/review', dict(text='\0test')).status_code, 400)
         self.assertEqual(self.query('SELECT id FROM reviews'), [])
 
-    def test_api_never_exposes_hashes_or_other_owners(self):
+    def test_html_never_exposes_hashes_or_other_owners(self):
         self.ready()
-        api = self.client.get('/api?is_admin=1&user_id=999').json
-        self.assertEqual(set(api['user']), {'id', 'full_name', 'is_admin'})
-        self.assertNotIn('password', str(api))
-        self.assertEqual({r['user_id'] for r in api['rows']}, {2})
+        page = self.client.get('/bookings?is_admin=1&user_id=999').text
+        self.assertNotIn('password', page)
+        self.assertIn('LADA Vesta', page)
         self.post('/logout')
-        self.assertEqual(self.client.get('/api?is_admin=1').json['rows'], [])
+        self.assertEqual(self.client.get('/bookings?is_admin=1').status_code, 302)
         self.register(login='Other01')
         self.login('Other01')
         with self.client.session_transaction() as session:
             session['is_admin'] = 1
-        self.assertEqual(self.client.get('/api?is_admin=1&user_id=2').json['rows'], [])
+        self.assertNotIn('<article', self.client.get('/bookings?is_admin=1&user_id=2').text)
         self.assertEqual(self.client.get('/admin').status_code, 403)
 
-    def test_json_errors_and_http_methods(self):
+    def test_html_errors_and_http_methods(self):
         response = self.register(login='abc')
         self.assertEqual(response.status_code, 400)
-        self.assertTrue(response.is_json)
-        self.assertIn('login', response.json['errors'])
+        self.assertFalse(response.is_json)
+        self.assertIn('Неверный формат.', response.text)
         response = self.client.get('/logout')
         self.assertEqual(response.status_code, 405)
         self.assertIn('POST', response.headers['Allow'])
         self.login('Admin', 'StartNET')
-        self.assertEqual(self.client.get('/api?status=invalid').status_code, 400)
+        self.assertEqual(self.client.get('/admin?status=invalid').status_code, 400)
 
 
 if __name__ == '__main__':

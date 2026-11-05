@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="ru">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{ title }} · Ключ.на.старт</title>
+<link rel="icon" href="/static/img/icon.png">
+<link rel="stylesheet" href="/static/style.css">
+<script src="/static/script.js" defer></script>
+<header>
+  <a href="/"><img class="logo" src="/static/img/logo.png" alt="Ключ.на.старт"></a>
+  <nav>{% if g.user %}<a href="/">Кабинет</a>
+    <form action="/logout" method="post"><input type="hidden" name="csrf" value="{{ session.csrf }}"><button>Выйти</button></form>
+    {% else %}<a href="/login">Вход</a><a href="/register">Регистрация</a>{% endif %}
+  </nav>
+</header>
+{% for message in get_flashed_messages() %}<p class="notice" role="status">{{ message }}</p>{% endfor %}
+<main>{% block content %}{% endblock %}</main>
+<footer>Ключ.на.старт · Аренда автомобилей</footer>
+</html>

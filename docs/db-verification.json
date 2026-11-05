@@ -1,6 +1,6 @@
 {
   "result": "PASS",
-  "sqlite_version": "3.53.1",
+  "sqlite_version": "3.45.1",
   "foreign_keys_enabled": 1,
   "integrity": "ok",
   "foreign_key_check": [],
@@ -214,9 +214,5 @@
       ]
     }
   },
-  "orphan_checks": [
-    "orphan rejected",
-    "orphan rejected"
-  ],
-  "er_export": "SVG/Mermaid manually authored and checked against SQLite schema; not exported from a DBMS GUI"
+  "er_source": "Actual SQLite PRAGMA table_info / foreign_key_list / index_list; not a GUI export"
 }

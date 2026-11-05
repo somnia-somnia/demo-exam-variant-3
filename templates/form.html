@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+{% block content %}
+<section><h1>{{ title }}</h1>
+  {% if fields %}<form method="post" novalidate>
+    <input type="hidden" name="csrf" value="{{ session.csrf }}">
+    {% for name, label, kind in fields %}<label>{{ label }}
+      {% if kind is string %}<input name="{{ name }}" type="{{ kind }}" required maxlength="254"
+        value="{{ request.form.get(name, '') if kind != 'password' else '' }}">
+      {% else %}<select name="{{ name }}" required><option value="">Выберите</option>
+        {% for value in kind %}<option {% if request.form.get(name) == value %}selected{% endif %}>{{ value }}</option>{% endfor %}
+      </select>{% endif %}
+      {% if name in errors %}<small class="error" role="alert">{{ errors[name] }}</small>{% endif %}
+    </label>{% endfor %}
+    <button>{{ 'Войти' if title == 'Вход' else 'Зарегистрироваться' if title == 'Регистрация' else 'Отправить' }}</button>
+  </form>{% else %}{% for message in errors.values() %}<p class="error" role="alert">{{ message }}</p>{% endfor %}{% endif %}
+  {% if title == 'Вход' %}<a href="/register">Еще не зарегистрированы? Регистрация</a>
+  {% elif title == 'Регистрация' %}<a href="/login">Уже зарегистрированы? Вход</a>
+  {% else %}<a href="/">Вернуться в кабинет</a>{% endif %}
+</section>
+{% if fields %}<aside><h2>Автомобили в аренду</h2>
+  <div class="slider">
+    <img class="slide" src="/static/img/slide1.jpg" alt="Hyundai Creta">
+    <img class="slide" src="/static/img/slide2.jpg" alt="Поездки между городами" hidden>
+    <img class="slide" src="/static/img/slide3.jpg" alt="Загородные маршруты" hidden>
+    <img class="slide" src="/static/img/slide4.jpg" alt="Получение автомобиля" hidden>
+    <button type="button" data-step="-1" aria-label="Назад">‹</button>
+    <button type="button" data-step="1" aria-label="Вперёд">›</button><small id="counter">1 / 4</small>
+  </div>
+</aside>{% endif %}
+{% endblock %}

@@ -39,11 +39,10 @@
     "overlay arrows, counter, no pause",
     "manual control restarts timer",
     "visible errors: five registration fields, login, three booking fields",
-    "reduced-motion and manual control",
     "mobile forms above fold",
     "model-specific photo and mobile cards",
     "XSS payload is visible plain text, not an image or executable code",
-    "plain HTML and JSON API",
+    "server-rendered HTML forms and redirects",
     "all pages: no horizontal overflow",
     "fonts/images local",
     "no JS exceptions"

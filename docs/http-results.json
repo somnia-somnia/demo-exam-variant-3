@@ -79,8 +79,8 @@
     },
     {
       "check": "register Alice",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "duplicate case-insensitive login",
@@ -89,8 +89,8 @@
     },
     {
       "check": "register Bob",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "wrong password",
@@ -104,18 +104,18 @@
     },
     {
       "check": "login Driver01",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "login Driver02",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "login Admin",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "guest POST booking",
@@ -149,23 +149,23 @@
     },
     {
       "check": "Alice books LADA Vesta",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "Alice books Hyundai Creta",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "Alice books Toyota Camry",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "Bob books",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "owner isolation and admin all four bookings",
@@ -223,8 +223,8 @@
     },
     {
       "check": "start rent",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "active review forbidden",
@@ -238,8 +238,8 @@
     },
     {
       "check": "finish rent",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "foreign finished review forbidden",
@@ -258,8 +258,8 @@
     },
     {
       "check": "owner finished review saved",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "duplicate review rejected",
@@ -298,8 +298,8 @@
     },
     {
       "check": "logout",
-      "expected": 200,
-      "actual": 200
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "logged-out history blocked",
