@@ -1,194 +1,324 @@
 {
   "result": "PASS",
-  "sqlite_version": "3.45.1",
-  "foreign_keys_enabled": 1,
-  "integrity": "ok",
-  "foreign_key_check": [],
+  "engine": "MySQL",
+  "version": "8.4.13",
   "tables": {
     "users": {
       "columns": [
         {
-          "cid": 0,
-          "name": "id",
-          "type": "INTEGER",
-          "notnull": 0,
-          "dflt_value": null,
-          "pk": 1
+          "Field": "id",
+          "Type": "bigint",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 1,
-          "name": "login",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "login",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 2,
-          "name": "password_hash",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "password_hash",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 3,
-          "name": "full_name",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "full_name",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 4,
-          "name": "phone",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "phone",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 5,
-          "name": "email",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "email",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 6,
-          "name": "is_admin",
-          "type": "INTEGER",
-          "notnull": 1,
-          "dflt_value": "0",
-          "pk": 0
+          "Field": "login_key",
+          "Type": "varchar(64)",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "UNI",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
+        },
+        {
+          "Field": "is_admin",
+          "Type": "tinyint(1)",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         }
       ],
-      "foreign_keys": [],
-      "indexes": [
-        {
-          "seq": 0,
-          "name": "sqlite_autoindex_users_1",
-          "unique": 1,
-          "origin": "u",
-          "partial": 0
+      "constraints": {
+        "login_key": {
+          "columns": [
+            "login_key"
+          ],
+          "primary_key": false,
+          "unique": true,
+          "index": true,
+          "check": false,
+          "foreign_key": null,
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
+        },
+        "PRIMARY": {
+          "columns": [
+            "id"
+          ],
+          "primary_key": true,
+          "unique": true,
+          "index": true,
+          "check": false,
+          "foreign_key": null,
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
         }
-      ]
+      }
     },
     "bookings": {
       "columns": [
         {
-          "cid": 0,
-          "name": "id",
-          "type": "INTEGER",
-          "notnull": 0,
-          "dflt_value": null,
-          "pk": 1
+          "Field": "id",
+          "Type": "bigint",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 1,
-          "name": "user_id",
-          "type": "INTEGER",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "user_id",
+          "Type": "bigint",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 2,
-          "name": "car",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "car",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 3,
-          "name": "start_date",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "payment",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 4,
-          "name": "payment",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "start_date",
+          "Type": "date",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 5,
-          "name": "status",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": "'Новая'",
-          "pk": 0
+          "Field": "status",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         }
       ],
-      "foreign_keys": [
-        {
-          "id": 0,
-          "seq": 0,
-          "table": "users",
-          "from": "user_id",
-          "to": "id",
-          "on_update": "NO ACTION",
-          "on_delete": "NO ACTION",
-          "match": "NONE"
+      "constraints": {
+        "PRIMARY": {
+          "columns": [
+            "id"
+          ],
+          "primary_key": true,
+          "unique": true,
+          "index": true,
+          "check": false,
+          "foreign_key": null,
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
+        },
+        "bookings_user_id_6e734b08_fk_users_id": {
+          "columns": [
+            "user_id"
+          ],
+          "primary_key": false,
+          "unique": false,
+          "index": true,
+          "check": false,
+          "foreign_key": [
+            "users",
+            "id"
+          ],
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
         }
-      ],
-      "indexes": []
+      }
     },
     "reviews": {
       "columns": [
         {
-          "cid": 0,
-          "name": "id",
-          "type": "INTEGER",
-          "notnull": 0,
-          "dflt_value": null,
-          "pk": 1
+          "Field": "id",
+          "Type": "bigint",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "PRI",
+          "Default": null,
+          "Extra": "auto_increment",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 1,
-          "name": "booking_id",
-          "type": "INTEGER",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "booking_id",
+          "Type": "bigint",
+          "Collation": null,
+          "Null": "NO",
+          "Key": "MUL",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         },
         {
-          "cid": 2,
-          "name": "text",
-          "type": "TEXT",
-          "notnull": 1,
-          "dflt_value": null,
-          "pk": 0
+          "Field": "text",
+          "Type": "longtext",
+          "Collation": "utf8mb4_bin",
+          "Null": "NO",
+          "Key": "",
+          "Default": null,
+          "Extra": "",
+          "Privileges": "select,insert,update,references",
+          "Comment": ""
         }
       ],
-      "foreign_keys": [
-        {
-          "id": 0,
-          "seq": 0,
-          "table": "bookings",
-          "from": "booking_id",
-          "to": "id",
-          "on_update": "NO ACTION",
-          "on_delete": "NO ACTION",
-          "match": "NONE"
+      "constraints": {
+        "PRIMARY": {
+          "columns": [
+            "id"
+          ],
+          "primary_key": true,
+          "unique": true,
+          "index": true,
+          "check": false,
+          "foreign_key": null,
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
+        },
+        "reviews_booking_id_45ca787d_fk_bookings_id": {
+          "columns": [
+            "booking_id"
+          ],
+          "primary_key": false,
+          "unique": false,
+          "index": true,
+          "check": false,
+          "foreign_key": [
+            "bookings",
+            "id"
+          ],
+          "orders": [
+            "ASC"
+          ],
+          "type": "idx"
         }
-      ],
-      "indexes": [
-        {
-          "seq": 0,
-          "name": "sqlite_autoindex_reviews_1",
-          "unique": 1,
-          "origin": "u",
-          "partial": 0
-        }
-      ]
+      }
     }
   },
-  "er_source": "Actual SQLite PRAGMA table_info / foreign_key_list / index_list; not a GUI export"
+  "integrity": [
+    [
+      "rental_test_34919d3abab54254882964a4580dc01e.users",
+      "check",
+      "status",
+      "OK"
+    ],
+    [
+      "rental_test_34919d3abab54254882964a4580dc01e.bookings",
+      "check",
+      "status",
+      "OK"
+    ],
+    [
+      "rental_test_34919d3abab54254882964a4580dc01e.reviews",
+      "check",
+      "status",
+      "OK"
+    ]
+  ],
+  "orphan_insert": "rejected",
+  "er_source": "SHOW FULL COLUMNS and Django MySQL introspection"
 }

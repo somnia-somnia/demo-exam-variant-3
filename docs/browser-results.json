@@ -17,6 +17,8 @@
     "bookings-empty-mobile.png",
     "bookings-mobile.png",
     "bookings-two-mobile.png",
+    "home-desktop.png",
+    "home-mobile.png",
     "login-desktop.png",
     "login-errors-mobile.png",
     "login-mobile.png",
@@ -28,6 +30,8 @@
     "review-saved-mobile.png"
   ],
   "checks": [
+    "public home: slider before three car cards",
+    "no slider on forms",
     "registration",
     "login",
     "booking",

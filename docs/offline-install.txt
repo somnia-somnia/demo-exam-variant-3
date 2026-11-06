@@ -1,0 +1,11 @@
+Looking in links: vendor/wheels
+Processing .\vendor\wheels\django-5.2.19-py3-none-any.whl (from -r requirements.txt (line 1))
+Processing .\vendor\wheels\werkzeug-3.1.9-py3-none-any.whl (from -r requirements.txt (line 2))
+Processing .\vendor\wheels\mysqlclient-2.3.0-cp311-cp311-win_amd64.whl (from -r requirements.txt (line 3))
+Processing .\vendor\wheels\asgiref-3.13.0-py3-none-any.whl (from Django==5.2.19->-r requirements.txt (line 1))
+Processing .\vendor\wheels\sqlparse-0.6.1-py3-none-any.whl (from Django==5.2.19->-r requirements.txt (line 1))
+Processing .\vendor\wheels\tzdata-2026.6-py2.py3-none-any.whl (from Django==5.2.19->-r requirements.txt (line 1))
+Processing .\vendor\wheels\markupsafe-3.0.4-cp311-cp311-win_amd64.whl (from Werkzeug==3.1.9->-r requirements.txt (line 2))
+Installing collected packages: tzdata, sqlparse, mysqlclient, markupsafe, asgiref, Werkzeug, Django
+
+Successfully installed Django-5.2.19 Werkzeug-3.1.9 asgiref-3.13.0 markupsafe-3.0.4 mysqlclient-2.3.0 sqlparse-0.6.1 tzdata-2026.6

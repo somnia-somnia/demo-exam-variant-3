@@ -1,29 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="460" viewBox="0 0 1120 460">
-<rect width="1120" height="460" fill="#f8f9fa"/><g font-family="Arial,sans-serif" fill="#212b36">
-<text x="30" y="40" font-size="24">Ключ.на.старт · ER из метаданных SQLite</text>
-<text x="30" y="72" font-size="14">PK — первичный ключ · FK — внешний ключ · UK — уникальное значение</text>
-<rect x="30" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<svg xmlns="http://www.w3.org/2000/svg" width="1120" height="520" viewBox="0 0 1120 520">
+<rect width="1120" height="520" fill="#f8f9fa"/><g font-family="Arial,sans-serif" fill="#212b36">
+<text x="30" y="40" font-size="24">Ключ.на.старт · ER из метаданных MySQL</text>
+<text x="30" y="72" font-size="14">PK — первичный ключ · FK — внешний ключ · UK — уникальный ключ</text>
+<rect x="30" y="105" width="290" height="330" rx="8" fill="white" stroke="#212b36"/>
 <text x="46" y="135" font-size="21" fill="#d9480f">users</text>
-<text x="46" y="170" font-size="16">id INTEGER · PK</text>
-<text x="46" y="199" font-size="16">login TEXT · UK</text>
-<text x="46" y="228" font-size="16">password_hash TEXT</text>
-<text x="46" y="257" font-size="16">full_name TEXT</text>
-<text x="46" y="286" font-size="16">phone TEXT</text>
-<text x="46" y="315" font-size="16">email TEXT</text>
-<text x="46" y="344" font-size="16">is_admin INTEGER</text>
-<rect x="410" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<text x="46" y="170" font-size="16">id bigint · PK</text>
+<text x="46" y="200" font-size="16">login longtext</text>
+<text x="46" y="230" font-size="16">password_hash longtext</text>
+<text x="46" y="260" font-size="16">full_name longtext</text>
+<text x="46" y="290" font-size="16">phone longtext</text>
+<text x="46" y="320" font-size="16">email longtext</text>
+<text x="46" y="350" font-size="16">login_key varchar(64) · UK</text>
+<text x="46" y="380" font-size="16">is_admin tinyint(1)</text>
+<rect x="410" y="105" width="290" height="330" rx="8" fill="white" stroke="#212b36"/>
 <text x="426" y="135" font-size="21" fill="#d9480f">bookings</text>
-<text x="426" y="170" font-size="16">id INTEGER · PK</text>
-<text x="426" y="199" font-size="16">user_id INTEGER · FK</text>
-<text x="426" y="228" font-size="16">car TEXT</text>
-<text x="426" y="257" font-size="16">start_date TEXT</text>
-<text x="426" y="286" font-size="16">payment TEXT</text>
-<text x="426" y="315" font-size="16">status TEXT</text>
-<rect x="790" y="105" width="290" height="285" rx="8" fill="white" stroke="#212b36"/>
+<text x="426" y="170" font-size="16">id bigint · PK</text>
+<text x="426" y="200" font-size="16">user_id bigint · FK</text>
+<text x="426" y="230" font-size="16">car longtext</text>
+<text x="426" y="260" font-size="16">payment longtext</text>
+<text x="426" y="290" font-size="16">start_date date</text>
+<text x="426" y="320" font-size="16">status longtext</text>
+<rect x="790" y="105" width="290" height="330" rx="8" fill="white" stroke="#212b36"/>
 <text x="806" y="135" font-size="21" fill="#d9480f">reviews</text>
-<text x="806" y="170" font-size="16">id INTEGER · PK</text>
-<text x="806" y="199" font-size="16">booking_id INTEGER · FK, UK</text>
-<text x="806" y="228" font-size="16">text TEXT</text>
-<path d="M320 205H410 M700 205H790" fill="none" stroke="#212b36" stroke-width="2"/>
-<text x="330" y="192" font-size="13">1 → 0..N</text><text x="710" y="192" font-size="13">1 → 0..1</text>
-<text x="30" y="430" font-size="14">Один отзыв на заявку; владельца отзыва определяет связь с заявкой.</text></g></svg>
+<text x="806" y="170" font-size="16">id bigint · PK</text>
+<text x="806" y="200" font-size="16">booking_id bigint · FK</text>
+<text x="806" y="230" font-size="16">text longtext</text>
+<path d="M320 260H410 M700 260H790" fill="none" stroke="#212b36" stroke-width="2"/>
+<text x="330" y="245" font-size="13">1 → 0..N</text><text x="710" y="245" font-size="13">1 → 0..N</text>
+<text x="30" y="480" font-size="14">login_key = SHA-256(lower(login)); отзыв принадлежит владельцу через заявку.</text></g></svg>

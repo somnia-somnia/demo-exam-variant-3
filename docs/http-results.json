@@ -19,8 +19,8 @@
     },
     {
       "check": "csrf missing",
-      "expected": 400,
-      "actual": 400
+      "expected": 403,
+      "actual": 403
     },
     {
       "check": "required login",
@@ -262,9 +262,9 @@
       "actual": 302
     },
     {
-      "check": "duplicate review rejected",
-      "expected": 409,
-      "actual": 409
+      "check": "second review permitted",
+      "expected": 302,
+      "actual": 302
     },
     {
       "check": "unknown filter rejected",
@@ -277,9 +277,14 @@
       "actual": 400
     },
     {
-      "check": "terminal status protected",
-      "expected": 409,
-      "actual": 409
+      "check": "finished rental can reopen",
+      "expected": 302,
+      "actual": 302
+    },
+    {
+      "check": "review forbidden after reopening",
+      "expected": 403,
+      "actual": 403
     },
     {
       "check": "oversized review ID",
@@ -307,7 +312,7 @@
       "actual": 302
     },
     {
-      "check": "database integrity, FK, hashes, stored ownership/role, one review",
+      "check": "MySQL CHECK TABLE, hashes, stored ownership/role, two reviews",
       "actual": "PASS"
     }
   ]

@@ -10,6 +10,7 @@ import urllib.request
 from pathlib import Path
 from uuid import uuid4
 import websocket
+from tests.mysql_support import Database
 
 ROOT = Path(__file__).resolve().parents[1]
 OUT = ROOT / 'tests/screenshots'
@@ -25,8 +26,9 @@ def free_port():
 
 port, debug_port = free_port(), free_port()
 base_url = f'http://127.0.0.1:{port}'
-env = dict(os.environ, RENTAL_DB=str(WORK / 'browser.db'), PORT=str(port))
-server = subprocess.Popen([sys.executable, 'app.py'], cwd=ROOT, env=env,
+database = Database()
+env = dict(os.environ, MYSQL_DATABASE=database.name, PORT=str(port))
+server = subprocess.Popen([os.getenv('APP_PYTHON',sys.executable), 'app.py'], cwd=ROOT, env=env,
                           stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
 browser = subprocess.Popen([str(EDGE), '--headless=new', '--disable-gpu', '--no-first-run',
                             f'--remote-debugging-port={debug_port}', '--remote-allow-origins=*',
@@ -98,8 +100,9 @@ try:
     ws = websocket.create_connection(next(t['webSocketDebuggerUrl'] for t in targets if t['type'] == 'page'), timeout=15)
     cmd('Page.enable'); cmd('Runtime.enable'); cmd('Network.enable')
     cmd('Emulation.setDeviceMetricsOverride', width=390, height=844, deviceScaleFactor=1, mobile=True)
-    go('/login'); screenshot('login-mobile')
-    assert js("document.querySelector('main [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
+    go('/'); screenshot('home-mobile')
+    assert js("document.querySelectorAll('.fleet article').length") == 3
+    assert js("document.querySelector('.slider').compareDocumentPosition(document.querySelector('.fleet')) & 4")
     assert js("Math.abs(document.querySelector('.slide').clientWidth / document.querySelector('.slide').clientHeight - 1.6) < .02"), 'Slider image is distorted'
     assert js('getComputedStyle(document.body).fontFamily').startswith('Montserrat')
     assert js("document.fonts.check('16px Montserrat')")
@@ -122,21 +125,24 @@ try:
     time.sleep(1.85)
     assert js(active_slide) == 2
     assert js("[...document.querySelectorAll('.slider [data-step]')].every(button=>{const b=button.getBoundingClientRect(),s=button.closest('.slider').getBoundingClientRect();return b.width>=44 && b.height>=44 && b.left>=s.left && b.right<=s.right && b.top>=s.top && b.bottom<=s.bottom})"), 'Slider arrows must fit inside the photo and have 44px targets'
+    go('/login'); screenshot('login-mobile')
+    assert js("!document.querySelector('.slider')")
+    assert js("document.querySelector('main [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Login form is below the first mobile screen'
     go('/register'); screenshot('register-mobile')
     assert js("document.querySelector('main [name=login]').getBoundingClientRect().bottom < innerHeight"), 'Registration form is below the first mobile screen'
     submit(dict(login='bad', password='123', full_name='John', phone='+7', email='<a>@x.ru'), '/register')
-    assert js("document.querySelectorAll('main .error[role=alert]').length") == 5
+    assert js("document.querySelectorAll('main [aria-invalid=true]').length") == 5
     screenshot('register-errors-mobile')
     submit(dict(login='Browser01', password='password123', full_name='Иванов Иван',
                 phone='8(999)123-45-67', email='browser@example.ru'), '/login')
     submit(dict(login='Browser01', password='wrong'), '/login')
-    assert js("document.querySelectorAll('main .error[role=alert]').length") == 1
+    assert js("document.querySelectorAll('main [aria-invalid=true]').length") == 1
     screenshot('login-errors-mobile')
     submit(dict(login='Browser01', password='password123'), '/bookings')
     screenshot('bookings-empty-mobile')
     go('/bookings/new'); screenshot('new-mobile')
     submit(dict(car='', start_date='31.02.2026', payment=''), '/bookings/new')
-    assert js("document.querySelectorAll('main .error[role=alert]').length") == 3
+    assert js("document.querySelectorAll('main [aria-invalid=true]').length") == 3
     screenshot('new-errors-mobile')
     submit(dict(car='Toyota Camry', start_date='02.12.2026', payment='Переводом по номеру телефона'), '/bookings')
     screenshot('bookings-mobile')
@@ -169,6 +175,7 @@ try:
     screenshot('admin-desktop')
     submit({}, '/login', 'header form')
     screenshot('login-desktop')
+    go('/'); screenshot('home-desktop')
     assert not [e for e in events if e.get('method') == 'Runtime.exceptionThrown']
     external = [e['params']['request']['url'] for e in events if e.get('method') == 'Network.requestWillBeSent'
                 and not e['params']['request']['url'].startswith(('http://127.0.0.1:', 'data:', 'about:'))]
@@ -177,7 +184,7 @@ try:
     assert typography['h1'] == '36px' and typography['h2'] == '24px' and typography['body'] == '16px'
     report = dict(result='PASS', mobile='390x844', desktop='1440x1000', typography=typography, external_requests=external,
                   screenshots=sorted(p.name for p in OUT.glob('*.png')),
-                  checks=['registration', 'login', 'booking', 'admin status', 'filter', 'review',
+                  checks=['public home: slider before three car cards', 'no slider on forms', 'registration', 'login', 'booking', 'admin status', 'filter', 'review',
                           'owner review availability', 'slider 3000ms: all four slides and wrap', 'overlay arrows, no pause', 'manual control restarts timer',
                           'visible errors: five registration fields, login, three booking fields', 'mobile forms above fold', 'two mobile booking cards', 'XSS payload is visible plain text, not an image or executable code', 'server-rendered HTML forms and redirects', 'all pages: no horizontal overflow', 'fonts/images local', 'no JS exceptions'])
     (ROOT / 'docs/browser-results.json').write_text(json.dumps(report, ensure_ascii=False, indent=2), encoding='utf-8')
@@ -196,3 +203,4 @@ finally:
         except subprocess.TimeoutExpired:
             process.kill()
             process.wait(timeout=3)
+    database.close()

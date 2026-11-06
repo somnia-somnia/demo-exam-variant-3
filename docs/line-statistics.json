@@ -1,74 +1,106 @@
 {
-  "scope": "site source only; line endings normalized to LF; Unicode code points",
+  "scope": "all site runtime source; line endings normalized to LF; Unicode code points",
   "files": [
     {
       "file": "app.py",
-      "lines": 153,
-      "nonempty": 139,
-      "characters": 6042,
-      "bytes": 6491
+      "lines": 8,
+      "nonempty": 8,
+      "characters": 349,
+      "bytes": 349
     },
     {
-      "file": "db.py",
+      "file": "config.py",
       "lines": 16,
-      "nonempty": 12,
-      "characters": 370,
-      "bytes": 386
+      "nonempty": 16,
+      "characters": 907,
+      "bytes": 907
     },
     {
-      "file": "schema.sql",
-      "lines": 22,
-      "nonempty": 22,
-      "characters": 856,
-      "bytes": 947
+      "file": "rental/__init__.py",
+      "lines": 0,
+      "nonempty": 0,
+      "characters": 0,
+      "bytes": 0
+    },
+    {
+      "file": "rental/forms.py",
+      "lines": 20,
+      "nonempty": 20,
+      "characters": 1235,
+      "bytes": 1346
+    },
+    {
+      "file": "rental/models.py",
+      "lines": 30,
+      "nonempty": 30,
+      "characters": 1278,
+      "bytes": 1342
+    },
+    {
+      "file": "rental/views.py",
+      "lines": 87,
+      "nonempty": 87,
+      "characters": 3730,
+      "bytes": 3859
     },
     {
       "file": "static/style.css",
-      "lines": 25,
-      "nonempty": 25,
-      "characters": 1433,
-      "bytes": 1433
+      "lines": 24,
+      "nonempty": 24,
+      "characters": 1406,
+      "bytes": 1406
     },
     {
       "file": "static/script.js",
       "lines": 13,
       "nonempty": 13,
       "characters": 344,
-      "bytes": 357
+      "bytes": 344
     },
     {
       "file": "requirements.txt",
-      "lines": 1,
-      "nonempty": 1,
-      "characters": 13,
-      "bytes": 13
+      "lines": 3,
+      "nonempty": 3,
+      "characters": 50,
+      "bytes": 50
     },
     {
       "file": "templates/base.html",
-      "lines": 15,
-      "nonempty": 15,
-      "characters": 865,
-      "bytes": 920
+      "lines": 8,
+      "nonempty": 8,
+      "characters": 634,
+      "bytes": 680
     },
     {
       "file": "templates/bookings.html",
-      "lines": 16,
-      "nonempty": 16,
-      "characters": 1135,
-      "bytes": 1248
+      "lines": 13,
+      "nonempty": 13,
+      "characters": 1285,
+      "bytes": 1378
     },
     {
       "file": "templates/form.html",
-      "lines": 16,
-      "nonempty": 16,
-      "characters": 934,
-      "bytes": 1038
+      "lines": 6,
+      "nonempty": 6,
+      "characters": 237,
+      "bytes": 273
+    },
+    {
+      "file": "templates/home.html",
+      "lines": 8,
+      "nonempty": 8,
+      "characters": 533,
+      "bytes": 573
     }
   ],
   "total": {
-    "lines": 277,
-    "nonempty": 259,
-    "characters": 11992,
-    "bytes": 12833
+    "lines": 236,
+    "nonempty": 236,
+    "characters": 11988,
+    "bytes": 12507
+  },
+  "optional_legacy_import": {
+    "characters": 1085,
+    "lines": 23
   }
 }

@@ -1,25 +1,26 @@
 erDiagram
     users ||--o{ bookings : creates
-    bookings ||--o| reviews : receives
+    bookings ||--o{ reviews : receives
     users {
-        INTEGER id PK
-        TEXT login UK
-        TEXT password_hash
-        TEXT full_name
-        TEXT phone
-        TEXT email
-        INTEGER is_admin
+        bigint id PK
+        longtext login
+        longtext password_hash
+        longtext full_name
+        longtext phone
+        longtext email
+        varchar_64 login_key UK
+        tinyint_1 is_admin
     }
     bookings {
-        INTEGER id PK
-        INTEGER user_id FK
-        TEXT car
-        TEXT start_date
-        TEXT payment
-        TEXT status
+        bigint id PK
+        bigint user_id FK
+        longtext car
+        longtext payment
+        date start_date
+        longtext status
     }
     reviews {
-        INTEGER id PK
-        INTEGER booking_id FK,UK
-        TEXT text
+        bigint id PK
+        bigint booking_id FK
+        longtext text
     }

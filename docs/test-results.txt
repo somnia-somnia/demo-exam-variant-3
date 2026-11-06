@@ -1,25 +1,50 @@
-test_admin_filter_status_and_review_lifecycle (test_app.RentalTest.test_admin_filter_status_and_review_lifecycle) ... ok
-test_booking_validates_and_defaults (test_app.RentalTest.test_booking_validates_and_defaults) ... ok
-test_csrf_rejects_missing_and_wrong_tokens (test_app.RentalTest.test_csrf_rejects_missing_and_wrong_tokens) ... ok
-test_each_registration_rule_and_required_field (test_app.RentalTest.test_each_registration_rule_and_required_field) ... ok
-test_email_rejects_invalid_parts_and_accepts_subdomains (test_app.RentalTest.test_email_rejects_invalid_parts_and_accepts_subdomains) ... ok
-test_foreign_keys_enabled_in_application_connection (test_app.RentalTest.test_foreign_keys_enabled_in_application_connection) ... ok
-test_html_errors_and_http_methods (test_app.RentalTest.test_html_errors_and_http_methods) ... ok
-test_html_never_exposes_hashes_or_other_owners (test_app.RentalTest.test_html_never_exposes_hashes_or_other_owners) ... ok
-test_login_failures_and_admin_routing (test_app.RentalTest.test_login_failures_and_admin_routing) ... ok
-test_login_required_and_logout (test_app.RentalTest.test_login_required_and_logout) ... ok
-test_malformed_unicode_csrf_returns_form_error (test_app.RentalTest.test_malformed_unicode_csrf_returns_form_error) ... ok
-test_nul_review_is_validation_error_not_duplicate (test_app.RentalTest.test_nul_review_is_validation_error_not_duplicate) ... ok
-test_oversized_booking_ids_return_not_found (test_app.RentalTest.test_oversized_booking_ids_return_not_found) ... ok
-test_owner_isolation_and_no_role_escalation (test_app.RentalTest.test_owner_isolation_and_no_role_escalation) ... ok
-test_registration_accepts_boundaries_and_yo (test_app.RentalTest.test_registration_accepts_boundaries_and_yo) ... ok
-test_registration_stores_hash_and_unique_login (test_app.RentalTest.test_registration_stores_hash_and_unique_login) ... ok
-test_server_pages_with_no_javascript_dependency (test_app.RentalTest.test_server_pages_with_no_javascript_dependency) ... ok
-test_site_stays_within_twelve_thousand_characters (test_budget.SourceBudgetTest.test_site_stays_within_twelve_thousand_characters) ... ok
-test_real_http_workflow_and_access (test_http.HTTPAudit.test_real_http_workflow_and_access) ... ok
-test_html_post_and_redirect_without_javascript (test_server_forms.ServerFormsTest.test_html_post_and_redirect_without_javascript) ... ok
+Creating test database for alias 'default' ('test_rental')...
+
+test_admin_filter_status_and_review_lifecycle (tests.test_app.RentalTest.test_admin_filter_status_and_review_lifecycle) ... ok
+test_admin_login_has_no_registration_length_hint (tests.test_app.RentalTest.test_admin_login_has_no_registration_length_hint) ... ok
+test_booking_validates_and_defaults (tests.test_app.RentalTest.test_booking_validates_and_defaults) ... ok
+test_completed_rental_can_be_reopened (tests.test_app.RentalTest.test_completed_rental_can_be_reopened) ... ok
+test_csrf_rejects_missing_and_wrong_tokens (tests.test_app.RentalTest.test_csrf_rejects_missing_and_wrong_tokens) ... ok
+test_each_registration_rule_and_required_field (tests.test_app.RentalTest.test_each_registration_rule_and_required_field) ... ok
+test_email_rejects_invalid_parts_and_accepts_subdomains (tests.test_app.RentalTest.test_email_rejects_invalid_parts_and_accepts_subdomains) ... ok
+test_foreign_keys_enabled_in_application_connection (tests.test_app.RentalTest.test_foreign_keys_enabled_in_application_connection) ... ok
+test_html_errors_and_http_methods (tests.test_app.RentalTest.test_html_errors_and_http_methods) ... ok
+test_html_never_exposes_hashes_or_other_owners (tests.test_app.RentalTest.test_html_never_exposes_hashes_or_other_owners) ... ok
+test_insert_works_with_extra_user_column (tests.test_app.RentalTest.test_insert_works_with_extra_user_column) ... ok
+test_login_failures_and_admin_routing (tests.test_app.RentalTest.test_login_failures_and_admin_routing) ... ok
+test_login_required_and_logout (tests.test_app.RentalTest.test_login_required_and_logout) ... ok
+test_malformed_unicode_csrf_returns_form_error (tests.test_app.RentalTest.test_malformed_unicode_csrf_returns_form_error) ... ok
+test_nul_review_is_validation_error_not_duplicate (tests.test_app.RentalTest.test_nul_review_is_validation_error_not_duplicate) ... ok
+test_oversized_booking_ids_return_not_found (tests.test_app.RentalTest.test_oversized_booking_ids_return_not_found) ... ok
+test_owner_isolation_and_no_role_escalation (tests.test_app.RentalTest.test_owner_isolation_and_no_role_escalation) ... ok
+test_public_landing_lists_all_three_models (tests.test_app.RentalTest.test_public_landing_lists_all_three_models) ... ok
+test_registration_accepts_boundaries_and_yo (tests.test_app.RentalTest.test_registration_accepts_boundaries_and_yo) ... ok
+test_registration_has_no_unlisted_upper_limits (tests.test_app.RentalTest.test_registration_has_no_unlisted_upper_limits) ... ok
+test_registration_stores_hash_and_unique_login (tests.test_app.RentalTest.test_registration_stores_hash_and_unique_login) ... ok
+test_reviews_have_no_unlisted_count_or_length_limit (tests.test_app.RentalTest.test_reviews_have_no_unlisted_count_or_length_limit) ... ok
+test_server_pages_with_no_javascript_dependency (tests.test_app.RentalTest.test_server_pages_with_no_javascript_dependency) ... ok
+test_status_change_waits_for_finished_review_transaction (tests.test_app.RentalTest.test_status_change_waits_for_finished_review_transaction) ... ok
+test_html_post_and_redirect_without_javascript (tests.test_server_forms.ServerFormsTest.test_html_post_and_redirect_without_javascript) ... ok
+test_site_stays_within_twelve_thousand_characters (tests.test_budget.SourceBudgetTest.test_site_stays_within_twelve_thousand_characters) ... ok
+test_real_http_workflow_and_access (tests.test_http.HTTPAudit.test_real_http_workflow_and_access) ... ok
+test_readonly_import_preserves_ids_data_and_hashes (tests.test_import.LegacyImportTest.test_readonly_import_preserves_ids_data_and_hashes) ... ok
 
 ----------------------------------------------------------------------
-Ran 20 tests in 14.080s
+Ran 28 tests in 32.035s
 
 OK
+Destroying test database for alias 'default' ('test_rental')...
+
+Found 28 test(s).
+Operations to perform:
+  Synchronize unmigrated apps: rental
+  Apply all migrations: (none)
+Synchronizing apps without migrations:
+  Creating tables...
+    Creating table users
+    Creating table bookings
+    Creating table reviews
+    Running deferred SQL...
+Running migrations:
+  No migrations to apply.
+System check identified no issues (0 silenced).

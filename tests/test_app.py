@@ -1,13 +1,20 @@
 import re
-import sqlite3
-import tempfile
-import unittest
-from contextlib import closing
-from pathlib import Path
 from urllib.parse import parse_qs, urlsplit
+from datetime import date
+from types import SimpleNamespace
+from django.test import TransactionTestCase
+from django.db import connection, IntegrityError, transaction
+from rental.models import Booking
+from tests.client import Browser
+from concurrent.futures import ThreadPoolExecutor, TimeoutError
+from threading import Event
+from unittest.mock import patch
+from django.db import connections
+from rental.models import Review
 
 
-class RentalTest(unittest.TestCase):
+class RentalTest(TransactionTestCase):
+    reset_sequences = True
     def test_server_pages_with_no_javascript_dependency(self):
         for path in ['/login', '/register']:
             page = self.client.get(path)
@@ -15,28 +22,20 @@ class RentalTest(unittest.TestCase):
             self.assertNotIn('{%', page.text)
             self.assertNotIn('{{', page.text)
             self.assertIn('<form', page.text)
-            self.assertRegex(page.text, r'name="csrf" value="[a-f0-9]{48}"')
+            self.assertRegex(page.text, r'name="csrfmiddlewaretoken" value="[A-Za-z0-9]{64}"')
             self.assertEqual(page.headers['Cache-Control'], 'no-store')
             page.close()
 
     def setUp(self):
-        from app import app, init_db
-        self.tmp = tempfile.TemporaryDirectory()
-        self.app = app
-        app.config.update(TESTING=True, DATABASE=str(Path(self.tmp.name) / 'test.db'))
-        with app.app_context():
-            init_db()
-        self.client = app.test_client()
+        self.app = SimpleNamespace(test_client=Browser)
+        self.client = Browser()
         self.user = dict(login='Driver01', password='password123', full_name='Иванов Иван Иванович',
                          phone='8(999)123-45-67', email='ivan@example.ru')
 
-    def tearDown(self):
-        self.tmp.cleanup()
-
     def post(self, url, data=None, client=None):
         client = client or self.client
-        token = re.search(r'name="csrf" value="([^"]+)"', client.get('/login').text)[1]
-        return client.post(url, data={**(data or {}), 'csrf': token})
+        token = re.search(r'name="csrfmiddlewaretoken" value="([^"]+)"', client.get('/login').text)[1]
+        return client.post(url, data={**(data or {}), 'csrfmiddlewaretoken': token})
 
     def register(self, **changes):
         return self.post('/register', self.user | changes)
@@ -45,8 +44,9 @@ class RentalTest(unittest.TestCase):
         return self.post('/login', dict(login=login, password=password), client)
 
     def query(self, sql, params=()):
-        with closing(sqlite3.connect(self.app.config['DATABASE'])) as con:
-            return con.execute(sql, params).fetchall()
+        with connection.cursor() as cursor:
+            cursor.execute(sql.replace('?', '%s'), params)
+            return list(cursor.fetchall())
 
     def booking(self, **changes):
         return self.post('/bookings/new', dict(car='LADA Vesta', start_date='02.12.2026',
@@ -76,11 +76,88 @@ class RentalTest(unittest.TestCase):
             with self.subTest(field=field, value=value):
                 response = self.register(**{field: value})
                 self.assertEqual(response.status_code, 400)
-                self.assertIn('role="alert"', response.text)
+                self.assertIn('aria-invalid="true"', response.text)
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_registration_accepts_boundaries_and_yo(self):
         self.assertEqual(self.register(login='User12', password='12345678', full_name='Фёдор Ёлкин').status_code, 302)
+
+    def test_registration_has_no_unlisted_upper_limits(self):
+        self.assertEqual(self.register(login='Driver' * 12, password='p' * 160,
+                                       full_name='Иван ' * 40).status_code, 302)
+
+    def test_public_landing_lists_all_three_models(self):
+        page = self.client.get('/')
+        self.assertEqual(page.status_code, 200)
+        for car in ('LADA Vesta', 'Hyundai Creta', 'Toyota Camry'):
+            self.assertIn(car, page.text)
+        self.assertIn('/bookings/new', page.text)
+
+    def test_admin_login_has_no_registration_length_hint(self):
+        self.assertNotIn('от 6', self.client.get('/login').text)
+
+    def test_insert_works_with_extra_user_column(self):
+        with connection.cursor() as cursor:
+            cursor.execute("ALTER TABLE users ADD COLUMN note VARCHAR(20) DEFAULT '' FIRST")
+        self.assertEqual(self.register().status_code, 302)
+        self.assertEqual(self.login().status_code, 302)
+
+    def test_completed_rental_can_be_reopened(self):
+        self.ready()
+        admin = self.app.test_client()
+        self.login('Admin', 'StartNET', admin)
+        self.post('/admin/1/status', dict(status='Аренда завершена'), admin)
+        response = self.post('/admin/1/status', dict(status='Идет аренда'), admin)
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(self.query('SELECT status FROM bookings')[0][0], 'Идет аренда')
+        self.assertEqual(self.post('/bookings/1/review', dict(text='Рано')).status_code, 403)
+
+    def test_status_change_waits_for_finished_review_transaction(self):
+        self.ready()
+        admin = Browser()
+        self.login('Admin', 'StartNET', admin)
+        self.post('/admin/1/status', dict(status='Аренда завершена'), admin)
+        entered, release = Event(), Event()
+        create = Review.objects.create
+
+        def paused_create(**values):
+            entered.set()
+            if not release.wait(5):
+                raise TimeoutError('Review transaction not released')
+            return create(**values)
+
+        def threaded_post(client, path, values):
+            try:
+                return self.post(path, values, client).status_code
+            finally:
+                connections.close_all()
+
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            with patch('rental.views.Review.objects.create', side_effect=paused_create):
+                review = pool.submit(threaded_post, self.client, '/bookings/1/review', dict(text='Завершено'))
+                try:
+                    self.assertTrue(entered.wait(5))
+                    status = pool.submit(threaded_post, admin, '/admin/1/status', dict(status='Идет аренда'))
+                    with self.assertRaises(TimeoutError):
+                        status.result(timeout=.4)
+                finally:
+                    release.set()
+                self.assertEqual(review.result(timeout=5), 302)
+                self.assertEqual(status.result(timeout=5), 302)
+        self.assertEqual(self.query('SELECT status FROM bookings')[0][0], 'Идет аренда')
+        self.assertEqual(self.query('SELECT COUNT(*) FROM reviews')[0][0], 1)
+
+    def test_reviews_have_no_unlisted_count_or_length_limit(self):
+        self.ready()
+        admin = self.app.test_client()
+        self.login('Admin', 'StartNET', admin)
+        self.post('/admin/1/status', dict(status='Аренда завершена'), admin)
+        self.assertEqual(self.post('/bookings/1/review', dict(text='Отзыв ' * 500)).status_code, 302)
+        self.assertEqual(self.post('/bookings/1/review', dict(text='Второй отзыв')).status_code, 302)
+        page = self.client.get('/bookings').text
+        self.assertEqual(page.count('id="booking-1"'), 1)
+        self.assertIn('Второй отзыв', page)
+        self.assertIn('/bookings/1/review', page)
 
     def test_email_rejects_invalid_parts_and_accepts_subdomains(self):
         for i, email in enumerate(['<a>@x.ru', 'a@<x>.ru', 'a@x,com.ru', 'a@-x.ru', 'a@x_.ru',
@@ -116,7 +193,7 @@ class RentalTest(unittest.TestCase):
             self.assertEqual(self.booking(**changes).status_code, 400)
         self.assertEqual(self.booking().status_code, 302)
         self.assertEqual(self.query('SELECT car, start_date, status FROM bookings')[0],
-                         ('LADA Vesta', '2026-12-02', 'Новая'))
+                         ('LADA Vesta', date(2026, 12, 2), 'Новая'))
         self.assertIn('02.12.2026', self.client.get('/bookings').text)
 
     def test_owner_isolation_and_no_role_escalation(self):
@@ -129,7 +206,8 @@ class RentalTest(unittest.TestCase):
         self.assertEqual(self.post('/admin/1/status', dict(status='Аренда завершена')).status_code, 403)
         self.assertEqual(self.post('/bookings/1/review', dict(text='Чужой отзыв')).status_code, 404)
         self.booking(user_id='2', status='Аренда завершена')
-        self.assertEqual(self.query('SELECT user_id, status FROM bookings WHERE id=2')[0], (3, 'Новая'))
+        owner = self.query('SELECT id FROM users WHERE login=?', ('Other01',))[0][0]
+        self.assertEqual(self.query('SELECT user_id, status FROM bookings WHERE id=2')[0], (owner, 'Новая'))
 
     def test_admin_filter_status_and_review_lifecycle(self):
         self.ready()
@@ -150,26 +228,23 @@ class RentalTest(unittest.TestCase):
         html = self.client.get('/bookings').text
         self.assertIn('&lt;script&gt;alert(1)&lt;/script&gt;', html)
         self.assertNotIn('<script>alert(1)</script>', html)
-        self.assertEqual(self.post('/bookings/1/review', dict(text='Ещё')).status_code, 409)
-        self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 409)
+        self.assertEqual(self.post('/bookings/1/review', dict(text='Ещё')).status_code, 302)
+        self.assertEqual(self.post('/admin/1/status', dict(status='Идет аренда'), admin).status_code, 302)
         self.assertEqual(self.post('/admin/999/status', dict(status='Идет аренда'), admin).status_code, 404)
 
     def test_csrf_rejects_missing_and_wrong_tokens(self):
         self.client.get('/login')
-        self.assertEqual(self.client.post('/register', data=self.user).status_code, 400)
-        self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'bad'}).status_code, 400)
+        self.assertEqual(self.client.post('/register', data=self.user).status_code, 403)
+        self.assertEqual(self.client.post('/register', data=self.user | {'csrfmiddlewaretoken': 'bad'}).status_code, 403)
         self.assertEqual(len(self.query('SELECT id FROM users')), 1)
 
     def test_malformed_unicode_csrf_returns_form_error(self):
         self.client.get('/login')
-        self.assertEqual(self.client.post('/register', data=self.user | {'csrf': 'подделка'}).status_code, 400)
+        self.assertEqual(self.client.post('/register', data=self.user | {'csrfmiddlewaretoken': 'подделка'}).status_code, 403)
 
     def test_foreign_keys_enabled_in_application_connection(self):
-        from app import get_db
-        with self.app.app_context():
-            with self.assertRaises(sqlite3.IntegrityError):
-                get_db().query('INSERT INTO bookings(user_id, car, start_date, payment) VALUES(?,?,?,?)',
-                                 (999, 'LADA Vesta', '2026-12-02', 'Наличными'))
+        with self.assertRaises(IntegrityError), transaction.atomic():
+            Booking.objects.create(user_id=999, car='LADA Vesta', start_date='2026-12-02', payment='Наличными')
 
     def test_oversized_booking_ids_return_not_found(self):
         self.ready()
@@ -205,13 +280,9 @@ class RentalTest(unittest.TestCase):
         response = self.register(login='abc')
         self.assertEqual(response.status_code, 400)
         self.assertFalse(response.is_json)
-        self.assertIn('Неверный формат.', response.text)
+        self.assertIn('aria-invalid="true"', response.text)
         response = self.client.get('/logout')
         self.assertEqual(response.status_code, 405)
         self.assertIn('POST', response.headers['Allow'])
         self.login('Admin', 'StartNET')
         self.assertEqual(self.client.get('/admin?status=invalid').status_code, 400)
-
-
-if __name__ == '__main__':
-    unittest.main()

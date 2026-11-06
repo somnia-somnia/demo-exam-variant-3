@@ -1,16 +1,6 @@
-{%extends 'base.html'%}
-{%block content%}
-<form method=post novalidate>{{csrf()}}
-{%for n,label,kind,rule in fields%}
-<label>{{label}}
-{%if kind is string%}<input name="{{n}}" type="{{kind}}" required value="{{v[n] if kind!='password' else ''}}">
-{%else%}<select name="{{n}}" required>{{opts(kind,v[n])}}</select>{%endif%}
-{%if n in errors%}<small class=error role="alert">{{errors[n]}}</small>{%endif%}</label>
-{%endfor%}<button>{{button}}</button></form>
-{%if title=='Вход'%}<a href=/register>Еще не зарегистрированы? Регистрация</a>{%endif%}
+{%extends 'base.html'%}{%block content%}
+<form method=post novalidate>{%csrf_token%}
+{{form.as_p}}
+<button>{{button}}</button></form>
+{%if title == 'Вход'%}<a href=/register>Еще не зарегистрированы? Регистрация</a>{%endif%}
 {%endblock%}
-{%block promo%}<aside><h2>Автомобили в аренду</h2><div class=slider>
-{%for alt in ['Hyundai Creta','Поездка','Маршрут','Аренда']%}
-<img class=slide src="/static/img/slide{{loop.index}}.jpg" alt="{{alt}}" {%if not loop.first%}hidden{%endif%}>
-{%endfor%}<button data-step=-1 aria-label=Назад>‹</button><button data-step=1 aria-label=Вперёд>›</button>
-</div></aside>{%endblock%}

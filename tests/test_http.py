@@ -1,11 +1,10 @@
-"""End-to-end HTTP audit against a real isolated Flask process (stdlib only)."""
+"""End-to-end HTTP audit against isolated Django and real MySQL processes."""
 import http.cookiejar
 import html
 import json
 import os
 import re
 import socket
-import sqlite3
 import subprocess
 import sys
 import tempfile
@@ -16,6 +15,7 @@ import urllib.parse
 import urllib.request
 from contextlib import closing
 from pathlib import Path
+from tests.mysql_support import Database
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,20 +42,19 @@ class Session:
     def post(self, path, data=None, token=True):
         fields = dict(data or {})
         if token:
-            fields['csrf'] = re.search(r'name="csrf" value="([^"]+)"', self.request('/login')[2])[1]
+            fields['csrfmiddlewaretoken'] = re.search(r'name="csrfmiddlewaretoken" value="([^"]+)"', self.request('/login')[2])[1]
         return self.request(path, fields)
 
 
 class HTTPAudit(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        cls.temp = tempfile.TemporaryDirectory()
-        cls.db = str(Path(cls.temp.name) / 'rental.db')
+        cls.database = Database()
         with socket.socket() as sock:
             sock.bind(('127.0.0.1', 0))
             cls.base = f'http://127.0.0.1:{sock.getsockname()[1]}'
         cls.server = subprocess.Popen([sys.executable, 'app.py'], cwd=ROOT,
-            env=dict(os.environ, RENTAL_DB=cls.db, PORT=cls.base.rsplit(':', 1)[1]),
+            env=dict(os.environ, MYSQL_DATABASE=cls.database.name, PORT=cls.base.rsplit(':', 1)[1]),
             stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         cls.steps, cls.passed = [], False
         for _ in range(100):
@@ -75,7 +74,7 @@ class HTTPAudit(unittest.TestCase):
         else:
             cls.server.terminate()
         cls.server.wait(timeout=5)
-        cls.temp.cleanup()
+        cls.database.close()
         (ROOT / 'docs/http-results.json').write_text(json.dumps(dict(
             result='PASS' if cls.passed else 'FAIL', transport='real HTTP, four independent cookie jars',
             checks=cls.steps), ensure_ascii=False, indent=2), encoding='utf-8')
@@ -91,7 +90,7 @@ class HTTPAudit(unittest.TestCase):
                     phone='8(999)123-45-67', email='driver1@example.ru')
         for path in ['/bookings', '/bookings/new', '/admin']:
             self.expect('guest GET ' + path, guest.request(path), 302)
-        response = self.expect('csrf missing', guest.post('/register', user, token=False), 400)
+        response = self.expect('csrf missing', guest.post('/register', user, token=False), 403)
         for field in user:
             self.expect('required ' + field, guest.post('/register', user | {field: ''}), 400)
         for field, value in [('login', 'abc12'), ('login', 'Логин12'), ('password', '1234567'),
@@ -138,7 +137,7 @@ class HTTPAudit(unittest.TestCase):
         self.expect('NUL review rejected', alice.post('/bookings/1/review', dict(text='\0test')), 400)
         review = 'Уникальный отзыв <script>alert(1)</script>'
         self.expect('owner finished review saved', alice.post('/bookings/1/review', dict(text=review)), 302)
-        self.expect('duplicate review rejected', alice.post('/bookings/1/review', dict(text='Again')), 409)
+        self.expect('second review permitted', alice.post('/bookings/1/review', dict(text='Again')), 302)
         for client, path in [(alice, '/bookings'), (admin, '/admin')]:
             page = client.request(path)[2]
             self.assertIn(html.escape(review), page)
@@ -149,21 +148,27 @@ class HTTPAudit(unittest.TestCase):
             self.assertEqual(ids(admin.request('/admin?status=' + status)), wanted)
         self.expect('unknown filter rejected', admin.request('/admin?status=bad'), 400)
         self.expect('unknown status rejected', admin.post('/admin/2/status', dict(status='bad')), 400)
-        self.expect('terminal status protected', admin.post('/admin/1/status', dict(status='Идет аренда')), 409)
+        self.expect('finished rental can reopen', admin.post('/admin/1/status', dict(status='Идет аренда')), 302)
+        self.expect('review forbidden after reopening', alice.post('/bookings/1/review', dict(text='Early')), 403)
         self.expect('oversized review ID', alice.post('/bookings/9223372036854775808/review', dict(text='Text')), 404)
         self.expect('oversized status ID', admin.post('/admin/9223372036854775808/status', dict(status='Идет аренда')), 404)
         response = self.expect('GET logout is read-only', alice.request('/logout'), 405)
         self.assertIn('POST', response[1]['Allow'])
         self.expect('logout', alice.post('/logout'), 302)
         self.expect('logged-out history blocked', alice.request('/bookings'), 302)
-        with closing(sqlite3.connect(self.db)) as con:
-            self.assertEqual(con.execute('PRAGMA integrity_check').fetchone()[0], 'ok')
-            self.assertEqual(con.execute('PRAGMA foreign_key_check').fetchall(), [])
-            self.assertEqual(con.execute('SELECT user_id,status FROM bookings WHERE id=1').fetchone(), (2, 'Аренда завершена'))
-            self.assertEqual(con.execute('SELECT is_admin FROM users WHERE login="Driver01"').fetchone()[0], 0)
-            self.assertNotEqual(con.execute('SELECT password_hash FROM users WHERE login="Driver01"').fetchone()[0], 'Test1234')
-            self.assertEqual(con.execute('SELECT COUNT(*) FROM reviews').fetchone()[0], 1)
-        self.steps.append(dict(check='database integrity, FK, hashes, stored ownership/role, one review', actual='PASS'))
+        with self.database.connection.cursor() as cursor:
+            cursor.execute('CHECK TABLE users,bookings,reviews')
+            self.assertTrue(all(row[-1] == 'OK' for row in cursor.fetchall()))
+            cursor.execute('SELECT user_id,status FROM bookings WHERE id=1')
+            owner, status = cursor.fetchone()
+            cursor.execute('SELECT id,is_admin,password_hash FROM users WHERE login=%s', ('Driver01',))
+            user_id, is_admin, hashed = cursor.fetchone()
+            self.assertEqual((owner,status), (user_id,'Идет аренда'))
+            self.assertEqual(is_admin, 0)
+            self.assertNotEqual(hashed, 'Test1234')
+            cursor.execute('SELECT COUNT(*) FROM reviews')
+            self.assertEqual(cursor.fetchone()[0], 2)
+        self.steps.append(dict(check='MySQL CHECK TABLE, hashes, stored ownership/role, two reviews', actual='PASS'))
         type(self).passed = True
 
 

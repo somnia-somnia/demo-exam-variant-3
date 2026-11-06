@@ -1,0 +1,8 @@
+{%extends 'base.html'%}{%block content%}
+<div class=slider>
+{%for n in slides%}<img class=slide src="/static/img/slide{{n}}.jpg" alt="Слайд {{n}}" {%if n != 1%}hidden{%endif%}>{%endfor%}
+<button data-step=-1 aria-label=Назад>‹</button><button data-step=1 aria-label=Вперёд>›</button></div>
+<h2>Автомобили</h2>
+<div class=fleet>{%for car,img in cars.items%}<article><img src="/static/img/{{img}}" alt="{{car}}"><h3>{{car}}</h3>
+{%if not u.is_admin%}<a href=/bookings/new>Арендовать</a>{%endif%}</article>{%endfor%}</div>
+{%endblock%}

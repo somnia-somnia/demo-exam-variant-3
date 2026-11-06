@@ -1,15 +1,8 @@
-{%macro csrf()%}<input type=hidden name="csrf" value="{{session.csrf}}">{%endmacro%}
-{%macro opts(items,value='',prompt='Выберите')%}<option value="">{{prompt}}</option>{%for x in items%}<option{%if x==value%} selected{%endif%}>{{x}}</option>{%endfor%}{%endmacro%}
-{%set admin=u and u.is_admin%}
 <!doctype html>
-<html lang=ru>
-<meta charset=utf-8>
-<meta name=viewport content="width=device-width,initial-scale=1">
+<html lang=ru><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1">
 <title>{{title}} · Ключ.на.старт</title>
-<link rel=stylesheet href=/static/style.css>
-<script src=/static/script.js defer></script>
+<link rel=stylesheet href=/static/style.css><script src=/static/script.js defer></script>
 <header><a href=/><img width=240 src=/static/img/logo.png alt=Ключ.на.старт></a>
-<nav>{%if u%}<form action=/logout method=post>{{csrf()}}<button>Выйти</button></form>
-{%else%}<a href=/login>Вход</a>{%endif%}</nav></header>
-<main><h1>{{title}}</h1>{%block content%}{%endblock%}{%block promo%}{%endblock%}</main>
-</html>
+<nav><a href=/>Главная</a>{%if u%}<a href="{%if u.is_admin%}/admin{%else%}/bookings{%endif%}">Заявки</a>
+<form action=/logout method=post>{%csrf_token%}<button>Выйти</button></form>{%else%}<a href=/login>Войти</a>{%endif%}</nav></header>
+<main><h1>{{title}}</h1>{%block content%}{%endblock%}</main></html>
